@@ -19,14 +19,8 @@ from sklearn.metrics import mean_squared_error
 
 # import local libarys
 from gearbox.vibration import Gearbox_Vibration as Vibration
+from gearbox.degradation import Gearbox_Degradation as Degradation
 
-class Degradation():
-    """
-    dummy
-    """
-    def __init__():
-        """
-        """
 
 ####################################################
 
