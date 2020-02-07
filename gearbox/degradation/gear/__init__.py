@@ -44,7 +44,7 @@ class Gear_Degradation(Degradation_Helper,
         Constructor method for Gear Degradation
         tbd include sanity checks for given geardict
         """
-        BasicHelper.__init__(self)
+        #BasicHelper.__init__(self)
         self.no_teeth = no_teeth
         self.no_failing = degdict['Failing_Teeth']
         self.p_n0 = degdict['PDF_Deg_Init']['n']
