@@ -10,12 +10,12 @@ from IPython.display import display, HTML
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from scipy.signal import gausspulse
-from sklearn.preprocessing import MinMaxScaler
-from scipy.stats import norm
+# from scipy.signal import gausspulse
+# from sklearn.preprocessing import MinMaxScaler
+# from scipy.stats import norm
 from numpy.random import uniform
-#from scipy.optimize import brute
-from sklearn.metrics import mean_squared_error
+# from scipy.optimize import brute
+# from sklearn.metrics import mean_squared_error
 
 # import local libarys
 from gearbox.vibration.bearing import Bearing
