@@ -8,25 +8,19 @@ from IPython.display import display, HTML
 
 # import 3rd party libarys
 import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
-from scipy.signal import gausspulse
-from sklearn.preprocessing import MinMaxScaler
-from scipy.stats import norm
-from numpy.random import uniform
-#from scipy.optimize import brute
-from sklearn.metrics import mean_squared_error
+# import pandas as pd
+# from matplotlib import pyplot as plt
+# from scipy.signal import gausspulse
+# from sklearn.preprocessing import MinMaxScaler
+# from scipy.stats import norm
+# from numpy.random import uniform
+# from scipy.optimize import brute
+# from sklearn.metrics import mean_squared_error
 
 # import local libarys
 from gearbox.vibration import Gearbox_Vibration as Vibration
+from gearbox.degradation import Gearbox_Degradation as Degradation
 
-class Degradation():
-    """
-    dummy
-    """
-    def __init__():
-        """
-        """
 
 ####################################################
 
@@ -74,27 +68,27 @@ class Gearbox(Vibration,
         self.ga_Deg_Bearing4 = Deg_Bearing4
         # Shared Arguments
         self.ga_seed  = seed
-        self.Vibration = Gearbox_Vibration(self.ga_rotational_frequency_in,
-                                            self.ga_sample_interval,
-                                            self.ga_sample_rate,
-                                            self.ga_GearIn,
-                                            self.ga_GearOut,
-                                            self.ga_Bearing1,
-                                            self.ga_Bearing2,
-                                            self.ga_Bearing3,
-                                            self.ga_Bearing4,
-                                            self.ga_seed,
-                                            self.fixed_start)
+        self.Vibration = Vibration(self.ga_rotational_frequency_in,
+                                    self.ga_sample_interval,
+                                    self.ga_sample_rate,
+                                    self.ga_GearIn,
+                                    self.ga_GearOut,
+                                    self.ga_Bearing1,
+                                    self.ga_Bearing2,
+                                    self.ga_Bearing3,
+                                    self.ga_Bearing4,
+                                    self.ga_seed,
+                                    self.fixed_start)
         # Init Gearbox Degradation
-        self.Degradation = Gearbox_Degradation(self.ga_GearIn['no_teeth'],
-                                               self.ga_GearOut['no_teeth'],
-                                               self.ga_Deg_GearIn,
-                                               self.ga_Deg_GearOut,
-                                               self.ga_Deg_Bearing1,
-                                               self.ga_Deg_Bearing2,
-                                               self.ga_Deg_Bearing3,
-                                               self.ga_Deg_Bearing4,
-                                               self.ga_seed)
+        self.Degradation = Degradation(self.ga_GearIn['no_teeth'],
+                                       self.ga_GearOut['no_teeth'],
+                                       self.ga_Deg_GearIn,
+                                       self.ga_Deg_GearOut,
+                                       self.ga_Deg_Bearing1,
+                                       self.ga_Deg_Bearing2,
+                                       self.ga_Deg_Bearing3,
+                                       self.ga_Deg_Bearing4,
+                                       self.ga_seed)
 
     def initialize(self, torque):
         """

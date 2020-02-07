@@ -10,12 +10,12 @@ from IPython.display import display, HTML
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from scipy.signal import gausspulse
-from sklearn.preprocessing import MinMaxScaler
-from scipy.stats import norm
+# from scipy.signal import gausspulse
+# from sklearn.preprocessing import MinMaxScaler
+# from scipy.stats import norm
 from numpy.random import uniform
-#from scipy.optimize import brute
-from sklearn.metrics import mean_squared_error
+# from scipy.optimize import brute
+# from sklearn.metrics import mean_squared_error
 
 # import local libarys
 from gearbox.vibration.bearing import Bearing
@@ -239,7 +239,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         self.init_torque_attributes(torque)
         # self.nolc = number_of_load_cycle tbd
-        if seed is not None:
+        if self.seed is not None:
             np.random.seed(int(self.seed * (nolc + 1)))
         # Gear Signals
         self.signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
