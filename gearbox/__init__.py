@@ -100,13 +100,14 @@ class Gearbox(Vibration,
         _, loads = self.Vibration.init_vibration(torque) #tbd input tooth pitting
         # Init global Attributes
         self.ga_torque = [torque]
+        self.ga_load_cycle_torquechange = [np.nan]
         self.ga_load_cycle = [np.nan]
         self.ga_loads = [loads]
         self.ga_statei = [statei]
         display(HTML('<p>Done</p>'))
 
 
-    def run(self, nolc, torque, output=True):
+    def run(self, nolc, output=True):
         """
         Method to initialize the model.
         """
@@ -114,15 +115,24 @@ class Gearbox(Vibration,
         # Get Degradation based on previous selected torque
         statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
         # Get Vibration based on previous selected torque
-        vibration, loads = self.Vibration.run_vibration(nolc, torque, statei, output=True)
+        vibration = self.Vibration.run_vibration(nolc, self.ga_torque[-1], statei, output=True)
         # Append global Attributes
-        self.ga_torque.append(torque)
         self.ga_load_cycle.append(nolc)
-        self.ga_loads.append(loads)
         self.ga_statei.append(statei)
         display(HTML('<p>Load Cycle %i done</p>' % (nolc)))
         if output is True:
             return(vibration)
+
+    def set(self, nolc, torque):
+        """
+        """
+        assert ((self.ga_load_cycle[-1] == nolc) or (np.isnan(self.ga_load_cycle[-1]))), 'Given nolc must equal last given nolc for method "run()"'
+        self.ga_torque.append(torque)
+        self.ga_load_cycle_torquechange.append(nolc)
+        # Get Vibration based loads
+        loads = self.Vibration.get_loads(torque)
+        self.ga_loads.append(loads)
+
 
     def summary(self):
         """

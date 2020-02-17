@@ -264,12 +264,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         signal_raw = self.trim2realsampletime(signal_raw)
         # Accumulate
         self.signal_raw = np.sum(signal_raw, axis=1).reshape(-1, 1)
-        # Get loads dict
-        loads = self.get_loads(torque)
         if output is True:
-            return(self.signal_raw, loads)
-        else:
-            return(None, loads)
+            return(self.signal_raw)
 
 
     def plot_signal(self, signal, legend, title):
