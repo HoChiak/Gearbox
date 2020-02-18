@@ -97,7 +97,9 @@ class Gearbox(Vibration,
         display(HTML('<div style="background-color:black;color:white;padding:8px;letter-spacing:1em;"align="center"><h2>Initialize Degradation</h2></div>'))
         statei = self.Degradation.init_degradation()
         display(HTML('<div style="background-color:black;color:white;padding:8px;letter-spacing:1em;"align="center"><h2>Initialize Vibration</h2></div>'))
-        _, loads = self.Vibration.init_vibration(torque) #tbd input tooth pitting
+        self.Vibration.init_vibration(torque)
+        # Get loads
+        loads = self.Vibration.get_loads(torque)
         # Init global Attributes
         self.ga_torque = [torque]
         self.ga_load_cycle_torquechange = [np.nan]

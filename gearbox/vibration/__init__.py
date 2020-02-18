@@ -227,9 +227,6 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                                 self.Bearing4Prop,
                                 self.sample_rate, self.full_sample_time,
                                 self.torque_out) #check if torque out is the right definition
-        # Get Load Collectives
-        loads = self.get_loads(torque)
-        return(None, loads)
 
 
     def run_vibration(self, nolc, torque, statei=None, output=True):
