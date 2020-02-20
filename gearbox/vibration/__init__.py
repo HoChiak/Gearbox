@@ -57,6 +57,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.Bearing4Prop = Bearing4
         self.seed = seed
         self.fixed_start = fixed_start
+        self.signal_degr = None
         self.init_missing()
 
 
@@ -349,7 +350,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
             self.plot_signal(signal, self.parts_b1, title)
         # Plot Degradation
         display(HTML('<h3>Degradation Signal</h3>'))
-        self.plot_signal(self.signal_degr, self.parts_degr, 'Degradation Signal')
+        if self.signal_degr is not None:
+            self.plot_signal(self.signal_degr, self.parts_degr, 'Degradation Signal')
+        else:
+            display(HTML('<p>Degradation not available (probably no statei argument given)</p>'))
         # Plot Gears
         display(HTML('<h3>Gear Signals</h3>'))
         self.plot_gears()
