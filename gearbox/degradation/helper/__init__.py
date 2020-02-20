@@ -14,14 +14,14 @@ from matplotlib import pyplot as plt
 # from sklearn.preprocessing import MinMaxScaler
 # from scipy.stats import norm
 from numpy.random import uniform
-#from scipy.optimize import brute
+# from scipy.optimize import brute
 from sklearn.metrics import mean_squared_error
 
 # import local libarys
 
 
 ####################################################
-#--------- Degradation Helper Functions ----------------#
+# --------- Degradation Helper Functions ------#
 
 class Degradation_Helper():
     """
@@ -55,6 +55,9 @@ class Degradation_Helper():
         condition, i = [False], 1
         while any(condition) is False:
             # Get random uniform number
+            if self.seed is not None:
+                np.random.seed(self.seed_counter)
+                self.seed_counter += int(uniform(low=0, high=100, size=1))
             random_nr = uniform(low=0.0, high=1.0, size=1)
             # Calculate lower condition (Insert a 0 at index 0)
             cond1 = (np.insert(chances_cdf, 0, 0) < random_nr)
@@ -65,9 +68,8 @@ class Degradation_Helper():
             condition = np.delete(condition, -1, axis=0)
             # Workaround "while" to cover probabilitys of exact 0 and 1
             # Set new seed for drawing random_nr
-            if self.seed is not None:
-                np.random.seed(self.seed + i)
-                i += 1
+        if self.seed is not None:
+            np.random.seed(self.seed)
         return(condition)
 
     def reorder_list_given_indexes(self, indexes, lst):
@@ -112,7 +114,7 @@ class Degradation_Helper():
 
 
 ####################################################
-#--------- Optimizer Helper Functions ----------------#
+# --------- Optimizer Helper Functions ------------#
 
 class Optimizer_Helper():
     """
@@ -162,7 +164,6 @@ class Optimizer_Helper():
         x = np.log((y - theta3) / theta1) / theta2
         return(x)
 
-
     def opt_exp_function_brute(self, x, y, theta1s,
                                theta2s, theta3s):
         """
@@ -191,7 +192,7 @@ class Optimizer_Helper():
                     df_val = df_val.append(fval, ignore_index=True)
                     # Out Progress
                     self.prgr_bar(curr_state, no_states, txt='')
-                    curr_state +=1
+                    curr_state += 1
                     del fval
         return(df_val)
 
@@ -208,8 +209,10 @@ class Optimizer_Helper():
         self.state0['theta3'] = np.full(self.no_teeth, np.nan)
 
         for idx in failure_range:
-            x = np.array((self.state0.loc[idx, 'n0'], self.state0.loc[idx, 'neol']))
-            y = np.array((self.state0.loc[idx, 'a0'], self.state0.loc[idx, 'aeol']))
+            x = np.array((self.state0.loc[idx, 'n0'],
+                         self.state0.loc[idx, 'neol']))
+            y = np.array((self.state0.loc[idx, 'a0'],
+                         self.state0.loc[idx, 'aeol']))
             display(HTML('<p>Running for tooth %i failure</p>' % (self.state0.loc[idx, 'tooth'])))
             fval = self.opt_exp_function_brute(x, y, self.theta1s,
                                                self.theta2s, self.theta3s)
@@ -222,7 +225,7 @@ class Optimizer_Helper():
 
 
 ####################################################
-#--------- State0 Helper Functions ----------------#
+# --------- State0 Helper Functions ---------------#
 
 class State0_Helper():
     """
@@ -343,24 +346,23 @@ class State0_Helper():
             drawn_teeth.append(teeth[condition][0])
         return(drawn_teeth)
 
-
     def get_initial_values(self):
         """
         Method to get a0, n0, aeol, neol, tooth
         """
-        np.random.seed(self.seed) # tbd delete
+        np.random.seed(self.seed)
         self.state0 = pd.DataFrame()
         # Add a0 and n0
         self.state0['a0'] = self.init_a0s().reshape(-1)
         self.state0['n0'] = self.init_n0s().reshape(-1)
         # Sort values by 'n'
         self.state0.sort_values(by=['n0'], axis=0,
-                               ascending=True, inplace=True,
-                               kind='mergesort')
+                                ascending=True, inplace=True,
+                                kind='mergesort')
         self.state0.reset_index(drop=True, inplace=True)
         # Add tooth no
         self.state0['tooth'] = self.draw_inital_teeth_order()
-        self.state0['tooth'] = self.state0['tooth'] + 1 # Adjust for 0 readability
+        self.state0['tooth'] = self.state0['tooth'] + 1
         # Add a- and n-EOL
         temp_df = pd.DataFrame()
         temp_df['neol'] = self.init_neols().reshape(-1)
@@ -390,13 +392,13 @@ class State0_Helper():
 
         for index, row in self.state0.iterrows():
             new_df.loc[index, 'n0'] = self.inv_exp_function(row['a0'],
-                                                        row['theta1'],
-                                                        row['theta2'],
-                                                        row['theta3'])[0]
+                                                            row['theta1'],
+                                                            row['theta2'],
+                                                            row['theta3'])[0]
             new_df.loc[index, 'neol'] = self.inv_exp_function(row['aeol'],
-                                                          row['theta1'],
-                                                          row['theta2'],
-                                                          row['theta3'])[0]
+                                                              row['theta1'],
+                                                              row['theta2'],
+                                                              row['theta3'])[0]
         self.state0 = new_df
 
     def get_initial_state0(self):
@@ -430,12 +432,12 @@ class State0_Helper():
             label2.append('Point Estimates for tooth %i' % (row['tooth']))
             x_mod = np.linspace(min(self.state0['n0'])*0.95,
                                 max(self.state0['neol'])*1.05,
-                                100).reshape(-1,1)
+                                100).reshape(-1, 1)
             y_mod = self.exp_function(x_mod,
                                       row['theta1'],
                                       row['theta2'],
                                       row['theta3'])
-            y_mod = y_mod.reshape(-1,1)
+            y_mod = y_mod.reshape(-1, 1)
             plt.plot(x_mod, y_mod)
             label1.append('Fitted Curve for tooth %i' % (row['tooth']))
         label1.extend(label2)
@@ -444,9 +446,9 @@ class State0_Helper():
         plt.legend(label1)
         plt.show()
 
-
 ####################################################
-#--------- Degradation Helper Functions ----------------#
+# --------- Degradation Helper Functions ----------#
+
 
 class Woehler_Helper():
     """
@@ -462,16 +464,18 @@ class Woehler_Helper():
         """
         torq = torq_p * (n/n_p)
         """
-        return(self.woehler_torqp * np.power((n / self.woehler_np), -1*(1/self.woehler_k)))
+        return(self.woehler_torqp * np.power((n / self.woehler_np),
+                                             -1*(1/self.woehler_k)))
 
     def woehler_n_of_torq(self, torq):
         """
         """
-        return(self.woehler_np * np.power((torq / self.woehler_torqp), -1*self.woehler_k))
-
+        return(self.woehler_np * np.power((torq / self.woehler_torqp),
+                                          -1*self.woehler_k))
 
 ####################################################
-#--------- Damage Accumulation Functions ----------------#
+# --------- Damage Accumulation Functions ---------#
+
 
 class DamageAcc_Helper():
     """
@@ -545,12 +549,12 @@ class DamageAcc_Helper():
         damage_frac = []
         # Iterate over failing tooth
         for index, row in self.state0.iterrows():
-            #print('Failing tooth %s' % (str(int(row['tooth']))))
+            # print('Failing tooth %s' % (str(int(row['tooth']))))
             # Iterate over loads list
             damage_equivalent = []
             # iterrows transforms tooth int to float -> backtransform:
             for load in loads[str(int(row['tooth']))]:
-                #print('Load i at tooth: %.3f' % (load))
+                # print('Load i at tooth: %.3f' % (load))
                 # Get Woehler Reference Values at D=1
                 N1 = row['neol'] - row['n0']
                 T1 = self.woehler_torqp
@@ -560,21 +564,21 @@ class DamageAcc_Helper():
                 T2 = load
                 # Add to damage aquivalent
                 # list of damages for one load cycle
-                #print('Damage equivalent: %.3f' % (1/N2))
+                # print('Damage equivalent: %.3f' % (1/N2))
                 damage_equivalent.append(1/N2)
-            #print('List of damage equivalents: %s' % (str(damage_equivalent)))
+            # print('List of damage equiv.: %s' % (str(damage_equivalent)))
             # From list of damages to one representive damage
             damage_equivalent = np.mean(damage_equivalent)
-            #print('Mean of damage equivalent: %s' % (str(damage_equivalent)))
+            # print('Mean of damage equivalent: %s' % (str(damage_equivalent)))
             # Get Fraction
             n_frac = nolc - self.nolc[-1]
-            #print('Number of load cycles: %i' % (n_frac))
+            # print('Number of load cycles: %i' % (n_frac))
             damage_frac.append(n_frac * damage_equivalent)
-            #print('Damage Fraction: %s' % (str(damage_frac)))
+            # print('Damage Fraction: %s' % (str(damage_frac)))
 
         # Change type
         damage_frac = np.array(damage_frac)
-        #print('Damage Fraction all teeth: %s' % (str(damage_frac)))
+        # print('Damage Fraction all teeth: %s' % (str(damage_frac)))
         # Accumulate new damage
         damage = dc(np.array(self.damage[-1]) + damage_frac)
         # Add new state
@@ -606,7 +610,6 @@ class DamageAcc_Helper():
         Method to plot the damge
         """
         self.plot_helper(np.array(self.damage), 'Damage')
-
 
     def get_current_statei(self, nolc):
         """

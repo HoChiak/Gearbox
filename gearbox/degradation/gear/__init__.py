@@ -61,6 +61,7 @@ class Gear_Degradation(Degradation_Helper,
         self.oppo_chance = degdict['Chances']['opposite']
         self.keeporder_chance = degdict['Chances']['keeporder']
         self.seed = seed
+        self.seed_counter = seed
         # States:
         self.state0 = None
 
