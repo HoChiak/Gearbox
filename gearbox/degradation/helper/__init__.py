@@ -500,19 +500,19 @@ class DamageAcc_Helper():
             damage.append((ddiff / dnorm) + 1)
         self.damage.append(damage)
 
-    def get_corresponding_pitting_growth(self):
+    def get_corresponding_pitting_size(self):
         """
         Method to get the corresponding pitting
         size a for a given self.nolc and level of
         damage.
         """
         # Get df containing state0 and damage
-        pitting_growth = []
+        pitting_size = []
         for index, row in self.state0.iterrows():
             damage = self.damage[-1][index]
             # If damage is a negative number
             if damage < 0:
-                pitting_growth.append(np.nan)
+                pitting_size.append(np.nan)
             else:
                 dnorm = row['neol'] - row['n0']
                 ref_nolc = damage * dnorm + row['n0']
@@ -520,8 +520,8 @@ class DamageAcc_Helper():
                                             row['theta1'],
                                             row['theta2'],
                                             row['theta3'])
-                pitting_growth.append(pitting[0])
-        self.pitting_growth.append(pitting_growth)
+                pitting_size.append(pitting[0])
+        self.pitting_size.append(pitting_size)
 
     def get_initial_damage(self):
         """
@@ -533,10 +533,10 @@ class DamageAcc_Helper():
         self.nolc = [0]
         # Initialise damage and pitting list
         self.damage = []
-        self.pitting_growth = []
+        self.pitting_size = []
         # Get initial damage values and corresponding pitting
         self.get_initial_damage_values()
-        self.get_corresponding_pitting_growth()
+        self.get_corresponding_pitting_size()
 
     def get_damage_growth(self, nolc, loads):
         """
@@ -586,7 +586,7 @@ class DamageAcc_Helper():
         # Add new state
         self.nolc.append(nolc)
         self.damage.append(damage.tolist())
-        self.get_corresponding_pitting_growth()
+        self.get_corresponding_pitting_size()
 
     def plot_helper(self, y, string):
         """
@@ -601,11 +601,11 @@ class DamageAcc_Helper():
         plt.legend(labels)
         plt.show()
 
-    def plot_pitting_growth(self):
+    def plot_pitting_size(self):
         """
         Method to plot the pitting growth
         """
-        self.plot_helper(np.array(self.pitting_growth), 'Pitting Growth')
+        self.plot_helper(np.array(self.pitting_size), 'Pitting Growth')
 
     def plot_damage(self):
         """
@@ -637,7 +637,7 @@ class DamageAcc_Helper():
             # List of failed tooth, damage and pitting
             failed_tooth = self.state0['tooth'].to_numpy()
             failed_tooth = failed_tooth.reshape(1, -1)
-            failed_pitting = np.array(self.pitting_growth[-1])
+            failed_pitting = np.array(self.pitting_size[-1])
             failed_pitting = failed_pitting.reshape(1, -1)
             failed_damage = np.array(self.damage[-1])
             failed_damage = failed_damage.reshape(1, -1)
