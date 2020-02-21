@@ -439,10 +439,12 @@ class State0_Helper():
                                       row['theta3'])
             y_mod = y_mod.reshape(-1, 1)
             plt.plot(x_mod, y_mod)
-            label1.append('Fitted Curve for tooth %i' % (row['tooth']))
+            label1.append('Degradation Curve for tooth %i' % (row['tooth']))
         label1.extend(label2)
         plt.ylim([min(self.state0['a0'])*0.95,
                   max(self.state0['aeol'])*1.05])
+        plt.ylabel('$Pitting Size\ a\ in\ mm$')
+        plt.xlabel('$Load Cycles N$')
         plt.legend(label1)
         plt.show()
 

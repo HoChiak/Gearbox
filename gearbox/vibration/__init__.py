@@ -278,8 +278,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                     facecolor='r',
                     alpha=0.25,
                     );
-        plt.ylabel('$Beschleunigung\ in\ [g?]$')
-        plt.xlabel('$Zeit\ t\ in\ s$')
+        plt.ylabel('$Acceleration\ in\ [g?]$')
+        plt.xlabel('$Time\ t\ in\ s$')
         plt.legend(legend)
         plt.show()
 
@@ -290,8 +290,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         fig = plt.figure(figsize=[15, 5])
         plt.title(title)
         plt.plot(self.sample_time, signal);
-        plt.ylabel('$Beschleunigung\ in\ [g?]$')
-        plt.xlabel('$Zeit\ t\ in\ s$')
+        plt.ylabel('$Acceleration\ in\ [g?]$')
+        plt.xlabel('$Time\ t\ in\ s$')
         plt.legend(legend)
         plt.show()
 
@@ -320,14 +320,14 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         fig = plt.figure(figsize=[15, 5])
         plt.plot(self.full_sample_time, np.ones(self.full_sample_time.shape)*self.rotational_frequency_in, ls='--');
         plt.plot(self.full_sample_time, np.ones(self.full_sample_time.shape)*self.rotational_frequency_out, ls='--');
-        plt.legend(['Antriebs-Drehfrequenz', 'Abtriebs-Drehfrequenz'], loc='center left')
-        plt.ylabel('$Drehfrequenz\ in\ U/s$')
-        plt.xlabel('$Zeit\ t\ in\ s$')
+        plt.legend(['Input Rotational Frequency', 'Output Rotational Frequency'], loc='center left')
+        plt.ylabel('$Rotational Frequency\ in\ r/sec$')
+        plt.xlabel('$Time\ t\ in\ sec$')
         plt.twinx()
         plt.plot(self.full_sample_time, self.torque_in);
         plt.plot(self.full_sample_time, self.torque_out);
-        plt.ylabel('$Drehmoment\ M \ in\ N/m$')
-        plt.legend(['Antriebs-Drehmoment', 'Abtriebs-Drehmoment'], loc='center right')
+        plt.ylabel('$Torque\ M \ in\ N/m$')
+        plt.legend(['Input Torque', 'Output Torque'], loc='center right')
         plt.axvspan(self.full_sample_time[self.start_id],
             self.full_sample_time[self.stop_id],
             facecolor='r',
