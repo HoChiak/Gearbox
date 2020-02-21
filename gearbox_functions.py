@@ -64,11 +64,15 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
     xf_mp = np.arange((pp//2) * fac_xf,(yf_mp.shape[0]*pp) * fac_xf + 1, pp * fac_xf)
     return(yf_mp, xf_mp)
 
-def plot_gear_polar(df, kind='order', **kwargs):
+def plot_gear_polar(df, kind='order', no_teeth=None, **kwargs):
     """
     Function to plot different kinds of
     visualisation on the gear wheel
     """
+    if no_teeth is not None:
+        missing = pd.DataFrame([i for i in range(1, no_teeth, 1) if i not in df['tooth'].to_list()])
+        missing.columns = ['tooth']
+        df = df.append(missing, sort=False).fillna(0)
     tooth = df['tooth']
     if kind is 'order':
         """
