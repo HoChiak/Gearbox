@@ -529,8 +529,6 @@ class DamageAcc_Helper():
         and initialises self.nolc (number_of_load_cycle)
         at 0
         """
-        # Define number of load cycles
-        self.nolc = [0]
         # Initialise damage and pitting list
         self.damage = []
         self.pitting_size = []

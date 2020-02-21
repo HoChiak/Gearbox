@@ -76,6 +76,7 @@ class Gear_Degradation(Degradation_Helper,
         at nolc = 0
         """
         # Initialise state0
+        self.nolc = [0]
         self.get_initial_state0()
         self.get_initial_damage()
         state_i = self.get_current_statei(None)
@@ -87,6 +88,8 @@ class Gear_Degradation(Degradation_Helper,
         nolc and torque (torque must be list, length equal
         to no_failure)
         """
+        assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1]))), 'Given nolc argument must be greater than the previous'
+        self.nolc.append(nolc)
         self.get_damage_growth(nolc, loads)
         state_i = self.get_current_statei(nolc)
         return(state_i)

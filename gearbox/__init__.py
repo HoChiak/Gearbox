@@ -113,7 +113,6 @@ class Gearbox(Vibration,
         """
         Method to initialize the model.
         """
-        assert ((self.ga_load_cycle[-1] < nolc) or (np.isnan(self.ga_load_cycle[-1]))), 'Given nolc argument must be greater than the previous'
         # Get Degradation based on previous selected torque
         statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
         # Get Vibration based on previous selected torque
