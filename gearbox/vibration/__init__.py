@@ -41,6 +41,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                  Bearing1, Bearing2, Bearing3, Bearing4,
                  seed=None,
                  fixed_start=False,
+                 GearDegVibDictIn=None,
+                 GearDegVibDictOut=None
                  ):
         """
         """
@@ -57,6 +59,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.Bearing4Prop = Bearing4
         self.seed = seed
         self.fixed_start = fixed_start
+        self.GearDegVibDictIn = GearDegVibDictIn
+        self.GearDegVibDictOut = GearDegVibDictOut
         self.signal_degr = None
         self.init_missing()
 
@@ -167,7 +171,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         loads = {}
         loads['GearIn'] = self.GearIn.load_per_tooth(self.torque_in)
-        loads['GearOut'] = self.GearOut.load_per_tooth(self.torque_in)  #check if torque IN is the right definition (change togehter with init_vibration())
+        loads['GearOut'] = self.GearOut.load_per_tooth(self.torque_in)
         loads['Bearing1'] = 'tbd'
         loads['Bearing2'] = 'tbd'
         loads['Bearing3'] = 'tbd'
@@ -182,9 +186,9 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         are known, which are needed to accumulate the loads
         """
         # Gears
-        self.degr_gin, self.degr_labels_gin = self.GearIn.tooth_degr_signal(nolc, self.torque_in, statei['GearIn'])
+        self.degr_gin, self.degr_labels_gin = self.GearIn.tooth_degr_signal(nolc, statei['GearIn'])
         self.degr_labels_gin = ['GearIn %s' % label for label in self.degr_labels_gin]
-        self.degr_gout, self.degr_labels_gout = self.GearOut.tooth_degr_signal(nolc, self.torque_out, statei['GearOut'])
+        self.degr_gout, self.degr_labels_gout = self.GearOut.tooth_degr_signal(nolc, statei['GearOut'])
         self.degr_labels_gout = ['GearOut %s' % label for label in self.degr_labels_gout]
         # Bearings
         self.degr_b1, self.degr_labels_b1 = np.zeros((self.torque_in.shape[0], 1)), ['Bearing 1 None'] # tbd'
@@ -207,11 +211,13 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.GearIn = Gear(self.rotational_frequency_in,
                            self.GearPropIn,
                            self.sample_rate, self.full_sample_time,
-                           self.torque_in)
+                           self.torque_in,
+                           self.GearDegVibDictIn)
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
                            self.sample_rate, self.full_sample_time,
-                           self.torque_in) #check if torque IN is the right definition  (change togehter with get_loads())
+                           self.torque_out,
+                           self.GearDegVibDictOut)
         self.Bearing1 = Bearing(self.rotational_frequency_in,
                                 self.Bearing1Prop,
                                 self.sample_rate, self.full_sample_time,
@@ -223,11 +229,11 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.Bearing3 = Bearing(self.rotational_frequency_out,
                                 self.Bearing3Prop,
                                 self.sample_rate, self.full_sample_time,
-                                self.torque_out) #check if torque out is the right definition
+                                self.torque_out)
         self.Bearing4 = Bearing(self.rotational_frequency_out,
                                 self.Bearing4Prop,
                                 self.sample_rate, self.full_sample_time,
-                                self.torque_out) #check if torque out is the right definition
+                                self.torque_out)
 
 
     def run_vibration(self, nolc, torque, statei=None, output=True):
@@ -236,7 +242,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         the sum.
         """
         self.init_torque_attributes(torque)
-        # self.nolc = number_of_load_cycle tbd
+        # seed dependencie on number of load cycles
         if self.seed is not None:
             np.random.seed(int(self.seed * (nolc + 1)))
         # Gear Signals
@@ -262,6 +268,9 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         signal_raw = self.trim2realsampletime(signal_raw)
         # Accumulate
         self.signal_raw = np.sum(signal_raw, axis=1).reshape(-1, 1)
+        # seed dependencie on number of load cycles
+        if self.seed is not None:
+            np.random.seed(self.seed)
         if output is True:
             return(self.signal_raw)
 

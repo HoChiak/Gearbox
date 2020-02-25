@@ -529,6 +529,8 @@ class DamageAcc_Helper():
         and initialises self.nolc (number_of_load_cycle)
         at 0
         """
+        # Define number of load cycles
+        self.nolc = [0]
         # Initialise damage and pitting list
         self.damage = []
         self.pitting_size = []
@@ -611,7 +613,7 @@ class DamageAcc_Helper():
         """
         self.plot_helper(np.array(self.damage), 'Damage')
 
-    def get_current_statei(self, nolc):
+    def get_current_statei(self, nolc, nolc_true=None):
         """
         Method to return a list of all teeth and the corresponding pitting size
         """
@@ -649,8 +651,13 @@ class DamageAcc_Helper():
             # Concat remaining and failed
             alle = np.concatenate([failed, rem], axis=1)
             df = pd.DataFrame(alle[1:, :])
+            # If gear is output gear than nolc=nolc_in/gear_ratio so for a
+            # uniform description nolc_true is given as the value of nolc_in
             df.columns = alle[0, :]
-            df.index = ['$a_{%i}$' % (nolc), '$d_{%i}$' % (nolc)]
+            if nolc_true is None:
+                df.index = ['$a_{%i}$' % (nolc), '$d_{%i}$' % (nolc)]
+            else:
+                df.index = ['$a_{%i}$' % (nolc_true), '$d_{%i}$' % (nolc_true)]
             df = df.reindex(sorted(df.columns), axis=1)
             self.statei = pd.concat([self.statei, df], axis=0)
         return(df)

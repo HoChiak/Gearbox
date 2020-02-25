@@ -316,12 +316,12 @@ class NonstationarySignals():
             Class constructor for stationary raw signal methods
             """
 
-        def run(self, time, frq, ampl=1):
+        def run(self, time, frq, bw=0.5, bwr=-6, ampl=1):
             """
             Method to generate a sine signal for a given
             time array, a frequency and amplitude.
             """
-            signal = gausspulse(time, fc=frq, bw=0.5, retquad=False, retenv=False)
+            signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=False, retenv=False)
             signal = signal * ampl
             signal_center = np.argmin(np.abs(time))
             signal = signal.reshape(-1, 1)

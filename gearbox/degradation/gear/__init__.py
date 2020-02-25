@@ -76,22 +76,22 @@ class Gear_Degradation(Degradation_Helper,
         at nolc = 0
         """
         # Initialise state0
-        self.nolc = [0]
         self.get_initial_state0()
         self.get_initial_damage()
         state_i = self.get_current_statei(None)
         return(state_i)
 
-    def run_gear_degradation(self, nolc, loads):
+    def run_gear_degradation(self, nolc, loads, nolc_true=None):
         """
         Method to get the current degradation for a given
         nolc and torque (torque must be list, length equal
         to no_failure)
+        If gear is output gear than nolc=nolc_in/gear_ratio so for a
+        uniform description nolc_true is given as the value of nolc_in
         """
         assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1]))), 'Given nolc argument must be greater than the previous'
-        self.nolc.append(nolc)
         self.get_damage_growth(nolc, loads)
-        state_i = self.get_current_statei(nolc)
+        state_i = self.get_current_statei(nolc, nolc_true)
         return(state_i)
 
     def summary_gear_degradation(self):

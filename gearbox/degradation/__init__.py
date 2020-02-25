@@ -52,6 +52,7 @@ class Gearbox_Degradation(Gear_Degradation,
         self.Deg_Bearing3Prop = Deg_Bearing3
         self.Deg_Bearing4Prop = Deg_Bearing4
         self.seed = seed
+        self.gear_ratio =  self.no_teeth_GearOut/self.no_teeth_GearIn
         # Init Gear In Degradation
         self.GearIn_Degradation = Gear_Degradation(self.no_teeth_GearIn,
                                                     self.Deg_GearPropIn,
@@ -95,10 +96,13 @@ class Gearbox_Degradation(Gear_Degradation,
         Method to get the current degradation for a given
         nolc and torque (torque must be list, length equal
         to no_failure)
+        If gear is output gear than nolc=nolc_in/gear_ratio so for a
+        uniform description nolc_true is given as the value of nolc_in
         """
         statei = {}
-        statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'])
-        statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc, loads['GearOut'])
+        statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'], nolc_true=None)
+        nolc_out = round(nolc / self.gear_ratio, 3)
+        statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc_out, loads['GearOut'], nolc_true=nolc)
         return(statei)
 
 
