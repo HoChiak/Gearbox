@@ -443,8 +443,10 @@ class State0_Helper():
         label1.extend(label2)
         plt.ylim([min(self.state0['a0'])*0.95,
                   max(self.state0['aeol'])*1.05])
-        plt.ylabel('$Pitting Size\ a\ in\ mm$')
-        plt.xlabel('$Load Cycles N$')
+        plt.xlim([0,
+                  max(self.state0['neol'])*1.05])
+        plt.ylabel('$Pitting\ Size\ a\ in\ \%$')
+        plt.xlabel('$Load\ Cycles\ N\ (reference:\ input\ shaft)$')
         plt.legend(label1)
         plt.show()
 
@@ -535,16 +537,11 @@ class DamageAcc_Helper():
         and initialises self.nolc (number_of_load_cycle)
         at 0
         """
-        # Define number of load cycles
-        self.nolc = [0]
-        # Initialise damage and pitting list
-        self.damage = []
-        self.pitting_size = []
         # Get initial damage values and corresponding pitting
         self.get_initial_damage_values()
         self.get_corresponding_pitting_size()
 
-    def get_damage_growth(self, nolc, loads):
+    def get_damage_growth(self, loads):
         """
         Method to get the Damage fraction for the load cycle
         fraction between given nolc and previous nolc. While
@@ -579,7 +576,7 @@ class DamageAcc_Helper():
             damage_equivalent = np.mean(damage_equivalent)
             # print('Mean of damage equivalent: %s' % (str(damage_equivalent)))
             # Get Fraction
-            n_frac = nolc - self.nolc[-1]
+            n_frac = self.nolc[-1] - self.nolc[-2]
             # print('Number of load cycles: %i' % (n_frac))
             damage_frac.append(n_frac * damage_equivalent)
             # print('Damage Fraction: %s' % (str(damage_frac)))
@@ -590,7 +587,6 @@ class DamageAcc_Helper():
         # Accumulate new damage
         damage = dc(np.array(self.damage[-1]) + damage_frac)
         # Add new state
-        self.nolc.append(nolc)
         self.damage.append(damage.tolist())
         self.get_corresponding_pitting_size()
 
@@ -598,13 +594,23 @@ class DamageAcc_Helper():
         """
         Method to plot the pitting growth
         """
-        x = np.array(self.nolc)
+        if self.nolc_ref[-1] is None:
+            x = np.array(self.nolc)
+        else:
+            x = np.array(self.nolc_ref)        
         x = x.reshape(-1, 1)
         y = y.reshape(x.shape[0], -1)
         plt.figure()
         plt.plot(x, y)
         labels = ['%s for tooth %i' % (string, self.state0.loc[idx, 'tooth']) for idx in range(y.shape[1])]
         plt.legend(labels)
+        if 'Pitting' in string:
+            plt.ylabel('$Pitting\ Size\ a\ in\ \%$')
+        elif 'Damage' in string:
+            plt.ylabel('$Damage\ D$')
+        plt.xlim([0,
+                  max(self.state0['neol'])*1.05])
+        plt.xlabel('$Load\ Cycles\ N\ (reference:\ input\ shaft)$')
         plt.show()
 
     def plot_pitting_size(self):
@@ -619,51 +625,36 @@ class DamageAcc_Helper():
         """
         self.plot_helper(np.array(self.damage), 'Damage')
 
-    def get_current_statei(self, nolc, nolc_true=None):
+    def get_current_statei(self):
         """
         Method to return a list of all teeth and the corresponding pitting size
         """
-        if nolc is None:
-            # Init state i
-            self.statei = pd.DataFrame()
-            # Init df
-            tooth = np.arange(1, self.no_teeth+1, 1).reshape(1, -1)
-            pitting = np.full(tooth.shape, np.nan).reshape(1, -1)
-            damage = np.full(tooth.shape, np.nan).reshape(1, -1)
-            alle = np.concatenate([tooth, pitting, damage], axis=0)
-            # Concat
-            df = pd.DataFrame(alle[1:, :])
-            df.columns = alle[0, :]
-            df.index = ['$a_{init}$', '$d_{init}$']
-            df = df.reindex(sorted(df.columns), axis=1)
-            self.statei = pd.concat([self.statei, df], axis=0)
+        # Array of allt tooth
+        all_tooth = np.arange(1, self.no_teeth+1, 1)
+        # List of failed tooth, damage and pitting
+        failed_tooth = self.state0['tooth'].to_numpy()
+        failed_tooth = failed_tooth.reshape(1, -1)
+        failed_pitting = np.array(self.pitting_size[-1])
+        failed_pitting = failed_pitting.reshape(1, -1)
+        failed_damage = np.array(self.damage[-1])
+        failed_damage = failed_damage.reshape(1, -1)
+        failed = np.concatenate([failed_tooth, failed_pitting, failed_damage], axis=0)
+        # Remaining tooth, damage and pitting
+        rem_tooth = [tooth for tooth in all_tooth if tooth not in failed_tooth]
+        rem_tooth = np.array(rem_tooth).reshape(1, -1)
+        rem_pitting = np.full(rem_tooth.shape, np.nan)
+        rem_damage = np.full(rem_tooth.shape, np.nan)
+        rem = np.concatenate([rem_tooth, rem_pitting, rem_damage], axis=0)
+        # Concat remaining and failed
+        alle = np.concatenate([failed, rem], axis=1)
+        df = pd.DataFrame(alle[1:, :])
+        # If gear is output gear than nolc=nolc_in/gear_ratio so for a
+        # uniform description nolc_ref is given as the value of nolc_in
+        df.columns = alle[0, :]
+        if self.nolc_ref[-1] is None:
+            df.index = ['$a_{%i}$' % (self.nolc[-1]), '$d_{%i}$' % (self.nolc[-1])]
         else:
-            # Array of allt tooth
-            all_tooth = np.arange(1, self.no_teeth+1, 1)
-            # List of failed tooth, damage and pitting
-            failed_tooth = self.state0['tooth'].to_numpy()
-            failed_tooth = failed_tooth.reshape(1, -1)
-            failed_pitting = np.array(self.pitting_size[-1])
-            failed_pitting = failed_pitting.reshape(1, -1)
-            failed_damage = np.array(self.damage[-1])
-            failed_damage = failed_damage.reshape(1, -1)
-            failed = np.concatenate([failed_tooth, failed_pitting, failed_damage], axis=0)
-            # Remaining tooth, damage and pitting
-            rem_tooth = [tooth for tooth in all_tooth if tooth not in failed_tooth]
-            rem_tooth = np.array(rem_tooth).reshape(1, -1)
-            rem_pitting = np.full(rem_tooth.shape, np.nan)
-            rem_damage = np.full(rem_tooth.shape, np.nan)
-            rem = np.concatenate([rem_tooth, rem_pitting, rem_damage], axis=0)
-            # Concat remaining and failed
-            alle = np.concatenate([failed, rem], axis=1)
-            df = pd.DataFrame(alle[1:, :])
-            # If gear is output gear than nolc=nolc_in/gear_ratio so for a
-            # uniform description nolc_true is given as the value of nolc_in
-            df.columns = alle[0, :]
-            if nolc_true is None:
-                df.index = ['$a_{%i}$' % (nolc), '$d_{%i}$' % (nolc)]
-            else:
-                df.index = ['$a_{%i}$' % (nolc_true), '$d_{%i}$' % (nolc_true)]
-            df = df.reindex(sorted(df.columns), axis=1)
-            self.statei = pd.concat([self.statei, df], axis=0)
+            df.index = ['$a_{%i}$' % (self.nolc_ref[-1]), '$d_{%i}$' % (self.nolc_ref[-1])]
+        df = df.reindex(sorted(df.columns), axis=1)
+        self.statei = pd.concat([self.statei, df], axis=0)
         return(df)

@@ -97,12 +97,12 @@ class Gearbox_Degradation(Gear_Degradation,
         nolc and torque (torque must be list, length equal
         to no_failure)
         If gear is output gear than nolc=nolc_in/gear_ratio so for a
-        uniform description nolc_true is given as the value of nolc_in
+        uniform description nolc_ref is given as the value of nolc_in
         """
         statei = {}
-        statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'], nolc_true=None)
+        statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'], nolc_ref=None)
         nolc_out = round(nolc / self.gear_ratio, 3)
-        statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc_out, loads['GearOut'], nolc_true=nolc)
+        statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc_out, loads['GearOut'], nolc_ref=nolc)
         return(statei)
 
 
