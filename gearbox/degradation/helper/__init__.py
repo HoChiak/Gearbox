@@ -496,7 +496,7 @@ class DamageAcc_Helper():
         damage = []
         for index, row in self.state0.iterrows():
             dnorm = row['neol'] - row['n0']
-            ddiff = self.nolc[-1] - row['neol']
+            ddiff = 0 - row['neol']
             damage.append((ddiff / dnorm) + 1)
         self.damage.append(damage)
 
@@ -513,14 +513,20 @@ class DamageAcc_Helper():
             # If damage is a negative number
             if damage < 0:
                 pitting_size.append(np.nan)
-            else:
+            elif damage >= 0:
                 dnorm = row['neol'] - row['n0']
                 ref_nolc = damage * dnorm + row['n0']
                 pitting = self.exp_function(ref_nolc,
                                             row['theta1'],
                                             row['theta2'],
                                             row['theta3'])
-                pitting_size.append(pitting[0])
+                # Reduce pitting to type scaler
+                while isinstance(pitting, (list, tuple, np.ndarray)):
+                    pitting = pitting[0]
+                pitting_size.append(pitting)
+            # If damage is for example nan
+            else:
+                pitting_size.append(np.nan)
         self.pitting_size.append(pitting_size)
 
     def get_initial_damage(self):
