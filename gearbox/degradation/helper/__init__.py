@@ -609,9 +609,18 @@ class DamageAcc_Helper():
         elif 'Damage' in string:
             plt.ylabel('$Damage\ D$')
         plt.xlim([0,
-                  max(max(self.state0['neol'])*1.05, x)])
-        plt.ylim([min(self.state0['a0'])*0.95,
-                  max(max(self.state0['aeol'])*1.05, y)])
+                  max([max(self.state0['neol'])*1.05, max(x)])])
+        # Workaround if all entrys in y are np.nan
+        if y[~np.isnan(y)].size == 0:
+            y_max = 0
+        else:
+            y_max = max(y[~np.isnan(y)])
+        if 'Pitting' in string:
+            plt.ylim([min(self.state0['a0'])*0.95,
+                      max([max(self.state0['aeol'])*1.05, y_max * 1.05])])
+        elif 'Damage' in string:
+            plt.ylim([min(self.damage[0])*0.95,
+                      max([1.25, y_max * 1.05])])
         plt.xlabel('$Load\ Cycles\ N\ (reference:\ input\ shaft)$')
         plt.show()
 

@@ -43,7 +43,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.GearDegVibDict = GearDegVibDict
         self.teeth_no_list = None
         self.teeth_cid_list = None
-        self.scale_t2t = 1 #tbd input argument
         self.interpret_dict()
         self.interpret_deg_dict()
 
@@ -146,6 +145,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             self.GearDegVibDict['noise_attributes'] = {}
             self.GearDegVibDict['noise_attributes']['mu'] = 0
             self.GearDegVibDict['noise_attributes']['sigma'] = 0.005
+            self.GearDegVibDict['t2t_factor'] = 1
+
         else:
             # Key 'signal'
             self.check_declaration(self.GearDegVibDict, key='signal', message='')
@@ -162,6 +163,9 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             self.check_declaration(self.GearDegVibDict, key='noise_attributes', message='')
             # Key 'torq_method'
             self.check_declaration(self.GearDegVibDict, key='torq_influence', message='')
+            # Key 't2t_factor'
+            self.check_declaration(self.GearDegVibDict, key='t2t_factor', message='')
+
 
     def raw_signal(self):
         """
@@ -229,7 +233,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Get distance between 2 tooth in no ids
         dist_ids = ids_array[1] - ids_array[0]
         # Scale distance length
-        dist_ids = dist_ids * self.scale_t2t
+        dist_ids = dist_ids * self.GearDegVibDict['t2t_factor']
         # Take half
         dist_ids = dist_ids / 2
         # Get upper and lower bound
