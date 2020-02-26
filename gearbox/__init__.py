@@ -82,10 +82,10 @@ class Gearbox(Vibration,
                                     self.ga_Bearing2,
                                     self.ga_Bearing3,
                                     self.ga_Bearing4,
-                                    self.ga_seed,
-                                    self.fixed_start,
-                                    self.GearDegVibDictIn,
-                                    self.GearDegVibDictOut)
+                                    seed=self.ga_seed,
+                                    fixed_start=self.fixed_start,
+                                    GearDegVibDictIn=self.GearDegVibDictIn,
+                                    GearDegVibDictOut=self.GearDegVibDictOut)
         # Init Gearbox Degradation
         self.Degradation = Degradation(self.ga_GearIn['no_teeth'],
                                        self.ga_GearOut['no_teeth'],

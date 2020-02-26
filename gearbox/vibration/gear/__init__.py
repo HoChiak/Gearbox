@@ -44,8 +44,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.teeth_no_list = None
         self.teeth_cid_list = None
         self.scale_t2t = 1 #tbd input argument
-        self.flag_1run = True
-        self.flag_1run_deg = True
+        self.interpret_dict()
+        self.interpret_deg_dict()
 
     def interpret_dict(self):
         """
@@ -167,9 +167,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         """
         Method to return the raw signal simulated by the given gear.
         """
-        if self.flag_1run:
-            self.interpret_dict()
-            self.flag_1run = False
         # Get Gear relevant parameters
         time2tooth = (1 / self.rotational_frequency) / self.no_teeth
         center_frequency = 1 / time2tooth # TBD check this formula
@@ -257,9 +254,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         given tooth state i.
         Method raw_signal must been run before.
         """
-        if self.flag_1run_deg:
-            self.interpret_deg_dict()
-            self.flag_1run_deg = False
         #---------------------
         # Get single tooth signal with amplitude=1
         degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
