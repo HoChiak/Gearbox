@@ -28,7 +28,7 @@ from gearbox.vibration.helper import BasicHelper
 class Gear(BasicHelper, SignalHelper, NonstationarySignals):
 
     def __init__(self, rotational_frequency, geardict,
-                 sample_rate, time, torque):
+                 sample_rate, time, torque, GearDegVibDict=None):
         """
         Class constructor.
         """
@@ -40,9 +40,11 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.sample_rate = sample_rate
         self.time = time
         self.torque = torque
+        self.GearDegVibDict = GearDegVibDict
         self.teeth_no_list = None
         self.teeth_cid_list = None
-        self.scale_t2t = 1 #tbd input argument
+        self.interpret_dict()
+        self.interpret_deg_dict()
 
     def interpret_dict(self):
         """
@@ -120,16 +122,62 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         else:
             self.exponent = None
 
+    def interpret_deg_dict(self):
+        """
+        Method to interpret and check the given Gear-Dictionary
+        Input.
+        """
+        if self.GearDegVibDict is None:
+            self.GearDegVibDict = {}
+            self.GearDegVibDict['signal'] = 'gausspulse'
+            self.GearDegVibDict['fc_factor'] = 2 * self.rotational_frequency
+            self.GearDegVibDict['bw_factor'] = 0.5
+            self.GearDegVibDict['bwr_factor'] = -6
+            self.GearDegVibDict['scale_method'] = 'linear'
+            self.GearDegVibDict['scale_attributes'] = {}
+            self.GearDegVibDict['scale_attributes']['scale_min'] = 0
+            self.GearDegVibDict['scale_attributes']['scale_max'] = 1
+            self.GearDegVibDict['scale_attributes']['value_min'] = 0
+            self.GearDegVibDict['scale_attributes']['value_max'] = 4
+            self.GearDegVibDict['scale_attributes']['exponent'] = 2
+            self.GearDegVibDict['torq_influence'] = True
+            self.GearDegVibDict['noise_method'] = 'gaussian'
+            self.GearDegVibDict['noise_attributes'] = {}
+            self.GearDegVibDict['noise_attributes']['mu'] = 0
+            self.GearDegVibDict['noise_attributes']['sigma'] = 0.005
+            self.GearDegVibDict['t2t_factor'] = 1
+
+        else:
+            # Key 'signal'
+            self.check_declaration(self.GearDegVibDict, key='signal', message='')
+            assert self.GearDegVibDict['signal'] in self.signal_list, 'signal must be one of the following: %s' % (str(self.signal_list))
+            # Key 'ampl_method'
+            self.check_declaration(self.GearDegVibDict, key='scale_method', message='')
+            assert self.GearDegVibDict['scale_method'] in self.scale_method_list, 'ampl_method must be one of the following: %s' % (str(self.scale_method_list))
+            # Key 'ampl_attributes'
+            self.check_declaration(self.GearDegVibDict, key='scale_attributes', message='')
+            # Key 'noise_method'
+            self.check_declaration(self.GearDegVibDict, key='noise_method', message='')
+            assert self.GearDegVibDict['noise_method'] in self.amplitude_method_list, 'noise_method must be one of the following: %s' % (str(self.amplitude_method_list))
+            # Key 'noise_attributes'
+            self.check_declaration(self.GearDegVibDict, key='noise_attributes', message='')
+            # Key 'torq_method'
+            self.check_declaration(self.GearDegVibDict, key='torq_influence', message='')
+            # Key 't2t_factor'
+            self.check_declaration(self.GearDegVibDict, key='t2t_factor', message='')
+
+
     def raw_signal(self):
         """
         Method to return the raw signal simulated by the given gear.
         """
         # Get Gear relevant parameters
-        self.interpret_dict()
         time2tooth = (1 / self.rotational_frequency) / self.no_teeth
-        center_frequency = 1 / time2tooth # TBD check this formula
+        center_frequency = self.rotational_frequency * self.no_teeth # TBD check this formula
+        # Mirror time to keep negative half of non stationary signal
+        mirrored_time = self.mirror_at_0(self.time)
         # Get single tooth signal with amplitude=1
-        tooth_signal, tooth_center = self.signal_model.run(self.time,
+        tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
                                                            center_frequency)
         # Extend array to avoide "index out a range"
         tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
@@ -187,7 +235,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Get distance between 2 tooth in no ids
         dist_ids = ids_array[1] - ids_array[0]
         # Scale distance length
-        dist_ids = dist_ids * self.scale_t2t
+        dist_ids = dist_ids * self.GearDegVibDict['t2t_factor']
         # Take half
         dist_ids = dist_ids / 2
         # Get upper and lower bound
@@ -206,7 +254,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             load_dict[str(self.teeth_no_list[idx])].append(np.mean(torque[id_low_up[0]:id_low_up[1]]))
         return(load_dict)
 
-    def tooth_degr_signal(self, nolc, torque, statei):
+    def tooth_degr_signal(self, nolc, statei):
         """
         Method to get a degradation signal based on
         given tooth state i.
@@ -214,11 +262,13 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         """
         #---------------------
         # Get single tooth signal with amplitude=1
-        degr_signal_model = self.choose_signal_model('gausspulse')
+        degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
         period = 1 / self.rotational_frequency
         time2tooth = period / self.no_teeth
-        center_frequency = 1 / time2tooth # TBD check this formula
-        tooth_signal, tooth_center = degr_signal_model.run(self.time, center_frequency*2) #tbd if factor 2 is reasonable
+        tooth_signal, tooth_center = degr_signal_model.run(self.time,
+                                                           self.GearDegVibDict['fc_factor'],
+                                                           bw=self.GearDegVibDict['bw_factor'],
+                                                           bwr=self.GearDegVibDict['bwr_factor'])
         # Remove first half (let signal start with zero)
         tooth_signal = tooth_signal[tooth_center:]
         tooth_center = 0
@@ -266,11 +316,13 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             signal = np.delete(signal, 0, 1)
             # Scale Pitting
             scaled_pittings = self.create_scale_vector(array=np.array(pittings),
-                                                       method='linear',
+                                                       method=self.GearDegVibDict['scale_method'],
                                                        ones_base=False,
-                                                       scale_min=0, scale_max=1,
-                                                       value_min=0, value_max=4,#due to polynomial
-                                                       exponent=2,
+                                                       scale_min=self.GearDegVibDict['scale_attributes']['scale_min'],
+                                                       scale_max=self.GearDegVibDict['scale_attributes']['scale_max'],
+                                                       value_min=self.GearDegVibDict['scale_attributes']['value_min'],
+                                                       value_max=self.GearDegVibDict['scale_attributes']['value_max'],
+                                                       exponent=self.GearDegVibDict['scale_attributes']['exponent'],
                                                        norm_divisor=1)
             pittings = scaled_pittings.reshape(-1).tolist()
             # Add Amplitude
@@ -281,16 +333,17 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                                                             repeat2no_values=signal.shape[1])
             degr_signal = signal * amplitude_vector
             # Add Torque Influence
-            scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method,
-                                                    scale_min=self.scale_min, scale_max=self.scale_max,
-                                                    value_min=self.value_min, value_max=self.value_max,
-                                                    exponent=self.exponent,
-                                                    norm_divisor=self.norm_divisor)
-            degr_signal = degr_signal * (scale_vector / 2)
+            if self.GearDegVibDict['torq_influence']:
+                scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method,
+                                                        scale_min=self.scale_min, scale_max=self.scale_max,
+                                                        value_min=self.value_min, value_max=self.value_max,
+                                                        exponent=self.exponent,
+                                                        norm_divisor=self.norm_divisor)
+                degr_signal = degr_signal * (scale_vector / 2)
             # Add noise
-            noise_vector = self.create_amplitude_vector(method='gaussian',
-                                                        mu=0,
-                                                        sigma=0.005,
+            noise_vector = self.create_amplitude_vector(method=self.GearDegVibDict['noise_method'],
+                                                        mu=self.GearDegVibDict['noise_attributes']['mu'],
+                                                        sigma=self.GearDegVibDict['noise_attributes']['sigma'],
                                                         no_values=self.time.shape[0])
             degr_signal = degr_signal + noise_vector.reshape(-1, 1)
         return(degr_signal, labels)

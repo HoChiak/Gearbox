@@ -163,3 +163,20 @@ def plot_gear_polar(df, kind='order', no_teeth=None, **kwargs):
     ax.set_rlabel_position(+90)  # Move radial labels away from plotted line
 
     plt.show()
+
+def repeat2no_values(vector, no_values):
+    """
+    Repeat the given vector as many times needed,
+    to create a repeat_vector of given number of
+    values (no_values)
+    """
+    # Calculate number of repetitions
+    no_values_vector = vector.shape[0]
+    repetitions = np.ceil((no_values / no_values_vector))
+    repetitions = int(repetitions) #dtype decl. not working
+    # Repeat Vetor
+    repeat_vector = np.tile(vector, repetitions)
+    # Trim to final length
+    repeat_vector = np.delete(repeat_vector,
+                              np.s_[no_values:], axis=0)
+    return(repeat_vector)

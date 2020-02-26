@@ -95,6 +95,20 @@ class BasicHelper():
         """
         return(a * b / self.get_gcd(a, b))
 
+    def mirror_at_0(self, array):
+        """
+        Method to mirror an given array at value 0.
+        Adds the negative flipped array to the given array.
+        Given Array must start with 0.
+        """
+        array = array.reshape(-1)
+        assert array[0] == 0, 'Given Array must start with 0 (Method mirror_at_0())'
+        flipped = np.flip(array, axis=0)
+        negative = np.negative(flipped)
+        # Delete redundant 0
+        negative = np.delete(negative, -1, axis=0)
+        mirrored = np.concatenate([negative, array], axis=0)
+        return(mirrored)
 
 ####################################################
 #--------- Signal Helper Functions ----------------#
@@ -316,12 +330,12 @@ class NonstationarySignals():
             Class constructor for stationary raw signal methods
             """
 
-        def run(self, time, frq, ampl=1):
+        def run(self, time, frq, bw=0.5, bwr=-6, ampl=1):
             """
             Method to generate a sine signal for a given
             time array, a frequency and amplitude.
             """
-            signal = gausspulse(time, fc=frq, bw=0.5, retquad=False, retenv=False)
+            signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=False, retenv=False)
             signal = signal * ampl
             signal_center = np.argmin(np.abs(time))
             signal = signal.reshape(-1, 1)
