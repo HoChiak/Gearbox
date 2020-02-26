@@ -324,7 +324,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
             plt.legend(['Antriebs-Zahn Nr.: %i' % (self.teeth_no_gin[i]),
                         'Abtriebs-Zahn Nr.: %i' % (self.teeth_no_gout[i])],
                         loc='upper right')
-            plt.ylim([-a_max, a_max]) # tbd
+            plt.ylim([-a_max, a_max])
             plt.ylabel('$a\ in\ m/s²$')
 
         # plt.suptitle('Gear Signal')
