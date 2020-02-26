@@ -597,7 +597,7 @@ class DamageAcc_Helper():
         if self.nolc_ref[-1] is None:
             x = np.array(self.nolc)
         else:
-            x = np.array(self.nolc_ref)        
+            x = np.array(self.nolc_ref)
         x = x.reshape(-1, 1)
         y = y.reshape(x.shape[0], -1)
         plt.figure()
@@ -609,7 +609,9 @@ class DamageAcc_Helper():
         elif 'Damage' in string:
             plt.ylabel('$Damage\ D$')
         plt.xlim([0,
-                  max(self.state0['neol'])*1.05])
+                  max(max(self.state0['neol'])*1.05, x)])
+        plt.ylim([min(self.state0['a0'])*0.95,
+                  max(max(self.state0['aeol'])*1.05, y)])
         plt.xlabel('$Load\ Cycles\ N\ (reference:\ input\ shaft)$')
         plt.show()
 
