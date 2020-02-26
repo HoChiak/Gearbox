@@ -173,7 +173,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         """
         # Get Gear relevant parameters
         time2tooth = (1 / self.rotational_frequency) / self.no_teeth
-        center_frequency = 1 / time2tooth # TBD check this formula
+        center_frequency = self.rotational_frequency * self.no_teeth # TBD check this formula
         # Mirror time to keep negative half of non stationary signal
         mirrored_time = self.mirror_at_0(self.time)
         # Get single tooth signal with amplitude=1
