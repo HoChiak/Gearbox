@@ -321,8 +321,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
             plt.subplot(supplots, 1, i+1)
             plt.plot(self.full_sample_time, self.signal_gin[:, i]);
             plt.plot(self.full_sample_time, self.signal_gout[:, i]);
-            plt.legend(['Antriebs-Zahn Nr.: %i' % (self.teeth_no_gin[i]),
-                        'Abtriebs-Zahn Nr.: %i' % (self.teeth_no_gout[i])],
+            plt.legend(['Input Gear - Tooth Nr.: %i' % (self.teeth_no_gin[i]),
+                        'Output Gear - Tooth Nr.: %i' % (self.teeth_no_gout[i])],
                         loc='upper right')
             plt.ylim([-a_max, a_max])
             plt.ylabel('$a\ in\ m/s²$')

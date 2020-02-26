@@ -120,7 +120,7 @@ class Gear_Degradation(Degradation_Helper,
         self.plot_state0()
         display(HTML('<h3>Damage Accumulation (until load cycle %i)</h3>' % (self.nolc[-1])))
         display(pd.DataFrame(self.damage, index=index).T)
-        display(HTML('<p>Legend: %s)</p>' % (' | '.join(legend))))
+        display(HTML('<p>Legend: %s</p>' % (' | '.join(legend))))
         self.plot_damage()
         display(HTML('<h3>Pitting Growth (until load cycle %i)</h3>' % (self.nolc[-1])))
         display(pd.DataFrame(self.pitting_size, index=index).T)
