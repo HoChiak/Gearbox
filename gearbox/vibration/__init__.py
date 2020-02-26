@@ -287,21 +287,21 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                     facecolor='r',
                     alpha=0.25,
                     );
-        plt.ylabel('$Acceleration\ in\ [g?]$')
+        plt.ylabel('$Acceleration\ a\ in\ m/s²$')
         plt.xlabel('$Time\ t\ in\ s$')
         plt.legend(legend)
         plt.show()
 
     def plot_acc_signal(self, signal, legend, title):
         """
-        Method to plot a bearing signal
+        Method to plot accumulated signal
         """
         fig = plt.figure(figsize=[15, 5])
         plt.title(title)
         plt.plot(self.sample_time, signal);
-        plt.ylabel('$Acceleration\ in\ [g?]$')
+        plt.ylabel('$Acceleration\ a\ in\ m/s²$')
         plt.xlabel('$Time\ t\ in\ s$')
-        plt.legend(legend)
+        #plt.legend(legend)
         plt.show()
 
     def plot_gears(self):
@@ -313,13 +313,21 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         supplots = min(self.signal_gin.shape[1], supplots)
 
         plt.figure(figsize=[15, 2*supplots*1.1])
+        # Get max for fixed ylim
+        a_max = max(np.max(self.signal_gin), np.max(self.signal_gout))
+        a_max = np.round(a_max, 1)
         for i in range(0, supplots):
             plt.subplot(supplots, 1, i+1)
-            plt.plot(self.signal_gin[:, i]);
-            plt.plot(self.signal_gout[:, i]);
-            plt.legend(['Antriebs-Zahn Nr.: %i' % (self.teeth_no_gin[i]), 'Abtriebs-Zahn Nr.: %i' % (self.teeth_no_gout[i])])
-            plt.ylim([-5, 5])
+            plt.plot(self.full_sample_time, self.signal_gin[:, i]);
+            plt.plot(self.full_sample_time, self.signal_gout[:, i]);
+            plt.legend(['Antriebs-Zahn Nr.: %i' % (self.teeth_no_gin[i]),
+                        'Abtriebs-Zahn Nr.: %i' % (self.teeth_no_gout[i])],
+                        loc='upper right')
+            plt.ylim([-a_max, a_max]) # tbd
+            plt.ylabel('$a\ in\ m/s²$')
+
         # plt.suptitle('Gear Signal')
+        plt.xlabel('$Time\ t\ in\ s$')
         plt.show()
 
     def plot_controls(self):
@@ -330,7 +338,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         plt.plot(self.full_sample_time, np.ones(self.full_sample_time.shape)*self.rotational_frequency_in, ls='--');
         plt.plot(self.full_sample_time, np.ones(self.full_sample_time.shape)*self.rotational_frequency_out, ls='--');
         plt.legend(['Input Rotational Frequency', 'Output Rotational Frequency'], loc='center left')
-        plt.ylabel('$Rotational Frequency\ in\ r/sec$')
+        plt.ylabel('$Rotational Frequency\ in\ r/s$')
         plt.xlabel('$Time\ t\ in\ sec$')
         plt.twinx()
         plt.plot(self.full_sample_time, self.torque_in);
@@ -338,10 +346,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         plt.ylabel('$Torque\ M \ in\ N/m$')
         plt.legend(['Input Torque', 'Output Torque'], loc='center right')
         plt.axvspan(self.full_sample_time[self.start_id],
-            self.full_sample_time[self.stop_id],
-            facecolor='r',
-            alpha=0.25,
-            );
+                    self.full_sample_time[self.stop_id],
+                    facecolor='r',
+                    alpha=0.25,
+                    );
         plt.show()
 
     def summary_vibration(self):
