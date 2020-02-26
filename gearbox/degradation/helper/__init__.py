@@ -33,6 +33,23 @@ class Degradation_Helper():
         Class constructor for signal specific helper methods
         """
 
+    def repeat2no_values(self, vector, no_values):
+        """
+        Repeat the given vector as many times needed,
+        to create a repeat_vector of given number of
+        values (no_values)
+        """
+        # Calculate number of repetitions
+        no_values_vector = vector.shape[0]
+        repetitions = np.ceil((no_values / no_values_vector))
+        repetitions = int(repetitions) #dtype decl. not working
+        # Repeat Vetor
+        repeat_vector = np.tile(vector, repetitions)
+        # Trim to final length
+        repeat_vector = np.delete(repeat_vector,
+                                  np.s_[no_values:], axis=0)
+        return(repeat_vector)
+
     def non_uniform_cdf(self, array):
         """
         Method to get a non uniform cdf from a given array
@@ -572,13 +589,17 @@ class DamageAcc_Helper():
                 # print('Damage equivalent: %.3f' % (1/N2))
                 damage_equivalent.append(1/N2)
             # print('List of damage equiv.: %s' % (str(damage_equivalent)))
-            # From list of damages to one representive damage
-            damage_equivalent = np.mean(damage_equivalent)
-            # print('Mean of damage equivalent: %s' % (str(damage_equivalent)))
+            # Change dtype to numpy array
+            damage_equivalent = np.array(damage_equivalent)
             # Get Fraction
             n_frac = self.nolc[-1] - self.nolc[-2]
+            # Fraction as integer (incase of e.g outer gear and )
+            n_frac = int(np.floor(n_frac))
             # print('Number of load cycles: %i' % (n_frac))
-            damage_frac.append(n_frac * damage_equivalent)
+            # Repeat damage_equivalent
+            damage_equivalent = self.repeat2no_values(damage_equivalent, n_frac)
+            # print('Shape of damage equivalent: %s' % (damage_equivalent.shape))
+            damage_frac.append(np.sum(damage_equivalent))
             # print('Damage Fraction: %s' % (str(damage_frac)))
 
         # Change type
