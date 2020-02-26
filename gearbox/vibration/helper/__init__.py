@@ -95,6 +95,20 @@ class BasicHelper():
         """
         return(a * b / self.get_gcd(a, b))
 
+    def mirror_at_0(self, array):
+        """
+        Method to mirror an given array at value 0.
+        Adds the negative flipped array to the given array.
+        Given Array must start with 0.
+        """
+        array = array.reshape(-1)
+        assert array[0] == 0, 'Given Array must start with 0 (Method mirror_at_0())'
+        flipped = np.flip(array, axis=0)
+        negative = np.negative(flipped)
+        # Delete redundant 0
+        negative = np.delete(negative, -1, axis=0)
+        mirrored = np.concatenate([negative, array], axis=0)
+        return(mirrored)
 
 ####################################################
 #--------- Signal Helper Functions ----------------#

@@ -174,8 +174,10 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Get Gear relevant parameters
         time2tooth = (1 / self.rotational_frequency) / self.no_teeth
         center_frequency = 1 / time2tooth # TBD check this formula
+        # Mirror time to keep negative half of non stationary signal
+        mirrored_time = self.mirror_at_0(self.time)
         # Get single tooth signal with amplitude=1
-        tooth_signal, tooth_center = self.signal_model.run(self.time,
+        tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
                                                            center_frequency)
         # Extend array to avoide "index out a range"
         tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
@@ -263,7 +265,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
         period = 1 / self.rotational_frequency
         time2tooth = period / self.no_teeth
-        center_frequency = 1 / time2tooth # TBD check this formula
         tooth_signal, tooth_center = degr_signal_model.run(self.time,
                                                            self.GearDegVibDict['fc_factor'],
                                                            bw=self.GearDegVibDict['bw_factor'],

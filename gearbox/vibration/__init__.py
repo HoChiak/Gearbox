@@ -93,6 +93,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         while full_sample_interval <= (2 * self.sample_interval):
             full_sample_interval = full_sample_interval * 2
         # Get sample time
+        # must start with zero!!!!
         sample_time = np.arange(0, full_sample_interval,
                                   1/self.sample_rate)
         sample_time = sample_time.reshape(-1, 1)
