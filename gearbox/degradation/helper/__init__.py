@@ -463,7 +463,7 @@ class State0_Helper():
         plt.xlim([0,
                   max(self.state0['neol'])*1.05])
         plt.ylabel('$Pitting\ Size\ a\ in\ \%$')
-        plt.xlabel('$Load\ Cycles\ N\ (reference:\ input\ shaft)$')
+        plt.xlabel('$Load\ Cycles\ N\ (reference:\ input/output\ shaft)$')
         plt.legend(label1)
         plt.show()
 
