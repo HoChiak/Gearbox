@@ -45,6 +45,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.teeth_cid_list = None
         self.interpret_dict()
         self.interpret_deg_dict()
+        self.element_signal()
 
     def interpret_dict(self):
         """
@@ -166,10 +167,9 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             # Key 't2t_factor'
             self.check_declaration(self.GearDegVibDict, key='t2t_factor', message='')
 
-
-    def raw_signal(self):
+    def element_signal(self):
         """
-        Method to return the raw signal simulated by the given gear.
+        Method to initialize the raw signal simulated by the given gear.
         """
         # Get Gear relevant parameters
         time2tooth = (1 / self.rotational_frequency) / self.no_teeth
@@ -179,6 +179,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Get single tooth signal with amplitude=1
         tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
                                                            center_frequency)
+        # Remove all values on the left where tooth_signal == 0 (save computational ressources)
+        tooth_signal, tooth_center = self.remove_left_0s(tooth_signal, tooth_center)
         # Extend array to avoide "index out a range"
         tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
         tooth_center += self.time.shape[0]
@@ -191,30 +193,39 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
         teeth_no_list = self.repeat2no_values(teeth_numbering,
                                               no_values=teeth_signal.shape[1])
+        self.element_signal = teeth_signal
+        self.teeth_no_list = teeth_no_list
+        self.teeth_cid_list = teeth_cid_list
+
+
+    def raw_signal(self):
+        """
+        Method to return the raw signal simulated by the given gear.
+        """
+        element_signal = self.element_signal
         # Add Amplitude
         amplitude_vector = self.create_amplitude_vector(method=self.ampl_method,
                                                         mu=self.mu, sigma=self.sigma,
                                                         constant=self.constant,
                                                         no_values=self.no_teeth,
-                                                        repeat2no_values=teeth_signal.shape[1])
-        gear_signal = teeth_signal * amplitude_vector
+                                                        repeat2no_values=element_signal.shape[1])
+        element_signal = element_signal * amplitude_vector
         # Add Torque Influence
         scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method,
                                                 scale_min=self.scale_min, scale_max=self.scale_max,
                                                 value_min=self.value_min, value_max=self.value_max,
                                                 exponent=self.exponent,
                                                 norm_divisor=self.norm_divisor)
-        gear_signal = gear_signal * scale_vector
+        # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
+        scale_vector = scale_vector[0:element_signal.shape[0], :]
+        element_signal = element_signal * scale_vector
         # Add noise
         noise_vector = self.create_amplitude_vector(method=self.noise_method,
                                                     mu=self.noise_mu,
                                                     sigma=self.noise_sigma,
                                                     no_values=self.time.shape[0])
-        gear_signal = gear_signal + noise_vector.reshape(-1, 1)
-        # Store Variables
-        self.teeth_no_list = teeth_no_list
-        self.teeth_cid_list = teeth_cid_list
-        return(gear_signal, teeth_no_list, teeth_cid_list)
+        element_signal = element_signal + noise_vector.reshape(-1, 1)
+        return(element_signal, self.teeth_no_list, self.teeth_cid_list)
 
     def load_per_tooth(self, torque):
         """
@@ -228,7 +239,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         """
         # Cover initialization
         if self.teeth_no_list is None:
-            _, _, _ = self.raw_signal()
+            self.element_signal()
         # Get Tooth Center IDs
         ids_array = np.array(dc(self.teeth_cid_list))
         ids_array = ids_array.reshape(-1, 1)
@@ -339,6 +350,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                                                         value_min=self.value_min, value_max=self.value_max,
                                                         exponent=self.exponent,
                                                         norm_divisor=self.norm_divisor)
+                # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
+                scale_vector = scale_vector[0:degr_signal.shape[0], :]
                 degr_signal = degr_signal * (scale_vector / 2)
             # Add noise
             noise_vector = self.create_amplitude_vector(method=self.GearDegVibDict['noise_method'],

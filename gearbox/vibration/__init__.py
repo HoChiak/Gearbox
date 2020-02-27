@@ -79,7 +79,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         min_time = time2tooth * toothmeshlcm
         return(min_time)
 
-    def get_full_sample_time(self):
+    def get_torque_sample_time(self):
         """
         Method to generate a time-array as long as is
         needed to be to garantie every tooth mesh
@@ -97,7 +97,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         sample_time = np.arange(0, full_sample_interval,
                                   1/self.sample_rate)
         sample_time = sample_time.reshape(-1, 1)
-        self.full_sample_time = sample_time
+        self.torque_sample_time = sample_time
 
 
     def get_real_sample_time(self):
@@ -108,7 +108,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         sample_time = np.arange(0, self.sample_interval,
                                 1/self.sample_rate)
         sample_time = sample_time.reshape(-1, 1)
-        self.sample_time = sample_time
+        self.real_sample_time = sample_time
 
     def trim2realsampletime(self, signal):
         """
@@ -118,11 +118,11 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         if self.fixed_start is True:
             self.start_id = 0
-            self.stop_id = self.sample_time.size
+            self.stop_id = self.real_sample_time.size
         else:
             # Get length of real sample vs full sample
-            real_no_samples = self.sample_time.size
-            full_no_samples = self.full_sample_time.size
+            real_no_samples = self.real_sample_time.size
+            full_no_samples = self.torque_sample_time.size
             # Diff
             diff_no_samples = full_no_samples - real_no_samples
             # Get random start id and consecutive end
@@ -139,7 +139,11 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         Method to calculate missing entitys
         """
         self.get_real_sample_time()
-        self.get_full_sample_time()
+        self.get_torque_sample_time()
+        if self.fixed_start is True:
+            self.temp_sample_time = self.real_sample_time
+        else:
+            self.temp_sample_time = self.torque_sample_time
         self.check_declaration(self.GearPropIn, key='no_teeth', message='')
         self.check_declaration(self.GearPropOut, key='no_teeth', message='')
         self.gear_ratio =  self.GearPropOut['no_teeth']/self.GearPropIn['no_teeth']
@@ -159,7 +163,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         assert torque.size == no_samples, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
         # Extend torque array to same length as sample length
         torque = torque.reshape(-1)
-        self.torque_in = self.repeat2no_values(torque, self.full_sample_time.size)
+        self.torque_in = self.repeat2no_values(torque, self.torque_sample_time.size)
         self.torque_out = self.torque_in * self.gear_ratio
 
 
@@ -192,10 +196,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.degr_gout, self.degr_labels_gout = self.GearOut.tooth_degr_signal(nolc, statei['GearOut'])
         self.degr_labels_gout = ['GearOut %s' % label for label in self.degr_labels_gout]
         # Bearings
-        self.degr_b1, self.degr_labels_b1 = np.zeros((self.torque_in.shape[0], 1)), ['Bearing 1 None'] # tbd'
-        self.degr_b2, self.degr_labels_b2 = np.zeros((self.torque_in.shape[0], 1)), ['Bearing 2 None'] # tbd'
-        self.degr_b3, self.degr_labels_b3 = np.zeros((self.torque_in.shape[0], 1)), ['Bearing 3 None'] # tbd'
-        self.degr_b4, self.degr_labels_b4 = np.zeros((self.torque_in.shape[0], 1)), ['Bearing 4 None'] # tbd'
+        self.degr_b1, self.degr_labels_b1 = np.zeros((self.temp_sample_time.shape[0], 1)), ['Bearing 1 None'] # tbd'
+        self.degr_b2, self.degr_labels_b2 = np.zeros((self.temp_sample_time.shape[0], 1)), ['Bearing 2 None'] # tbd'
+        self.degr_b3, self.degr_labels_b3 = np.zeros((self.temp_sample_time.shape[0], 1)), ['Bearing 3 None'] # tbd'
+        self.degr_b4, self.degr_labels_b4 = np.zeros((self.temp_sample_time.shape[0], 1)), ['Bearing 4 None'] # tbd'
         # Concatenate all signals
         self.signal_degr = np.concatenate([self.degr_gin, self.degr_gout,
                                      self.degr_b1, self.degr_b2,
@@ -211,29 +215,29 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
 
         self.GearIn = Gear(self.rotational_frequency_in,
                            self.GearPropIn,
-                           self.sample_rate, self.full_sample_time,
+                           self.sample_rate, self.temp_sample_time,
                            self.torque_in,
                            GearDegVibDict=self.GearDegVibDictIn)
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
-                           self.sample_rate, self.full_sample_time,
+                           self.sample_rate, self.temp_sample_time,
                            self.torque_out,
                            GearDegVibDict=self.GearDegVibDictOut)
         self.Bearing1 = Bearing(self.rotational_frequency_in,
                                 self.Bearing1Prop,
-                                self.sample_rate, self.full_sample_time,
+                                self.sample_rate, self.temp_sample_time,
                                 self.torque_in)
         self.Bearing2 = Bearing(self.rotational_frequency_in,
                                 self.Bearing2Prop,
-                                self.sample_rate, self.full_sample_time,
+                                self.sample_rate, self.temp_sample_time,
                                 self.torque_in)
         self.Bearing3 = Bearing(self.rotational_frequency_out,
                                 self.Bearing3Prop,
-                                self.sample_rate, self.full_sample_time,
+                                self.sample_rate, self.temp_sample_time,
                                 self.torque_out)
         self.Bearing4 = Bearing(self.rotational_frequency_out,
                                 self.Bearing4Prop,
-                                self.sample_rate, self.full_sample_time,
+                                self.sample_rate, self.temp_sample_time,
                                 self.torque_out)
 
 
@@ -282,12 +286,13 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         fig = plt.figure(figsize=[15, 5])
         plt.title(title)
-        plt.plot(self.full_sample_time, signal);
-        plt.axvspan(self.full_sample_time[self.start_id],
-                    self.full_sample_time[self.stop_id],
-                    facecolor='r',
-                    alpha=0.25,
-                    );
+        plt.plot(self.temp_sample_time, signal);
+        if self.fixed_start is not True:
+            plt.axvspan(self.temp_sample_time[self.start_id],
+                        self.temp_sample_time[self.stop_id],
+                        facecolor='r',
+                        alpha=0.25,
+                        );
         plt.ylabel('$Acceleration\ a\ in\ m/s²$')
         plt.xlabel('$Time\ t\ in\ s$')
         plt.legend(legend)
@@ -299,7 +304,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         fig = plt.figure(figsize=[15, 5])
         plt.title(title)
-        plt.plot(self.sample_time, signal);
+        plt.plot(self.real_sample_time, signal);
         plt.ylabel('$Acceleration\ a\ in\ m/s²$')
         plt.xlabel('$Time\ t\ in\ s$')
         #plt.legend(legend)
@@ -319,8 +324,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         a_max = np.round(a_max, 1)
         for i in range(0, supplots):
             plt.subplot(supplots, 1, i+1)
-            plt.plot(self.full_sample_time, self.signal_gin[:, i]);
-            plt.plot(self.full_sample_time, self.signal_gout[:, i]);
+            plt.plot(self.temp_sample_time, self.signal_gin[:, i]);
+            plt.plot(self.temp_sample_time, self.signal_gout[:, i]);
             plt.legend(['Input Gear - Tooth Nr.: %i' % (self.teeth_no_gin[i]),
                         'Output Gear - Tooth Nr.: %i' % (self.teeth_no_gout[i])],
                         loc='upper right')
@@ -336,18 +341,18 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         Method to plot rotational frequency, torque etc
         """
         fig = plt.figure(figsize=[15, 5])
-        plt.plot(self.full_sample_time, np.ones(self.full_sample_time.shape)*self.rotational_frequency_in, ls='--');
-        plt.plot(self.full_sample_time, np.ones(self.full_sample_time.shape)*self.rotational_frequency_out, ls='--');
+        plt.plot(self.torque_sample_time, np.ones(self.torque_sample_time.shape)*self.rotational_frequency_in, ls='--');
+        plt.plot(self.torque_sample_time, np.ones(self.torque_sample_time.shape)*self.rotational_frequency_out, ls='--');
         plt.legend(['Input Rotational Frequency', 'Output Rotational Frequency'], loc='center left')
         plt.ylabel('$Rotational Frequency\ in\ r/s$')
         plt.xlabel('$Time\ t\ in\ sec$')
         plt.twinx()
-        plt.plot(self.full_sample_time, self.torque_in);
-        plt.plot(self.full_sample_time, self.torque_out);
+        plt.plot(self.torque_sample_time, self.torque_in);
+        plt.plot(self.torque_sample_time, self.torque_out);
         plt.ylabel('$Torque\ M \ in\ N/m$')
         plt.legend(['Input Torque', 'Output Torque'], loc='center right')
-        plt.axvspan(self.full_sample_time[self.start_id],
-                    self.full_sample_time[self.stop_id],
+        plt.axvspan(self.torque_sample_time[self.start_id],
+                    self.torque_sample_time[self.stop_id],
                     facecolor='r',
                     alpha=0.25,
                     );

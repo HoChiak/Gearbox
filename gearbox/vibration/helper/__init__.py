@@ -110,6 +110,23 @@ class BasicHelper():
         mirrored = np.concatenate([negative, array], axis=0)
         return(mirrored)
 
+    def remove_left_0s(self, array, center):
+        """
+        Method to remove zeros on the left of an given array. Only one
+        Zero at the highest id will remain
+        """
+        # Set all values smaller 1e
+        array[np.logical_and(-1e-5 <= array, array <= 1e-5)] = 0
+        # Find first value not zero (inverse because zero values are at left and right)
+        condition = array != 0
+        condition_id = np.where(condition)[0]
+        # Id of last zero value is id of first not zero value - 1
+        cutoffid = condition_id[0] - 1
+        # Adjust array and center
+        cutoff_array = array[cutoffid:]
+        cutoff_center = center - cutoffid
+        return(cutoff_array, cutoff_center)
+
 ####################################################
 #--------- Signal Helper Functions ----------------#
 

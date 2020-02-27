@@ -164,6 +164,8 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
                                                     value_min=self.value_min['%s' % (part)], value_max=self.value_max['%s' % (part)],
                                                     exponent=self.exponent['%s' % (part)],
                                                     norm_divisor=self.norm_divisor['%s' % (part)])
+            # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
+            scale_vector = scale_vector[0:signal_i.size]
             signal_i = signal_i * scale_vector.reshape(-1, 1)
             # Add noise
             noise_vector = self.create_amplitude_vector(method=self.noise_method['%s' % (part)],
