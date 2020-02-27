@@ -102,9 +102,9 @@ class Gearbox(Vibration,
         """
         Method to initialize the model.
         """
-        display(HTML('<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))
+        display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))
         statei = self.Degradation.init_degradation()
-        display(HTML('<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Vibration</b></p></div>'))
+        display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Vibration</b></p></div>'))
         self.Vibration.init_vibration(torque)
         # Get loads
         loads = self.Vibration.get_loads(torque)
@@ -153,7 +153,7 @@ class Gearbox(Vibration,
         """
         Method to summary until the current State.
         """
-        display(HTML('<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Degradation</b></p></div>'))
+        display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Degradation</b></p></div>'))
         self.Degradation.summary_degradation()
-        display(HTML('<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Vibration</b></p></div>'))
+        display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Vibration</b></p></div>'))
         self.Vibration.summary_vibration()
