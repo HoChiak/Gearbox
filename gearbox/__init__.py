@@ -4,6 +4,7 @@
 import os
 from copy import deepcopy as dc
 import sys
+## import time
 from IPython.display import display, HTML
 
 # import 3rd party libarys
@@ -120,10 +121,14 @@ class Gearbox(Vibration,
         """
         Method to initialize the model.
         """
+        ## run_start = time.time()
         # Get Degradation based on previous selected torque
         statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
+        ## print('Elapsed Time Run Degradation: %.3e' % (time.time()-run_start))
+        ## run_start = time.time()
         # Get Vibration based on previous selected torque
         vibration = self.Vibration.run_vibration(nolc, self.ga_torque[-1], statei, output=True)
+        ## print('Elapsed Time Run Vibration: %.3e' % (time.time()-run_start))
         # Append global Attributes
         self.ga_load_cycle.append(nolc)
         self.ga_statei.append(statei)
@@ -134,11 +139,13 @@ class Gearbox(Vibration,
     def set(self, nolc, torque):
         """
         """
+        ## run_start = time.time()
         assert ((self.ga_load_cycle[-1] == nolc) or (np.isnan(self.ga_load_cycle[-1]))), 'Given nolc must equal last given nolc for method "run()"'
         self.ga_torque.append(torque)
         self.ga_load_cycle_torquechange.append(nolc)
         # Get Vibration based loads
         loads = self.Vibration.get_loads(torque)
+        ## print('Elapsed Time Set Torque: %.3e' % (time.time()-run_start))
         self.ga_loads.append(loads)
 
 
