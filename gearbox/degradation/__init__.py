@@ -3,7 +3,7 @@
 # import built in libarys
 import os
 from copy import deepcopy as dc
-import sys
+# import sys
 from IPython.display import display, HTML
 
 # import 3rd party libarys
@@ -53,6 +53,17 @@ class Gearbox_Degradation(Gear_Degradation,
         self.Deg_Bearing4Prop = Deg_Bearing4
         self.seed = seed
         self.gear_ratio =  self.no_teeth_GearOut/self.no_teeth_GearIn
+
+    def init_degradation(self):
+        """
+        Method to initialise the Degradation Behaviour.
+        This inludes a degradation model for the given
+        number of failing tooth (no_failing). The degra.
+        model includes values for a0/n0, aeol/neol, the
+        degradation path parameters (theta1, theta2,
+        theta3) and a caculation of the reference damage
+        at nolc = 0
+        """
         # Init Gear In Degradation
         self.GearIn_Degradation = Gear_Degradation(self.no_teeth_GearIn,
                                                     self.Deg_GearPropIn,
@@ -73,16 +84,6 @@ class Gearbox_Degradation(Gear_Degradation,
         # Init Bearing4 Degradation
         self.Bearing4_Degradation = Bearing_Degradation(self.Deg_Bearing4Prop,
                                                         self.seed)
-    def init_degradation(self):
-        """
-        Method to initialise the Degradation Behaviour.
-        This inludes a degradation model for the given
-        number of failing tooth (no_failing). The degra.
-        model includes values for a0/n0, aeol/neol, the
-        degradation path parameters (theta1, theta2,
-        theta3) and a caculation of the reference damage
-        at nolc = 0
-        """
         statei = {}
         display(HTML('<p><u>Gear in:</u></p>'))
         statei['GearIn'] = self.GearIn_Degradation.init_gear_degradation()
