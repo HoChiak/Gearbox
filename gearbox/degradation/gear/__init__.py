@@ -79,16 +79,19 @@ class Gear_Degradation(Degradation_Helper,
         at nolc = 0
         """
         # Initialise damage and pitting list
-        self.damage = []
-        self.pitting_size = []
-        self.statei = pd.DataFrame()
-        # Initialise state0
-        self.nolc = [0]
-        self.nolc_ref = [0]
-        self.get_initial_state0()
-        self.get_initial_damage()
-        state_i = self.get_current_statei()
-        return(state_i)
+        if ((self.no_failing is None) or (self.no_failing==0)):
+            return(None)
+        else:
+            self.damage = []
+            self.pitting_size = []
+            self.statei = pd.DataFrame()
+            # Initialise state0
+            self.nolc = [0]
+            self.nolc_ref = [0]
+            self.get_initial_state0()
+            self.get_initial_damage()
+            state_i = self.get_current_statei()
+            return(state_i)
 
     def run_gear_degradation(self, nolc, loads, nolc_ref=None):
         """
@@ -98,34 +101,40 @@ class Gear_Degradation(Degradation_Helper,
         If gear is output gear than nolc=nolc_in/gear_ratio so for a
         uniform description nolc_ref is given as the value of nolc_in
         """
-        assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be greater than the previous'
-        self.nolc.append(nolc)
-        self.nolc_ref.append(nolc_ref)
-        self.get_damage_growth(loads)
-        state_i = self.get_current_statei()
-        return(state_i)
+        if ((self.no_failing is None) or (self.no_failing==0)):
+            return(None)
+        else:
+            assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be greater than the previous'
+            self.nolc.append(nolc)
+            self.nolc_ref.append(nolc_ref)
+            self.get_damage_growth(loads)
+            state_i = self.get_current_statei()
+            return(state_i)
 
     def summary_gear_degradation(self):
         """
         Method to ouput a summary of the degradation states
         """
-        # Get legend
-        legend = ['Row: %i <=> Tooth: %i' % (idx, tooth) for idx, tooth in enumerate(self.state0['tooth'])]
-        # get index
-        if self.nolc_ref[-1] is None:
-            index = self.nolc
+        if ((self.no_failing is None) or (self.no_failing==0)):
+            display(HTML('<p>No teeth are failing</p>'))
         else:
-            index = self.nolc_ref
-        # Display
-        display(HTML('<h3>State 0 Parameter (Ref. Torque: %.3f Nm)</h3>' % (self.woehler_torqp)))
-        display(self.state0)
-        display(HTML('<h3>State 0 Degradation Model Plot (Ref. Torque: %.3f Nm)</h3>' % (self.woehler_torqp)))
-        self.plot_state0()
-        display(HTML('<h3>Damage Accumulation (until load cycle %i)</h3>' % (self.nolc[-1])))
-        display(pd.DataFrame(self.damage, index=index).T)
-        display(HTML('<p>Legend: %s</p>' % (' | '.join(legend))))
-        self.plot_damage()
-        display(HTML('<h3>Pitting Growth (until load cycle %i)</h3>' % (self.nolc[-1])))
-        display(pd.DataFrame(self.pitting_size, index=index).T)
-        display(HTML('<p>Legend: %s)</p>' % (' | '.join(legend))))
-        self.plot_pitting_size()
+            # Get legend
+            legend = ['Row: %i <=> Tooth: %i' % (idx, tooth) for idx, tooth in enumerate(self.state0['tooth'])]
+            # get index
+            if self.nolc_ref[-1] is None:
+                index = self.nolc
+            else:
+                index = self.nolc_ref
+            # Display
+            display(HTML('<h3>State 0 Parameter (Ref. Torque: %.3f Nm)</h3>' % (self.woehler_torqp)))
+            display(self.state0)
+            display(HTML('<h3>State 0 Degradation Model Plot (Ref. Torque: %.3f Nm)</h3>' % (self.woehler_torqp)))
+            self.plot_state0()
+            display(HTML('<h3>Damage Accumulation (until load cycle %i)</h3>' % (self.nolc[-1])))
+            display(pd.DataFrame(self.damage, index=index).T)
+            display(HTML('<p>Legend: %s</p>' % (' | '.join(legend))))
+            self.plot_damage()
+            display(HTML('<h3>Pitting Growth (until load cycle %i)</h3>' % (self.nolc[-1])))
+            display(pd.DataFrame(self.pitting_size, index=index).T)
+            display(HTML('<p>Legend: %s)</p>' % (' | '.join(legend))))
+            self.plot_pitting_size()
