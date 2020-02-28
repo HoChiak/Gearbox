@@ -271,92 +271,97 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         given tooth state i.
         Method raw_signal must been run before.
         """
-        #---------------------
-        # Get single tooth signal with amplitude=1
-        degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
-        period = 1 / self.rotational_frequency
-        time2tooth = period / self.no_teeth
-        tooth_signal, tooth_center = degr_signal_model.run(self.time,
-                                                           self.GearDegVibDict['fc_factor'],
-                                                           bw=self.GearDegVibDict['bw_factor'],
-                                                           bwr=self.GearDegVibDict['bwr_factor'])
-        # Remove first half (let signal start with zero)
-        tooth_signal = tooth_signal[tooth_center:]
-        tooth_center = 0
-        # Extend array to avoide "index out a range"
-        ext_tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
-        tooth_center += self.time.shape[0]
-        #---------------------
-        # Shift signal for each tooth
-        # Each row represents a tooth mesh
-        teeth_signal, _ = self.shift_signal(signal=ext_tooth_signal,
-                                            signal_center=tooth_center,
-                                            time=self.time, time_shift=time2tooth,
-                                            time_start=0, id_start=0)
-        # Get teeth list (not starting at zero due to following enumerate)
-        teeth_numbering = np.arange(0, self.no_teeth, 1, dtype=np.int32)
-        teeth_no_list = self.repeat2no_values(teeth_numbering,
-                                              no_values=teeth_signal.shape[1])
-        #---------------------
-        # Iterate over pitting (ordered by tooth number)
-        pittings = []
-        labels = []
-        signal = np.zeros((self.time.shape[0], 1))
-        for tooth, pitting in enumerate(statei.loc['$a_{%i}$' % (nolc)]):
-            # if no pitting @ tooth
-            if np.isnan(pitting):
-                pass
-            # else pitting @ tooth
+        if statei is not None:
+            #---------------------
+            # Get single tooth signal with amplitude=1
+            degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
+            period = 1 / self.rotational_frequency
+            time2tooth = period / self.no_teeth
+            tooth_signal, tooth_center = degr_signal_model.run(self.time,
+                                                               self.GearDegVibDict['fc_factor'],
+                                                               bw=self.GearDegVibDict['bw_factor'],
+                                                               bwr=self.GearDegVibDict['bwr_factor'])
+            # Remove first half (let signal start with zero)
+            tooth_signal = tooth_signal[tooth_center:]
+            tooth_center = 0
+            # Extend array to avoide "index out a range"
+            ext_tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
+            tooth_center += self.time.shape[0]
+            #---------------------
+            # Shift signal for each tooth
+            # Each row represents a tooth mesh
+            teeth_signal, _ = self.shift_signal(signal=ext_tooth_signal,
+                                                signal_center=tooth_center,
+                                                time=self.time, time_shift=time2tooth,
+                                                time_start=0, id_start=0)
+            # Get teeth list (not starting at zero due to following enumerate)
+            teeth_numbering = np.arange(0, self.no_teeth, 1, dtype=np.int32)
+            teeth_no_list = self.repeat2no_values(teeth_numbering,
+                                                  no_values=teeth_signal.shape[1])
+            #---------------------
+            # Iterate over pitting (ordered by tooth number)
+            pittings = []
+            labels = []
+            signal = np.zeros((self.time.shape[0], 1))
+            for tooth, pitting in enumerate(statei.loc['$a_{%i}$' % (nolc)]):
+                # if no pitting @ tooth
+                if np.isnan(pitting):
+                    pass
+                # else pitting @ tooth
+                else:
+                    # Condition on tooth to filter for itself tooth mesh
+                    condition = teeth_no_list == tooth
+                    tooth_signal = teeth_signal[:, condition]
+                    # Sum up all tooth mesh of tooth
+                    tooth_signal = np.sum(tooth_signal, axis=1).reshape(-1,1)
+                    pittings.append(pitting)
+                    labels.append('Tooth %i (a = %.3f)' % (tooth+1, pitting))
+                    # Add signal_i to signal
+                    signal = np.concatenate([signal, tooth_signal], axis=1)
+            #---------------------
+            # Set degradation signal to zero signal if no pitting occurs
+            if signal.shape[1] == 1:
+                labels = ['None']
+                degr_signal = signal
             else:
-                # Condition on tooth to filter for itself tooth mesh
-                condition = teeth_no_list == tooth
-                tooth_signal = teeth_signal[:, condition]
-                # Sum up all tooth mesh of tooth
-                tooth_signal = np.sum(tooth_signal, axis=1).reshape(-1,1)
-                pittings.append(pitting)
-                labels.append('Tooth %i (a = %.3f)' % (tooth+1, pitting))
-                # Add signal_i to signal
-                signal = np.concatenate([signal, tooth_signal], axis=1)
-        #---------------------
-        # Set degradation signal to zero signal if no pitting occurs
-        if signal.shape[1] == 1:
-            labels = ['None']
-            degr_signal = signal
+                # Delete dummy entry
+                signal = np.delete(signal, 0, 1)
+                # Scale Pitting
+                scaled_pittings = self.create_scale_vector(array=np.array(pittings),
+                                                           method=self.GearDegVibDict['scale_method'],
+                                                           ones_base=False,
+                                                           scale_min=self.GearDegVibDict['scale_attributes']['scale_min'],
+                                                           scale_max=self.GearDegVibDict['scale_attributes']['scale_max'],
+                                                           value_min=self.GearDegVibDict['scale_attributes']['value_min'],
+                                                           value_max=self.GearDegVibDict['scale_attributes']['value_max'],
+                                                           exponent=self.GearDegVibDict['scale_attributes']['exponent'],
+                                                           norm_divisor=1)
+                pittings = scaled_pittings.reshape(-1).tolist()
+                # Add Amplitude
+                amplitude_vector = self.create_amplitude_vector(method='const_repeat',
+                                                                mu=None, sigma=None,
+                                                                constant=pittings,
+                                                                no_values=None,
+                                                                repeat2no_values=signal.shape[1])
+                degr_signal = signal * amplitude_vector
+                # Add Torque Influence
+                if self.GearDegVibDict['torq_influence']:
+                    scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method,
+                                                            scale_min=self.scale_min, scale_max=self.scale_max,
+                                                            value_min=self.value_min, value_max=self.value_max,
+                                                            exponent=self.exponent,
+                                                            norm_divisor=self.norm_divisor)
+                    # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
+                    scale_vector = scale_vector[0:degr_signal.shape[0], :]
+                    degr_signal = degr_signal * (scale_vector / 2)
+                # Add noise
+                noise_vector = self.create_amplitude_vector(method=self.GearDegVibDict['noise_method'],
+                                                            mu=self.GearDegVibDict['noise_attributes']['mu'],
+                                                            sigma=self.GearDegVibDict['noise_attributes']['sigma'],
+                                                            no_values=self.time.shape[0])
+                degr_signal = degr_signal + noise_vector.reshape(-1, 1)
+            return(degr_signal, labels)
         else:
-            # Delete dummy entry
-            signal = np.delete(signal, 0, 1)
-            # Scale Pitting
-            scaled_pittings = self.create_scale_vector(array=np.array(pittings),
-                                                       method=self.GearDegVibDict['scale_method'],
-                                                       ones_base=False,
-                                                       scale_min=self.GearDegVibDict['scale_attributes']['scale_min'],
-                                                       scale_max=self.GearDegVibDict['scale_attributes']['scale_max'],
-                                                       value_min=self.GearDegVibDict['scale_attributes']['value_min'],
-                                                       value_max=self.GearDegVibDict['scale_attributes']['value_max'],
-                                                       exponent=self.GearDegVibDict['scale_attributes']['exponent'],
-                                                       norm_divisor=1)
-            pittings = scaled_pittings.reshape(-1).tolist()
-            # Add Amplitude
-            amplitude_vector = self.create_amplitude_vector(method='const_repeat',
-                                                            mu=None, sigma=None,
-                                                            constant=pittings,
-                                                            no_values=None,
-                                                            repeat2no_values=signal.shape[1])
-            degr_signal = signal * amplitude_vector
-            # Add Torque Influence
-            if self.GearDegVibDict['torq_influence']:
-                scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method,
-                                                        scale_min=self.scale_min, scale_max=self.scale_max,
-                                                        value_min=self.value_min, value_max=self.value_max,
-                                                        exponent=self.exponent,
-                                                        norm_divisor=self.norm_divisor)
-                # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
-                scale_vector = scale_vector[0:degr_signal.shape[0], :]
-                degr_signal = degr_signal * (scale_vector / 2)
-            # Add noise
-            noise_vector = self.create_amplitude_vector(method=self.GearDegVibDict['noise_method'],
-                                                        mu=self.GearDegVibDict['noise_attributes']['mu'],
-                                                        sigma=self.GearDegVibDict['noise_attributes']['sigma'],
-                                                        no_values=self.time.shape[0])
-            degr_signal = degr_signal + noise_vector.reshape(-1, 1)
-        return(degr_signal, labels)
+            degr_signal = np.zeros(self.time.shape)
+            labels = ['None']
+            return(degr_signal, labels)
