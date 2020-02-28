@@ -2,8 +2,7 @@
 
 # import built in libarys
 import os
-from copy import deepcopy as dc
-import sys
+# import sys
 from IPython.display import display, HTML
 
 # import 3rd party libarys

@@ -3,7 +3,7 @@
 # import built in libarys
 import os
 from copy import deepcopy as dc
-import sys
+# import sys
 from IPython.display import display, HTML
 from itertools import product as cart_prod
 
@@ -165,9 +165,11 @@ class Optimizer_Helper():
         prgr_tbd = int(round(prgr_increment * (no_states - curr_state)))
         prgr_bar += ' ' * prgr_tbd
         # Write Output
-        sys.stdout.write('[%s] %s/%s %s\r' % (prgr_bar, curr_state,
-                                              no_states, txt))
-        sys.stdout.flush()
+        print('[%s] %s/%s %s\r' % (prgr_bar, curr_state,
+                                   no_states, txt), end="\r")
+
+        #sys.stdout.write()
+        #sys.stdout.flush()
 
     def exp_function(self, x, theta1, theta2, theta3):
         """

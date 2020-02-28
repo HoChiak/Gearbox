@@ -3,7 +3,7 @@
 # import built in libarys
 import os
 from copy import deepcopy as dc
-import sys
+# import sys
 ## import time
 from IPython.display import display, HTML
 
@@ -132,7 +132,7 @@ class Gearbox(Vibration,
         # Append global Attributes
         self.ga_load_cycle.append(nolc)
         self.ga_statei.append(statei)
-        display(HTML('<p>Load Cycle %i done</p>' % (nolc)))
+        print('Load Cycle %i done' % (nolc), end="\r")
         if output is True:
             return(vibration)
 
