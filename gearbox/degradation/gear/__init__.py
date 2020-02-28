@@ -64,6 +64,9 @@ class Gear_Degradation(Degradation_Helper,
         self.seed_counter = seed
         # States:
         self.state0 = None
+        # Other
+        self.curr_state = 1
+
 
     def init_gear_degradation(self):
         """
@@ -95,7 +98,7 @@ class Gear_Degradation(Degradation_Helper,
         If gear is output gear than nolc=nolc_in/gear_ratio so for a
         uniform description nolc_ref is given as the value of nolc_in
         """
-        assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1]))), 'Given nolc argument must be greater than the previous'
+        assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be greater than the previous'
         self.nolc.append(nolc)
         self.nolc_ref.append(nolc_ref)
         self.get_damage_growth(loads)
