@@ -5,11 +5,13 @@ import os
 from copy import deepcopy as dc
 import sys
 from IPython.display import display, HTML
+from itertools import product as cart_prod
 
 # import 3rd party libarys
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+import time
 # from scipy.signal import gausspulse
 # from sklearn.preprocessing import MinMaxScaler
 # from scipy.stats import norm
@@ -142,6 +144,8 @@ class Optimizer_Helper():
         """
         Class constructor for signal specific helper methods
         """
+        self.curr_state = 1
+
 
     def prgr_bar(self, curr_state, no_states, txt=''):
         """
@@ -181,36 +185,46 @@ class Optimizer_Helper():
         x = np.log((y - theta3) / theta1) / theta2
         return(x)
 
+    def inner_loop(self, x, y, theta1, theta2, theta3, no_states):
+        """
+        Method representanting inner loop for opt_exp_function_brute
+        """
+        fval = dict()
+        fval['theta1'], fval['theta2'], fval['theta3'] = theta1, theta2, theta3
+        fval['x_train'], fval['y_train'] = x, y
+        try:
+            y_pred = self.exp_function(x, theta1, theta2, theta3)
+            y_pred = y_pred.flatten()
+            fval['y_pred'] = y_pred
+            if self.exp_function(np.array(0), theta1, theta2, theta3) <= 0:
+                fval['rmse'] = np.nan
+            else:
+                fval['rmse'] = mean_squared_error(y, y_pred)
+        except:
+            fval['y_pred'] = np.nan
+            fval['rmse'] = np.nan
+        # Out Progress --> Costs an enourmous amount of speed
+        if self.curr_state % 1000 == 0:
+            self.prgr_bar(self.curr_state, no_states, txt='')
+        #self.curr_state += 1
+        return(fval)
+
     def opt_exp_function_brute(self, x, y, theta1s,
                                theta2s, theta3s):
         """
         """
-        df_val = pd.DataFrame()
         # Parameters to display progress
         no_states = theta1s.size * theta2s.size * theta3s.size
-        curr_state = 1
-        for theta1 in theta1s:
-            for theta2 in theta2s:
-                for theta3 in theta3s:
-                    fval = dict()
-                    fval['theta1'], fval['theta2'], fval['theta3'] = theta1, theta2, theta3
-                    fval['x_train'], fval['y_train'] = x, y
-                    try:
-                        y_pred = self.exp_function(x, theta1, theta2, theta3)
-                        y_pred = y_pred.flatten()
-                        fval['y_pred'] = y_pred
-                        if self.exp_function(np.array(0), theta1, theta2, theta3) <= 0:
-                            fval['rmse'] = np.nan
-                        else:
-                            fval['rmse'] = mean_squared_error(y, y_pred)
-                    except:
-                        fval['y_pred'] = np.nan
-                        fval['rmse'] = np.nan
-                    df_val = df_val.append(fval, ignore_index=True)
-                    # Out Progress
-                    self.prgr_bar(curr_state, no_states, txt='')
-                    curr_state += 1
-                    del fval
+        theta_combs = list(cart_prod(theta1s, theta2s, theta3s))
+        # Init Pool for Multiprocessing
+        df_val = [self.inner_loop(x, y, theta1, theta2, theta3, no_states) for theta1, theta2, theta3 in theta_combs]
+        # Check if all combinations are done
+        assert len(df_val) == no_states, 'Internal Failure of Brute Force GridSearch'
+        df_val = pd.DataFrame(df_val)
+        # To tackle display mistakes
+        self.prgr_bar(no_states, no_states, txt=u'\u2713')
+        # Reset curr_state
+        self.curr_state = 1
         return(df_val)
 
     def run_optimizer4state0(self, failure_range):
