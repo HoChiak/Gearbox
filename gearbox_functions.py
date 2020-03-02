@@ -180,3 +180,64 @@ def repeat2no_values(vector, no_values):
     repeat_vector = np.delete(repeat_vector,
                               np.s_[no_values:], axis=0)
     return(repeat_vector)
+
+
+def get_cids(time, time_shift, time_start=0, id_start=0):
+    """
+    Shift a given signal by a given time shift.
+    """
+    # Shift signal for each gear
+    ti, tv = id_start, time_start
+    #shifted_signal = np.zeros((time.shape[0], 1))
+    cid_list = list()
+    while tv < (max(time)+time_shift):
+        # Add current center id to list
+        cid_list.append(ti)
+        # Get new shift arguments
+        tv += time_shift
+        ti = np.argmin(np.abs(time - tv))
+    # Remove first zero axis
+    #shifted_signal = np.delete(shifted_signal, 0, 1)
+    return(cid_list)
+
+
+
+def torque_from_dict(no_teeth, rotational_frequency, sample_time, load_dict):
+    """
+    Method to determine an aquivalent load for each tooth.
+    Returns a dictionary containing a list of mean loads
+    per tooth. E.g.
+    '1': [155, 177, 169,....]
+    '2': [196, 155, 169,....]
+    '3' ...
+    ....
+    """
+    time2tooth = (1 / rotational_frequency) / no_teeth
+    teeth_cid_list = get_cids(time=sample_time, time_shift=time2tooth,
+                                  time_start=0, id_start=0)
+    teeth_numbering = np.arange(1, no_teeth+0.1, 1, dtype=np.int32)
+    teeth_no_list = repeat2no_values(teeth_numbering, no_values=len(teeth_cid_list))
+    # Get Tooth Center IDs
+    ids_array = np.array(teeth_cid_list)
+    ids_array = ids_array.reshape(-1, 1)
+    # Get distance between 2 tooth in no ids
+    dist_ids = ids_array[1] - ids_array[0]
+    # Take half
+    dist_ids = dist_ids / 2
+    # Get upper and lower bound
+    #ids_low = np.floor(ids_array - dist_ids)
+    ids_up = np.floor(ids_array + dist_ids)
+    # Correct for highest and lowest possible id
+    #ids_low[ids_low < 0] = 0
+    ids_up[ids_up > (sample_time.size -1)] = sample_time.size
+    ids_up = ids_up.tolist()
+    # Add to one array
+    #ids_bounds = np.concatenate([ids_low, ids_up], axis=1).astype(dtype=np.int32)
+    # Get empty array
+    torque = np.zeros(sample_time.shape)
+    # Iterate over torque and get mean value of load per tooth and load cycle
+    id_low = int(0)
+    for idx, id_up in enumerate(ids_up):
+        torque[id_low:int(id_up[0])] = load_dict[str(teeth_no_list[idx])]
+        id_low = int(id_up[0])
+    return(torque)
