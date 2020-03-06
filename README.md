@@ -73,7 +73,7 @@ rcParams.update({'font.size': 8 * sizefactor})
   </ul>
 <li>No consideration of:</li>
   <ul>
-    <li>Transmission paths formulation (Structure Borne Accoustics)</li>
+    <li>Transmission paths formulation (Structure Borne Acoustics)</li>
     <li>Bearing Degradation (not seen in testbench)</li>
   </ul>
 
@@ -156,10 +156,10 @@ os.chdir(wd)
 
 ```python
 rotational_frequency_in = 5.2 # U/s | float
-number_of_load_cycle = 0 # | Must be float in .3f 
+number_of_load_cycle = 0 # | Must be float in .3f
 sample_interval = 1 # s | float
 sample_rate = 5000 # Hz | float
-seed = 4 
+seed = 4
 
 ```
 
@@ -202,7 +202,7 @@ GearOut = {'no_teeth': 21,                                        # Number of te
 
 
 ```python
-# General Definition of Amplitudes etc. (can be also defined seperatedly for each Bearing)
+# General Definition of Amplitudes etc. (can be also defined separately for each Bearing)
 BearingI =   {# Inner Ring Rollover
              'signal_iring': 'sine',                               # Signal type for inner cage
              'ampl_method_iring': 'const',                         # Amplitude Method for inner cage signal (Repeat methods are not working for bearings)
@@ -265,30 +265,30 @@ Bearing4 = {**{'no_elements': 12}, **BearingI}                     # Number of r
 # Reference Value for PDFs is given for load defined 'Whoeler' 'torqp'
 
 Deg_GearIn = {'Failing_Teeth': 2,                                      # Number of Teeth falling at Gear
-              'Chances': {'neighbouring': 1,                           # Chance that multiple falling teeth are neighbouring 
-                          'opposite': 1,                               # Chance that multiple falling teeth are opposite to each other 
+              'Chances': {'neighbouring': 1,                           # Chance that multiple falling teeth are neighbouring
+                          'opposite': 1,                               # Chance that multiple falling teeth are opposite to each other
                           'keeporder': 10},                            # Chance that multiple falling teeth are keeping order from init to eol
               'PDF_Deg_Init': {'n': norm(loc=6.875e6, scale=1.053e6),  # P(n_0) n in Load Cycles (ref: input shaft)
                                'a': norm(loc=0.450, scale=0.305)},     # P(a_0) a in %
               'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol) n in Load Cycles (ref: input shaft)
                               'a': norm(loc=4.0, scale=0.)},           # P(a_eol) a in %
-              'Woehler': {'k': 8.5,                                   # Woehler Exponent 
+              'Woehler': {'k': 8.5,                                   # Woehler Exponent
                           'np': 10390000,                              # Woehler Reference n in Load Cycles (ref: input shaft)
                           'torqp': 200},                               # Woehler Reference sigma in Nm
               'GridSearch': {'slice_theta1': (0.0001, 0.0902, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
                              'slice_theta2': (0.10/1e6, 1.51/1e6, 0.2/1e6), #tbd change step to 0.02/1e6
                              'slice_theta3':(-2.0, 0.5, 0.1)}
              }
- 
+
 Deg_GearOut = {'Failing_Teeth': 3,                                      # Number of Teeth falling at Gear
-               'Chances': {'neighbouring': 2,                           # Chance that multiple falling teeth are neighbouring 
-                           'opposite': 2,                               # Chance that multiple falling teeth are opposite to each other 
+               'Chances': {'neighbouring': 2,                           # Chance that multiple falling teeth are neighbouring
+                           'opposite': 2,                               # Chance that multiple falling teeth are opposite to each other
                            'keeporder': 10},                            # Chance that multiple falling teeth are keeping order from init to eol
                'PDF_Deg_Init': {'n': norm(loc=6.875e6, scale=1.053e6),  # P(n_0) n in Load Cycles (ref: input shaft)
                                 'a': norm(loc=0.450, scale=0.305)},     # P(a_0) a in %
                'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol) n in Load Cycles (ref: input shaft)
                                'a': norm(loc=4.0, scale=0.)},           # P(a_eol) a in %
-               'Woehler': {'k': 8.5,                                   # Woehler Exponent 
+               'Woehler': {'k': 8.5,                                   # Woehler Exponent
                            'np': 10390000,                              # Woehler Reference n in Load Cycles (ref: input shaft)
                            'torqp': 200},                               # Woehler Reference sigma in Nm
                'GridSearch': {'slice_theta1': (0.0001, 0.0902, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
@@ -312,9 +312,9 @@ Deg_Bearing4 = 'tbd'
 
 ```python
 GearDegVibDictIn = {'signal': 'gausspulse',                                 # Signal type for gear
-                       'fc_factor': 4*rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse defintion)
-                       'bw_factor': 0.5,                                    # see gauspulse defintion
-                       'bwr_factor': -6,                                    # see gauspulse defintion
+                       'fc_factor': 4*rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse definition)
+                       'bw_factor': 0.5,                                    # see gauspulse definition
+                       'bwr_factor': -6,                                    # see gauspulse definition
                        'scale_method': 'linear',                            # Scale Method (See Torque Influence Method)
                        'scale_attributes': {'scale_min': 0,                 # Attributes regarding Scale Method for gear signal (see Torque Influence Method)
                                            'scale_max': 10,
@@ -328,9 +328,9 @@ GearDegVibDictIn = {'signal': 'gausspulse',                                 # Si
                        }
 
 GearDegVibDictOut = {'signal': 'gausspulse',                                # Signal type for gear
-                       'fc_factor': 4**rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse defintion)
-                       'bw_factor': 0.5,                                    # see gauspulse defintion
-                       'bwr_factor': -6,                                    # see gauspulse defintion
+                       'fc_factor': 4**rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse definition)
+                       'bw_factor': 0.5,                                    # see gauspulse definition
+                       'bwr_factor': -6,                                    # see gauspulse definition
                        'scale_method': 'linear',                            # Scale Method (See Torque Influence Method)
                        'scale_attributes': {'scale_min': 0,                 # Attributes regarding Scale Method for gear signal (see Torque Influence Method)
                                            'scale_max': 10,
@@ -377,7 +377,7 @@ model = Gearbox(# Vibration Arguments
                 Deg_GearIn, Deg_GearOut,
                 Deg_Bearing1, Deg_Bearing2, Deg_Bearing3, Deg_Bearing4,
                 # Shared Arguments
-                seed=seed, 
+                seed=seed,
                 fixed_start=True,
                 GearDegVibDictIn=GearDegVibDictIn,
                 GearDegVibDictOut=GearDegVibDictOut)
@@ -762,7 +762,7 @@ statei = model.Degradation.init_degradation()
 
     \\imapc\benutzer\Mitarbeiterdaten\henss\_02_software\_08_github\Gearbox\gearbox\degradation\helper\__init__.py:181: RuntimeWarning: invalid value encountered in log
       x = np.log((y - theta3) / theta1) / theta2
-    
+
 
 
 <p><u>Gear out:</u></p>
@@ -1255,7 +1255,7 @@ loads = {'GearIn': {'7': [200], '3': [200]},
 
 for nolc in np.linspace(1e6, 6e6, 50):
     statei = model.Degradation.run_degradation(nolc, loads)
-    
+
 ```
 
 
@@ -2003,7 +2003,7 @@ loads = {'GearIn': {'7': [200], '3': [200]},
 
 for nolc in np.linspace(6.1e6, 10e6, 40):
     statei = model.Degradation.run_degradation(nolc, loads)
-    
+
 ```
 
 
@@ -2827,7 +2827,7 @@ model.initialize(torque_in)
 for nolc in np.linspace(6.1e6, 9e6, 10):
     vibration = model.run(nolc, output=True)
     model.set(nolc, torque_in)
-    
+
 ```
 
 
@@ -3401,7 +3401,7 @@ model.summary()
 
 
 <li>GearBox Simulation Toolbox is structured in Modules</li>
-<li>Top Modules are accesing lower Modules</li>
+<li>Top Modules are accessing lower Modules</li>
 <li>Helper-Module is used by Modules on the same level</li>
 <li>Modules consisting of several Module Methods</li>
 
@@ -3464,7 +3464,7 @@ Gear = {'no_teeth': 10,                                         # Number of teet
 </ol>
 </p>
 
-<p>*: Can be 'iring' (inner ring), 'relement' (rolling element) or 'oring' (ourter ring)</p>
+<p>*: Can be 'iring' (inner ring), 'relement' (rolling element) or 'oring' (outer ring)</p>
 
 
 
@@ -3560,7 +3560,7 @@ Bearing =   {'no_elements': 11,                                    # Number of R
 <li>Creating Base Signals for Bearing and Gear Elements</li>
 <li>Amplitude of +-1</li>
 <li>For Bearing choose any stationary signal: 'sine'</li>
-<li>For Gear choose any nonstationary signal: <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.gausspulse.html">'gausspulse'</a> <br>
+<li>For Gear choose any non-stationary signal: <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.gausspulse.html">'gausspulse'</a> <br>
 </li>
 
 
@@ -3669,13 +3669,13 @@ plt.show()
 <li>1. s<sub>t</sub> = s<sub>t</sub>/s<sub>norm</sub>, norm signal by s<sub>norm</sub></li>
 <li>2. s<sub>t</sub> = f(s<sub>t</sub>), while f can be linear, polynomial and exponential</li>
 <li>3. s<sub>t</sub> = scale(s<sub>t</sub>), scale into range scale_min-scale_max while scale_min corresponds to value_min and scale_max to value_max</li>
-<li>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain origninal signal and add torque on top</li>
+<li>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain original signal and add torque on top</li>
 <li>5. s = s * s<sub>t</sub></li>
 
 <p>Methods:</p>
 
 <li>None: Method not used</li>
-<li>'linear': f in step 2 is linear transformation (no transformation)</li>
+<li>'linear': f in step 2 is a linear transformation (no transformation)</li>
 <li>'polynomial': f in step 2 is polynomial with given exponent argument</li>
 <li>'exponential': f in step 2 is exponential</li>
 
@@ -3727,7 +3727,7 @@ plt.show()
 
 
 ```python
-torque_2 = np.power(torque_1, exponent) 
+torque_2 = np.power(torque_1, exponent)
 
 plt.plot(time_vector, torque_1, time_vector, torque_2)
 plt.xlabel('Time in seconds'), plt.ylabel('Torque'), plt.legend(['Normed Torque', 'f(Torque)'])
@@ -3746,7 +3746,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 scaler = MinMaxScaler(feature_range=(scale_min, scale_max))
 scaler.fit(np.array([value_min, value_max]).reshape(-1, 1))
-torque_3 = scaler.transform(torque_2.reshape(-1, 1)) 
+torque_3 = scaler.transform(torque_2.reshape(-1, 1))
 
 plt.plot(time_vector, torque_1, time_vector, torque_2, time_vector, torque_3)
 plt.xlabel('Time in seconds'), plt.ylabel('Torque'), plt.legend(['Normed Torque', 'f(Torque)', 'scale(f(Torque))'])
@@ -3757,11 +3757,11 @@ plt.show()
 ![png](__pictures/output_98_0.png)
 
 
-<p>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain origninal signal and add torque on top</p>
+<p>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain original signal and add torque on top</p>
 
 
 ```python
-torque_4 = torque_3 + 1 
+torque_4 = torque_3 + 1
 
 plt.plot(time_vector, torque_1, time_vector, torque_2, time_vector, torque_3, time_vector, torque_4)
 plt.xlabel('Time in seconds'), plt.ylabel('Torque'), plt.legend(['Normed Torque', 'f(Torque)', 'scale(f(Torque))', '+1'])
@@ -3808,14 +3808,14 @@ plt.show()
 
 ```python
 Deg_Gear = {'Failing_Teeth': 2,                                      # Number of Teeth falling at Gear
-            'Chances': {'neighbouring': 1,                           # Chance that multiple falling teeth are neighbouring 
-                        'opposite': 1,                               # Chance that multiple falling teeth are opposite to each other 
+            'Chances': {'neighbouring': 1,                           # Chance that multiple falling teeth are neighbouring
+                        'opposite': 1,                               # Chance that multiple falling teeth are opposite to each other
                         'keeporder': 10},                            # Chance that multiple falling teeth are keeping order from init to eol
             'PDF_Deg_Init': {'n': norm(loc=6.875e6, scale=1.053e6),  # P(n_0)
                              'a': norm(loc=0.450, scale=0.305)},     # P(a_0)
             'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol)
                             'a': norm(loc=4.0, scale=0.)},           # P(a_eol)
-            'Woehler': {'k': 8.5,                                   # Woehler Exponent 
+            'Woehler': {'k': 8.5,                                   # Woehler Exponent
                         'np': 10390000,                              # Woehler Reference n
                         'torqp': 200},                               # Woehler Reference sigma in Nm
             'GridSearch': {'slice_theta1': (0.0001, 0.0902, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
@@ -3859,11 +3859,11 @@ os.chdir(wd)
 <h3>Chances</h3>
 <br>
 
-<p>Chances are descriping <u>how many times more likely</u> it is that an event occurs compared to the event dont occure</p>
+<p>Chances are describing <u>how many times more likely</u> it is that an event occurs compared to the event does not occur</p>
 <p>Events:</p>
 <li>neighbouring: The next failing tooth is a neighbour of an already fallen one</li>
 <li>opposite: The next failing tooth is opposite of an already fallen one</li>
-<li>keeporder: The teeth are keeping the same order in initialization and end of life (first tooth with initialization is also the first reachning end of life</li>
+<li>keeporder: The teeth are keeping the same order in initialization and end of life (first tooth with initialization is also the first reaching end of life</li>
 
 
 <p>Random Pitting Initialization</p>
@@ -4194,14 +4194,14 @@ Deg_Gear['GridSearch'] = {'slice_theta1': (0.0001, 0.0902, 0.01),
 
 ```python
 Deg_Gear = {'Failing_Teeth': 2,                                      # Number of Teeth falling at Gear
-            'Chances': {'neighbouring': 1,                           # Chance that multiple falling teeth are neighbouring 
-                        'opposite': 10,                               # Chance that multiple falling teeth are opposite to each other 
+            'Chances': {'neighbouring': 1,                           # Chance that multiple falling teeth are neighbouring
+                        'opposite': 10,                               # Chance that multiple falling teeth are opposite to each other
                         'keeporder': 1},                            # Chance that multiple falling teeth are keeping order from init to eol
             'PDF_Deg_Init': {'n': norm(loc=6.875e6, scale=1.053e6),  # P(n_0)
                              'a': norm(loc=0.450, scale=0.305)},     # P(a_0)
             'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol)
                             'a': norm(loc=4.0, scale=0.)},           # P(a_eol)
-            'Woehler': {'k': 8.5,                                   # Woehler Exponent 
+            'Woehler': {'k': 8.5,                                   # Woehler Exponent
                         'np': 10390000,                              # Woehler Reference n
                         'torqp': 200},                               # Woehler Reference sigma in Nm
             'GridSearch': {'slice_theta1': (0.00, 0.09, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
@@ -4502,7 +4502,7 @@ plt.show()
 <ul>
     <li>Degradation Function: a(N) = a<sub>N</sub></li>
     <li>Damage Function: D(N) = d<sub>N</sub></li>
-    <li>Damage Pitting Dependencie: a(D(N)) = a<sub>d</sub></li>
+    <li>Damage Pitting Dependency: a(D(N)) = a<sub>d</sub></li>
 </ul>
 
 <p>Values @ State0</p>
@@ -4519,7 +4519,7 @@ print('Corresponding Pitting Size: %s' % ('|'.join(['  %.4f  ' % (ps) if np.isna
     Failing teeth:                 6   |   1   
     Corresponding Damage:       -1.0284|-0.9442
     Corresponding Pitting Size:   nan  |  nan  
-    
+
 
 <h3>7. Calculating &Delta;D </h3>
 <br>
@@ -4588,8 +4588,8 @@ print('D\'s:    %s' % ('|'.join([' %.3e ' % (de) for de in damage_equivalents]))
 ```
 
     Loads:    195.000  |  200.000  |  205.000  
-    D's:     1.411e-07 | 1.840e-07 | 2.385e-07 
-    
+    D's:     1.411e-07 | 1.840e-07 | 2.385e-07
+
 
 <p>Repeat Damage Equivalent D* for &Delta;N load cycle</p>
 
@@ -4604,7 +4604,7 @@ print('D* Shape: %s' % (str(repeated_damage_equivalent.shape)))
 
     ΔN = 73
     D* Shape: (73,)
-    
+
 
 <p>Calculate &Delta;D = &Sum;D*</p>
 
@@ -4615,7 +4615,7 @@ print('\u0394D = \u2211 D* = %.3e for \u0394N = %i load cycles' % (delta_d, delt
 ```
 
     ΔD = ∑ D* = 1.367e-05 for ΔN = 73 load cycles
-    
+
 
 <h3>8. Calculating current D </h3>
 <br>
@@ -4628,11 +4628,11 @@ print('D(p) = D(p-1) + \u0394D = %.3e' % (curr_damage))
 ```
 
     D(p) = D(p-1) + ΔD = -1.028e+00
-    
+
 
 <h3>9. Calculating a<sub>p</sub> </h3>
 <br>
-<p>Using: Damage Pitting Dependencie: a(D(N))</p>
+<p>Using: Damage Pitting Dependency: a(D(N))</p>
 <ul>
     <li>a(D(N)) is given for each tooth</li>
 </ul>
@@ -4666,9 +4666,9 @@ print('D(p) = D(p-1) + \u0394D = %.3e' % (curr_damage))
 
 ```python
 GearDegVibDict = {'signal': 'gausspulse',                                # Signal type for gear
-                   'fc_factor': 2*rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse defintion)
-                   'bw_factor': 0.5,                                    # see gauspulse defintion
-                   'bwr_factor': -6,                                    # see gauspulse defintion
+                   'fc_factor': 2*rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse definition)
+                   'bw_factor': 0.5,                                    # see gauspulse definition
+                   'bwr_factor': -6,                                    # see gauspulse definition
                    'scale_method': 'linear',                            # Scale Method (See Torque Influence Method)
                    'scale_attributes': {'scale_min': 0,                 # Attributes regarding Scale Method for gear signal (see Torque Influence Method)
                                        'scale_max': 1,
