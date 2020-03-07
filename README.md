@@ -5,7 +5,7 @@
 
 
 <p><b>Simulation of the vibration behaviour of a gearbox under degradation</b></p>
-<img src="__pictures/Gearbox.png" width="60%">
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Gearbox.png" width="60%">
 
 <div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Preliminary</b></p>
@@ -88,7 +88,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 <li>Optional: Setting a new torque signal at the given load cycle (effecting the following load cycles)</li>
 <br>
 
-<img src="__pictures/State_Definition.png" width="80%">
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/State_Definition.png" width="80%">
 
 <div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Inputs and main Methods&#40;&#41;</b></p>
@@ -655,7 +655,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_38_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_38_0.png)
 
 
 <p>Summarize Vibration: <b>summary_vibration()</b></p>
@@ -670,7 +670,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_1.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_1.png)
 
 
 
@@ -678,7 +678,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_3.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_3.png)
 
 
 
@@ -686,7 +686,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_5.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_5.png)
 
 
 
@@ -694,7 +694,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_7.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_7.png)
 
 
 
@@ -702,7 +702,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_9.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_9.png)
 
 
 
@@ -710,7 +710,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_11.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_11.png)
 
 
 
@@ -726,7 +726,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](__pictures/output_40_15.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_15.png)
 
 
 <div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
@@ -1011,7 +1011,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_46_4.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_4.png)
 
 
 
@@ -1046,7 +1046,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_46_8.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_8.png)
 
 
 
@@ -1081,7 +1081,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_46_12.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_12.png)
 
 
 
@@ -1160,7 +1160,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_46_17.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_17.png)
 
 
 
@@ -1199,7 +1199,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_46_21.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_21.png)
 
 
 
@@ -1238,7 +1238,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_46_25.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_25.png)
 
 
 <p>Get Degradation Growth: <b>run_degradation(nolc, loads)</b></p>
@@ -1482,7 +1482,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_51_4.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_4.png)
 
 
 
@@ -1578,7 +1578,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_51_8.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_8.png)
 
 
 
@@ -1674,7 +1674,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_51_12.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_12.png)
 
 
 
@@ -1753,7 +1753,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_51_17.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_17.png)
 
 
 
@@ -1873,7 +1873,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_51_21.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_21.png)
 
 
 
@@ -1993,7 +1993,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_51_25.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_25.png)
 
 
 
@@ -2228,7 +2228,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_55_4.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_4.png)
 
 
 
@@ -2324,7 +2324,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_55_8.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_8.png)
 
 
 
@@ -2420,7 +2420,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_55_12.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_12.png)
 
 
 
@@ -2499,7 +2499,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_55_17.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_17.png)
 
 
 
@@ -2620,7 +2620,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_55_21.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_21.png)
 
 
 
@@ -2741,7 +2741,7 @@ model.Degradation.summary_degradation()
 
 
 
-![png](__pictures/output_55_25.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_25.png)
 
 
 <div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
@@ -2946,7 +2946,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_5.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_5.png)
 
 
 
@@ -3012,7 +3012,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_9.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_9.png)
 
 
 
@@ -3078,7 +3078,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_13.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_13.png)
 
 
 
@@ -3158,7 +3158,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_18.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_18.png)
 
 
 
@@ -3238,7 +3238,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_22.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_22.png)
 
 
 
@@ -3318,7 +3318,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_26.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_26.png)
 
 
 
@@ -3330,7 +3330,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_29.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_29.png)
 
 
 
@@ -3338,7 +3338,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_31.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_31.png)
 
 
 
@@ -3346,7 +3346,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_33.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_33.png)
 
 
 
@@ -3354,7 +3354,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_35.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_35.png)
 
 
 
@@ -3362,7 +3362,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_37.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_37.png)
 
 
 
@@ -3370,7 +3370,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_39.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_39.png)
 
 
 
@@ -3378,7 +3378,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_41.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_41.png)
 
 
 
@@ -3386,7 +3386,7 @@ model.summary()
 
 
 
-![png](__pictures/output_62_43.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_43.png)
 
 
 <div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
@@ -3397,7 +3397,7 @@ model.summary()
 <p><b>Module Structure</b></p>
 </div>
 <br>
-<img src="__pictures/Modules.png" width="80%">
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Modules.png" width="80%">
 
 
 <li>GearBox Simulation Toolbox is structured in Modules</li>
@@ -3522,10 +3522,10 @@ Bearing =   {'no_elements': 11,                                    # Number of R
 <br>
 <div class="container">
     <div class="col-lg-6 col-md-6  col-sm-2">
-      <img src="__pictures/VDI3832_Bearing_formula.png" width="75%">
+      <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/VDI3832_Bearing_formula.png" width="75%">
     </div>
     <div class="col-lg-6 col-md-6  col-sm-2" >
-      <img src="__pictures/VDI3832_Bearing_symbols.png" width="75%">
+      <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/VDI3832_Bearing_symbols.png" width="75%">
     </div>
 <div>
 
@@ -3539,7 +3539,7 @@ Bearing =   {'no_elements': 11,                                    # Number of R
 
 <p>Module Methods Structure:</p>
 
-<img src="__pictures/Vibration_Method.png" width="100%">
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Vibration_Method.png" width="100%">
 
 
 
@@ -3579,7 +3579,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_76_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_76_0.png)
 
 
 <p>Example Stationary Sine Signal</p>
@@ -3596,7 +3596,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_78_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_78_0.png)
 
 
 <h3>Amplitude Method</h3>
@@ -3628,7 +3628,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_82_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_82_0.png)
 
 
 <h3>Noise Method</h3>
@@ -3659,7 +3659,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_86_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_86_0.png)
 
 
 <h3>Torque Method</h3>
@@ -3692,7 +3692,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_90_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_90_0.png)
 
 
 <p>Define Scale Arguments</p>
@@ -3720,7 +3720,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_94_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_94_0.png)
 
 
 <p>2. s<sub>t</sub> = f(s<sub>t</sub>), while f can be linear, polynomial and exponential</p>
@@ -3735,7 +3735,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_96_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_96_0.png)
 
 
 <p>3. s<sub>t</sub> = scale(s<sub>t</sub>), scale into range scale_min-scale_max while scale_min corresponds to value_min and scale_max to value_max</p>
@@ -3754,7 +3754,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_98_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_98_0.png)
 
 
 <p>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain original signal and add torque on top</p>
@@ -3769,7 +3769,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_100_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_100_0.png)
 
 
 <p>5. s = s * s<sub>t</sub></p>
@@ -3785,7 +3785,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_102_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_102_0.png)
 
 
 <div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
@@ -3841,7 +3841,7 @@ Deg_Gear = {'Failing_Teeth': 2,                                      # Number of
 
 <p>Module Methods Structure:</p>
 
-<img src="__pictures/Degradation_Method.png" width="100%">
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Degradation_Method.png" width="100%">
 
 
 
@@ -3949,7 +3949,7 @@ gf.plot_gear_polar(deg_model.state0, kind='pitting', key='a0')
 ```
 
 
-![png](__pictures/output_113_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_113_0.png)
 
 
 <p>Pitting Order Visualization</p>
@@ -3961,7 +3961,7 @@ gf.plot_gear_polar(deg_model.state0, kind='order')
 ```
 
 
-![png](__pictures/output_115_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_115_0.png)
 
 
 <p>Neighbouring favoured Pitting Initialization</p>
@@ -3975,7 +3975,7 @@ gf.plot_gear_polar(deg_model.state0, kind='order')
 ```
 
 
-![png](__pictures/output_117_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_117_0.png)
 
 
 <p>Opposite favoured Pitting Initialization</p>
@@ -3989,7 +3989,7 @@ gf.plot_gear_polar(deg_model.state0, kind='order')
 ```
 
 
-![png](__pictures/output_119_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_119_0.png)
 
 
 <p>Neighbouring and Opposite favoured Pitting Initialization</p>
@@ -4003,7 +4003,7 @@ gf.plot_gear_polar(deg_model.state0, kind='order')
 ```
 
 
-![png](__pictures/output_121_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_121_0.png)
 
 
 <p>Keeporder favoured Initialization</p>
@@ -4108,7 +4108,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_126_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_126_0.png)
 
 
 <p>P(a<sub>0</sub>) and P(a<sub>eol</sub>)</p>
@@ -4124,7 +4124,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_128_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_128_0.png)
 
 
 <h3>Woehler Curve</h3>
@@ -4155,7 +4155,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_131_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_131_0.png)
 
 
 <h3>GridSearch</h3>
@@ -4431,7 +4431,7 @@ gf.plot_gear_polar(deg_model.state0, kind='pitting_growth', no_teeth=no_teeth, k
 ```
 
 
-![png](__pictures/output_144_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_144_0.png)
 
 
 <p>Degradation Function Visualization:</p>
@@ -4442,7 +4442,7 @@ deg_model.plot_state0()
 ```
 
 
-![png](__pictures/output_146_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_146_0.png)
 
 
 <h3>4. Transform Degradation to Damage D</h3>
@@ -4466,7 +4466,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_149_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_149_0.png)
 
 
 <p>Get Linear Damage over Load Cycle Dependency</p>
@@ -4484,7 +4484,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_151_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_151_0.png)
 
 
 <h3>5. Pitting Size and Damage Dependency</h3>
@@ -4571,7 +4571,7 @@ plt.show()
 ```
 
 
-![png](__pictures/output_162_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_162_0.png)
 
 
 <p>Get Damage Equivalent D* for all loads</p>
