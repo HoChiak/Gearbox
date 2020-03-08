@@ -258,7 +258,12 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Add to one array
         ids_bounds = np.concatenate([ids_low, ids_up], axis=1).astype(dtype=np.int32)
         # Dict tooth no
-        load_dict = {str(idx+1): [] for idx in range(self.no_teeth)}
+        #load_dict = {str(idx+1): [] for idx in range(self.no_teeth)}
+        list_no_teeth=list(range(1,self.no_teeth+1))
+        list_no_teeth_str=list(map(str,list_no_teeth))
+        nested_empty_list=[[]] * self.no_teeth
+        zipped = zip(list_no_teeth_str, nested_empty_list)
+        load_dict=dict(zipped)
         # Iterate over torque and get mean value of load per tooth and load cycle
         mean_torque = []
         for idx, id_low_up in enumerate(ids_bounds):
