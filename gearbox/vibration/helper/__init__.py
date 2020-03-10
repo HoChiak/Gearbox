@@ -78,21 +78,6 @@ class BasicHelper():
         if key in anchor:
             target = anchor[key]
 
-    def get_gcd(self, a, b):
-        """
-        Method to compute the greatest common
-        divisor of a and b
-        """
-        while b > 0:
-            a, b = b, a % b
-        return(a)
-
-    def get_lcm(self, a, b):
-        """
-        Method to get the lowest common
-        multiple of a and b
-        """
-        return(a * b / self.get_gcd(a, b))
 
     def mirror_at_0(self, array):
         """
