@@ -74,7 +74,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # Get meshing time between two tooth
         time2tooth = (1 / self.rotational_frequency_in) / self.GearPropIn['no_teeth']
         # Get lowest common multiple
-        toothmeshlcm = self.get_lcm(self.GearPropIn['no_teeth'],
+        toothmeshlcm = np.lcm(self.GearPropIn['no_teeth'],
                                     self.GearPropOut['no_teeth'])
         min_time = time2tooth * toothmeshlcm
         return(min_time)

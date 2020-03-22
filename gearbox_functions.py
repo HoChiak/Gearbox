@@ -8,21 +8,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 from scipy.stats import kurtosis
 
-def get_gcd(a, b):
-    """
-    Method to compute the greatest common
-    divisor of a and b
-    """
-    while b > 0:
-        a, b = b, a % b
-    return(a)
-
-def get_lcm(a, b):
-    """
-    Method to get the lowest common
-    multiple of a and b
-    """
-    return(a * b / get_gcd(a, b))
 
 def get_sample_time_torque(rotational_frequency_in, sample_rate, no_teeth_in, no_teeth_out):
     """
@@ -32,7 +17,7 @@ def get_sample_time_torque(rotational_frequency_in, sample_rate, no_teeth_in, no
     # Get meshing time between two tooth
     time2tooth = (1 / rotational_frequency_in) / no_teeth_in
     # Get lowest common multiple
-    toothmeshlcm = get_lcm(no_teeth_in,
+    toothmeshlcm = np.lcm(no_teeth_in,
                            no_teeth_out)
     min_time = time2tooth * toothmeshlcm
     min_time
