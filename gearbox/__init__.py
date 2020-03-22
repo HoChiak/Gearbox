@@ -71,7 +71,7 @@ class Gearbox(Vibration,
         self.ga_Deg_Bearing4 = Deg_Bearing4
         # Shared Arguments
         self.ga_seed  = seed
-        self.version = 0.4.0
+        self.version = '0.4.0'
         # Degradation Vibration
         self.GearDegVibDictIn = GearDegVibDictIn
         self.GearDegVibDictOut = GearDegVibDictOut
