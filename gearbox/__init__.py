@@ -3,6 +3,7 @@
 # import built in libarys
 import os
 from copy import deepcopy as dc
+import warnings
 # import sys
 ## import time
 from IPython.display import display, HTML
@@ -55,6 +56,7 @@ class Gearbox(Vibration,
         self.ga_rotational_frequency_in = rotational_frequency_in
         self.ga_sample_interval = sample_interval
         self.ga_sample_rate = sample_rate
+        self.ga_mgbm = rotational_frequency_in * sample_interval # min_gap_between_measurements
         self.ga_GearIn = GearIn
         self.ga_GearOut = GearOut
         self.ga_Bearing1 = Bearing1
@@ -122,6 +124,8 @@ class Gearbox(Vibration,
         """
         Method to initialize the model.
         """
+        if self.ga_load_cycle[-1] + self.ga_mgbm >= nolc:
+            warnings.warn('Given Load Cycle is smaller than the endpoint of the previous measurement. Please Check, otherwise this might lead to unreasonable results.')
         ## run_start = time.time()
         # Get Degradation based on previous selected torque
         statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
