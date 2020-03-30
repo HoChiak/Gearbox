@@ -148,39 +148,3 @@ def plot_gear_polar(df, kind='order', no_teeth=None, **kwargs):
     ax.set_rlabel_position(+90)  # Move radial labels away from plotted line
 
     plt.show()
-
-def repeat2no_values(vector, no_values):
-    """
-    Repeat the given vector as many times needed,
-    to create a repeat_vector of given number of
-    values (no_values)
-    """
-    # Calculate number of repetitions
-    no_values_vector = vector.shape[0]
-    repetitions = np.ceil((no_values / no_values_vector))
-    repetitions = int(repetitions) #dtype decl. not working
-    # Repeat Vetor
-    repeat_vector = np.tile(vector, repetitions)
-    # Trim to final length
-    repeat_vector = np.delete(repeat_vector,
-                              np.s_[no_values:], axis=0)
-    return(repeat_vector)
-
-
-def get_cids(time, time_shift, time_start=0, id_start=0):
-    """
-    Shift a given signal by a given time shift.
-    """
-    # Shift signal for each gear
-    ti, tv = id_start, time_start
-    #shifted_signal = np.zeros((time.shape[0], 1))
-    cid_list = list()
-    while tv < (max(time)+time_shift):
-        # Add current center id to list
-        cid_list.append(ti)
-        # Get new shift arguments
-        tv += time_shift
-        ti = np.argmin(np.abs(time - tv))
-    # Remove first zero axis
-    #shifted_signal = np.delete(shifted_signal, 0, 1)
-    return(cid_list)

@@ -280,7 +280,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             tooth_signal, tooth_center = degr_signal_model.run(self.time,
                                                                self.GearDegVibDict['fc_factor'],
                                                                bw=self.GearDegVibDict['bw_factor'],
-                                                               bwr=self.GearDegVibDict['bwr_factor'])
+                                                               bwr=self.GearDegVibDict['bwr_factor'],
+                                                               retquad=True)
             # Remove first half (let signal start with zero)
             tooth_signal = tooth_signal[tooth_center:]
             tooth_center = 0

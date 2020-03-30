@@ -124,22 +124,26 @@ class Gearbox(Vibration,
         """
         Method to initialize the model.
         """
-        if self.ga_load_cycle[-1] + self.ga_mgbm >= nolc:
-            warnings.warn('Given Load Cycle is smaller than the endpoint of the previous measurement. Please Check, otherwise this might lead to unreasonable results.')
-        ## run_start = time.time()
-        # Get Degradation based on previous selected torque
-        statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
-        ## print('Elapsed Time Run Degradation: %.3e' % (time.time()-run_start))
-        ## run_start = time.time()
-        # Get Vibration based on previous selected torque
-        vibration = self.Vibration.run_vibration(nolc, self.ga_torque[-1], statei, output=True)
-        ## print('Elapsed Time Run Vibration: %.3e' % (time.time()-run_start))
-        # Append global Attributes
-        self.ga_load_cycle.append(nolc)
-        self.ga_statei.append(statei)
-        print('Load Cycle %i done' % (nolc), end="\r")
-        if output is True:
-            return(vibration)
+        if self.ga_load_cycle[-1] == nolc:
+            if output is True:
+                return(self.ga_vibration)
+        else:
+            if self.ga_load_cycle[-1] + self.ga_mgbm >= nolc:
+                warnings.warn('Given Load Cycle is smaller than the endpoint of the previous measurement. Please Check, otherwise this might lead to unreasonable results.')
+            ## run_start = time.time()
+            # Get Degradation based on previous selected torque
+            statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
+            ## print('Elapsed Time Run Degradation: %.3e' % (time.time()-run_start))
+            ## run_start = time.time()
+            # Get Vibration based on previous selected torque
+            self.ga_vibration = self.Vibration.run_vibration(nolc, self.ga_torque[-1], statei, output=True)
+            ## print('Elapsed Time Run Vibration: %.3e' % (time.time()-run_start))
+            # Append global Attributes
+            self.ga_load_cycle.append(nolc)
+            self.ga_statei.append(statei)
+            print('Load Cycle %i done' % (nolc), end="\r")
+            if output is True:
+                return(self.ga_vibration)
 
     def set(self, nolc, torque):
         """

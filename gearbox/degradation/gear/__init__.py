@@ -104,7 +104,7 @@ class Gear_Degradation(Degradation_Helper,
         if ((self.no_failing is None) or (self.no_failing==0)):
             return(None)
         else:
-            assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be greater than the previous'
+            assert ((self.nolc[-1] <= nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be equal or greater than the previous'
             self.nolc.append(nolc)
             self.nolc_ref.append(nolc_ref)
             self.get_damage_growth(loads)
