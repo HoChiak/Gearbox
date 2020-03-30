@@ -53,6 +53,7 @@ class Gearbox_Degradation(Gear_Degradation,
         self.Deg_Bearing4Prop = Deg_Bearing4
         self.seed = seed
         self.gear_ratio =  self.no_teeth_GearOut/self.no_teeth_GearIn
+        self.nolc = [None]
 
     def init_degradation(self):
         """
@@ -100,11 +101,15 @@ class Gearbox_Degradation(Gear_Degradation,
         If gear is output gear than nolc=nolc_in/gear_ratio so for a
         uniform description nolc_ref is given as the value of nolc_in
         """
-        statei = {}
-        statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'], nolc_ref=None)
-        nolc_out = round(nolc / self.gear_ratio, 3)
-        statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc_out, loads['GearOut'], nolc_ref=nolc)
-        return(statei)
+        if ((self.nolc[-1] == nolc) and (self.nolc[-1] is not None)):
+            return(self.statei)
+        else:
+            self.statei = {}
+            self.statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'], nolc_ref=None)
+            nolc_out = round(nolc / self.gear_ratio, 3)
+            self.statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc_out, loads['GearOut'], nolc_ref=nolc)
+            self.nolc.append(nolc)
+            return(self.statei)
 
 
     def summary_degradation(self):
