@@ -124,8 +124,8 @@ class Gearbox(Vibration,
         """
         Method to initialize the model.
         """
-        if self.ga_load_cycle[-1] + self.ga_mgbm >= nolc:
-            warnings.warn('Given Load Cycle is smaller than the endpoint of the previous measurement. Please Check, otherwise this might lead to unreasonable results.')
+        #if self.ga_load_cycle[-1] + self.ga_mgbm >= nolc:
+        #    warnings.warn('Given Load Cycle is smaller than the endpoint of the previous measurement. Please Check, otherwise this might lead to unreasonable results.')
         ## run_start = time.time()
         # Get Degradation based on previous selected torque
         statei = self.Degradation.run_degradation(nolc, self.ga_loads[-1])
