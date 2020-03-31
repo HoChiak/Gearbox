@@ -251,13 +251,13 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         if self.seed is not None:
             np.random.seed(int(self.seed * (nolc + 1)))
         # Gear Signals
-        self.signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
-        self.signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
+        self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
+        self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
         # Bearing Signals
-        self.signal_b1, self.parts_b1 = self.Bearing1.raw_signal()
-        self.signal_b2, self.parts_b2 = self.Bearing2.raw_signal()
-        self.signal_b3, self.parts_b3 = self.Bearing3.raw_signal()
-        self.signal_b4, self.parts_b4 = self.Bearing4.raw_signal()
+        self.signal_b1, self.ids_b1, self.parts_b1 = self.Bearing1.raw_signal()
+        self.signal_b2, self.ids_b2, self.parts_b2 = self.Bearing2.raw_signal()
+        self.signal_b3, self.ids_b3, self.parts_b3 = self.Bearing3.raw_signal()
+        self.signal_b4, self.ids_b4, self.parts_b4 = self.Bearing4.raw_signal()
         # Concatenate all signals
         signal_raw = np.concatenate([self.signal_gin, self.signal_gout,
                                      self.signal_b1, self.signal_b2,
@@ -316,7 +316,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         # Min length of sample, max length of bigger gear
         supplots = max(self.GearPropOut['no_teeth'], self.GearPropIn['no_teeth'])
-        supplots = min(self.signal_gin.shape[1], supplots)
+        supplots = min(self.teeth_signal_gin.shape[1], supplots)
 
         plt.figure(figsize=[15, 2*supplots*1.1])
         # Get max for fixed ylim
@@ -324,8 +324,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         a_max = np.round(a_max, 1)
         for i in range(0, supplots):
             plt.subplot(supplots, 1, i+1)
-            plt.plot(self.temp_sample_time, self.signal_gin[:, i]);
-            plt.plot(self.temp_sample_time, self.signal_gout[:, i]);
+            plt.plot(self.temp_sample_time, self.teeth_signal_gin[:, i]);
+            plt.plot(self.temp_sample_time, self.teeth_signal_gout[:, i]);
             plt.legend(['Input Gear - Tooth Nr.: %i' % (self.teeth_no_gin[i]),
                         'Output Gear - Tooth Nr.: %i' % (self.teeth_no_gout[i])],
                         loc='upper right')
@@ -368,9 +368,9 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         display(HTML('<h3>Accumulated Signal</h3>'))
         self.plot_acc_signal(self.signal_raw, [''], 'Accumulated Signal')
         # Plot Bearings
-        for signal, title in zip([self.signal_b1, self.signal_b2, self.signal_b3, self.signal_b4], ['Bearing 1', 'Bearing 2', 'Bearing 3', 'Bearing 4']):
+        for signal, ids, parts, title in zip([self.signal_b1, self.signal_b2, self.signal_b3, self.signal_b4], [self.ids_b1, self.ids_b2, self.ids_b3, self.ids_b4], [self.parts_b1, self.parts_b2, self.parts_b3, self.parts_b4], ['Bearing 1', 'Bearing 2', 'Bearing 3', 'Bearing 4']):
             display(HTML('<h3>%s Signal</h3>' % (title)))
-            self.plot_signal(signal, self.parts_b1, title)
+            self.plot_signal(signal[:, ids], parts, title)
         # Plot Degradation
         display(HTML('<h3>Degradation Signal</h3>'))
         if self.signal_degr is not None:

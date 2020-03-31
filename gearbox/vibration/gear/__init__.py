@@ -56,6 +56,13 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.check_declaration(self.geardict, key='no_teeth', message='')
         assert isinstance(self.geardict['no_teeth'], int), 'no_teeth must be integer'
         self.no_teeth = self.geardict['no_teeth']
+        # # Key 'harmonics'
+        if 'harmonics' in self.geardict:
+            assert isinstance(self.geardict['harmonics'], (list, tuple)), 'harmonics must be given as list'
+            assert all([isinstance(harmonic, (int)) for harmonic in self.geardict['harmonics']]), 'every given harmonic in list must be type integer'
+            self.harmonics = self.geardict['harmonics']
+        else:
+            self.harmonics = [1]
         # Key 'signal'
         self.check_declaration(self.geardict, key='signal', message='')
         assert self.geardict['signal'] in self.signal_list, 'signal must be one of the following: %s' % (str(self.signal_list))
@@ -171,29 +178,43 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         """
         Method to initialize the raw signal simulated by the given gear.
         """
-        # Get Gear relevant parameters
-        time2tooth = (1 / self.rotational_frequency) / self.no_teeth
-        center_frequency = self.rotational_frequency * self.no_teeth # TBD check this formula
-        # Mirror time to keep negative half of non stationary signal
-        mirrored_time = self.mirror_at_0(self.time)
-        # Get single tooth signal with amplitude=1
-        tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
-                                                           center_frequency)
-        # Remove all values on the left where tooth_signal == 0 (save computational ressources)
-        tooth_signal, tooth_center = self.remove_left_0s(tooth_signal, tooth_center)
-        # Extend array to avoide "index out a range"
-        tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
-        tooth_center += self.time.shape[0]
-        # Shift signal for each tooth
-        teeth_signal, teeth_cid_list = self.shift_signal(signal=tooth_signal,
-                                                         signal_center=tooth_center,
-                                                         time=self.time, time_shift=time2tooth,
-                                                         time_start=0, id_start=0)
-        # Get teeth list
-        teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
-        teeth_no_list = self.repeat2no_values(teeth_numbering,
-                                              no_values=teeth_signal.shape[1])
-        self.element_signal = teeth_signal
+        signal = np.zeros((self.time.shape[0], 1))
+        for harmonic in self.harmonics:
+            # Get Gear relevant parameters
+            time2tooth = (1 / self.rotational_frequency) / self.no_teeth
+            center_frequency = self.rotational_frequency * self.no_teeth * harmonic
+            # Mirror time to keep negative half of non stationary signal
+            mirrored_time = self.mirror_at_0(self.time)
+            # Get single tooth signal with amplitude=1
+            tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
+                                                               center_frequency)
+            # Remove all values on the left where tooth_signal == 0 (save computational ressources)
+            tooth_signal, tooth_center = self.remove_left_0s(tooth_signal, tooth_center)
+            # Extend array to avoide "index out a range"
+            tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
+            tooth_center += self.time.shape[0]
+            # Shift signal for each tooth
+            teeth_signal, teeth_cid_list = self.shift_signal(signal=tooth_signal,
+                                                             signal_center=tooth_center,
+                                                             time=self.time, time_shift=time2tooth,
+                                                             time_start=0, id_start=0)
+            # Get teeth list
+            teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
+            teeth_no_list = self.repeat2no_values(teeth_numbering,
+                                                  no_values=teeth_signal.shape[1])
+            signal = np.concatenate([signal, np.sum(teeth_signal, axis=1).reshape(-1, 1)], axis=1)
+            # Get new shift arguments
+        # Remove first zero axis
+        signal = np.delete(signal, 0, 1)
+        # Add Amplitude
+        amplitude_vector = self.create_amplitude_vector(method=self.ampl_method,
+                                                        mu=self.mu, sigma=self.sigma,
+                                                        constant=self.constant,
+                                                        no_values=self.no_teeth,
+                                                        repeat2no_values=signal.shape[1])
+        signal = signal * amplitude_vector
+        self.element_signal = signal
+        self.teeth_signal = teeth_signal
         self.teeth_no_list = teeth_no_list
         self.teeth_cid_list = teeth_cid_list
 
@@ -203,13 +224,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         Method to return the raw signal simulated by the given gear.
         """
         element_signal = self.element_signal
-        # Add Amplitude
-        amplitude_vector = self.create_amplitude_vector(method=self.ampl_method,
-                                                        mu=self.mu, sigma=self.sigma,
-                                                        constant=self.constant,
-                                                        no_values=self.no_teeth,
-                                                        repeat2no_values=element_signal.shape[1])
-        element_signal = element_signal * amplitude_vector
         # Add Torque Influence
         scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method,
                                                 scale_min=self.scale_min, scale_max=self.scale_max,
@@ -225,7 +239,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                                                     sigma=self.noise_sigma,
                                                     no_values=self.time.shape[0])
         element_signal = element_signal + noise_vector.reshape(-1, 1)
-        return(element_signal, self.teeth_no_list, self.teeth_cid_list)
+        return(element_signal, self.teeth_signal, self.teeth_no_list, self.teeth_cid_list)
 
     def load_per_tooth(self, torque):
         """

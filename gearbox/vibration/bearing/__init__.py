@@ -55,6 +55,7 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
         self.rotational_frequency['iring'] = (1 - self.approx_factor) * self.fn * self.bearingdict['no_elements']
         self.rotational_frequency['oring'] = self.bearingdict['no_elements'] * self.approx_factor * self.fn
         # Key 'signal_%s'
+        self.harmonics = {}
         self.signal_model = {}
         self.ampl_method = {}
         self.mu = {}
@@ -71,6 +72,13 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
         self.norm_divisor = {}
         self.exponent = {}
         for part in ['iring', 'relement', 'oring']:
+            # # Key 'harmonics'
+            if 'harmonics_%s' % (part) in self.bearingdict:
+                assert isinstance(self.bearingdict['harmonics_%s' % (part)], (list, tuple)), 'harmonics must be given as list'
+                assert all([isinstance(harmonic, (int)) for harmonic in self.bearingdict['harmonics_%s' % (part)]]), 'every given harmonic in list must be type integer'
+                self.harmonics['%s' % (part)] = self.bearingdict['harmonics_%s' % (part)]
+            else:
+                self.harmonics['%s' % (part)] = [1]
             self.check_declaration(self.bearingdict, key='signal_%s' % (part), message='')
             assert self.bearingdict['signal_%s' % (part)] in self.signal_list, 'signal_%s must be one of the following: %s' % (part, str(self.signal_list))
             self.signal_model['%s' % (part)] = self.choose_signal_model(self.bearingdict['signal_%s' % (part)])
@@ -145,36 +153,44 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
         # Get Gear relevant parameters
         self.interpret_dict()
         signal = np.zeros((self.time.shape[0], 1))
-        for part in ['iring', 'relement', 'oring']:
-            # Get signal for part i
-            signal_i = self.signal_model['%s' % (part)].run(self.time,
-                                                            self.rotational_frequency['%s' % (part)],
-                                                            ampl=1)
-            # Add Amplitude
-            amplitude_vector = self.create_amplitude_vector(method=self.ampl_method['%s' % (part)],
-                                                            mu=self.mu['%s' % (part)],
-                                                            sigma=self.sigma['%s' % (part)],
-                                                            constant=self.constant['%s' % (part)],
-                                                            no_values=self.time.shape[0],
-                                                            repeat2no_values=self.time.shape[0])
-            signal_i = signal_i * amplitude_vector.reshape(-1, 1)
-            # Add Torque Influence
-            scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method['%s' % (part)],
-                                                    scale_min=self.scale_min['%s' % (part)], scale_max=self.scale_max['%s' % (part)],
-                                                    value_min=self.value_min['%s' % (part)], value_max=self.value_max['%s' % (part)],
-                                                    exponent=self.exponent['%s' % (part)],
-                                                    norm_divisor=self.norm_divisor['%s' % (part)])
-            # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
-            scale_vector = scale_vector[0:signal_i.size]
-            signal_i = signal_i * scale_vector.reshape(-1, 1)
-            # Add noise
-            noise_vector = self.create_amplitude_vector(method=self.noise_method['%s' % (part)],
-                                                        mu=self.noise_mu['%s' % (part)],
-                                                        sigma=self.noise_sigma['%s' % (part)],
-                                                        no_values=self.time.shape[0])
-            signal_i = signal_i + noise_vector.reshape(-1, 1)
-            signal = np.concatenate([signal, signal_i], axis=1)
-            # Get new shift arguments
+        # i and ids are used to save the id of the first signal of each element
+        i = 0
+        ids = []
+        labels = ['Inner Ring Rollover', 'Rolling Element', 'Outer Ring Rollover']
+        for idp, part in enumerate(['iring', 'relement', 'oring']):
+            for idh, harmonic in enumerate(self.harmonics['%s' % (part)]):
+                if idh == 0:
+                    labels[idp] = labels[idp] + ': Harmonic no %i' % (harmonic)
+                    ids.append(i)
+                # Get signal for part i
+                signal_i = self.signal_model['%s' % (part)].run(self.time,
+                                                                self.rotational_frequency['%s' % (part)] * harmonic,
+                                                                ampl=1)
+                # Add Amplitude
+                amplitude_vector = self.create_amplitude_vector(method=self.ampl_method['%s' % (part)],
+                                                                mu=self.mu['%s' % (part)],
+                                                                sigma=self.sigma['%s' % (part)],
+                                                                constant=self.constant['%s' % (part)],
+                                                                no_values=self.time.shape[0],
+                                                                repeat2no_values=self.time.shape[0])
+                signal_i = signal_i * amplitude_vector.reshape(-1, 1)
+                # Add Torque Influence
+                scale_vector = self.create_scale_vector(array=self.torque, method=self.torq_method['%s' % (part)],
+                                                        scale_min=self.scale_min['%s' % (part)], scale_max=self.scale_max['%s' % (part)],
+                                                        value_min=self.value_min['%s' % (part)], value_max=self.value_max['%s' % (part)],
+                                                        exponent=self.exponent['%s' % (part)],
+                                                        norm_divisor=self.norm_divisor['%s' % (part)])
+                # Resize for Case: If scale_vector.size is greater than signal.size (due to larger torque)
+                scale_vector = scale_vector[0:signal_i.size]
+                signal_i = signal_i * scale_vector.reshape(-1, 1)
+                # Add noise
+                noise_vector = self.create_amplitude_vector(method=self.noise_method['%s' % (part)],
+                                                            mu=self.noise_mu['%s' % (part)],
+                                                            sigma=self.noise_sigma['%s' % (part)],
+                                                            no_values=self.time.shape[0])
+                signal_i = signal_i + noise_vector.reshape(-1, 1)
+                signal = np.concatenate([signal, signal_i], axis=1)
+                # Get new shift arguments
         # Remove first zero axis
         signal = np.delete(signal, 0, 1)
-        return(signal, ['Inner Ring Rollover', 'Rolling Element', 'Outer Ring Rollover'])
+        return(signal, ids, labels)
