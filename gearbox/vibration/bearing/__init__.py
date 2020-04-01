@@ -162,6 +162,7 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
                 if idh == 0:
                     labels[idp] = labels[idp] + ': Harmonic no %i' % (harmonic)
                     ids.append(i)
+                    i += 1
                 # Get signal for part i
                 signal_i = self.signal_model['%s' % (part)].run(self.time,
                                                                 self.rotational_frequency['%s' % (part)] * harmonic,
