@@ -5,6 +5,7 @@ import os
 from copy import deepcopy as dc
 # import sys
 from IPython.display import display, HTML
+# import time
 
 # import 3rd party libarys
 import numpy as np
@@ -211,7 +212,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         Method to initialize the gearbox elements
         """
+        # start = time.time()
         self.init_torque_attributes(torque)
+        # print('--- Execution Time "Init Torque Attributes": %.3f' % (time.time() - start))
+        # start = time.time()
 
         self.GearIn = Gear(self.rotational_frequency_in,
                            self.GearPropIn,
@@ -223,6 +227,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                            self.sample_rate, self.temp_sample_time,
                            self.torque_out,
                            GearDegVibDict=self.GearDegVibDictOut)
+        # print('--- Execution Time "Gears Init": %.3f' % (time.time() - start))
+        # start = time.time()
         self.Bearing1 = Bearing(self.rotational_frequency_in,
                                 self.Bearing1Prop,
                                 self.sample_rate, self.temp_sample_time,
@@ -239,6 +245,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                                 self.Bearing4Prop,
                                 self.sample_rate, self.temp_sample_time,
                                 self.torque_out)
+        # print('--- Execution Time "Bearings Init": %.3f' % (time.time() - start))
 
 
     def run_vibration(self, nolc, torque, statei=None, output=True):
@@ -246,36 +253,49 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         Method to get the raw_signals of all elements, as well as
         the sum.
         """
-        self.init_torque_attributes(torque)
+        # init torque attributes removed because already in init_vibration
+        # self.init_torque_attributes(torque)
         # seed dependencie on number of load cycles
         if self.seed is not None:
             np.random.seed(int(self.seed * (nolc + 1)))
         # Gear Signals
+        # start = time.time()
         self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
         self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
+        # print('--- Execution Time "Gears Vibration Signal": %.3f' % (time.time() - start))
+        # start = time.time()
         # Bearing Signals
         self.signal_b1, self.ids_b1, self.parts_b1 = self.Bearing1.raw_signal()
         self.signal_b2, self.ids_b2, self.parts_b2 = self.Bearing2.raw_signal()
         self.signal_b3, self.ids_b3, self.parts_b3 = self.Bearing3.raw_signal()
         self.signal_b4, self.ids_b4, self.parts_b4 = self.Bearing4.raw_signal()
+        # print('--- Execution Time "Bearings Vibration Signal": %.3f' % (time.time() - start))
+        # start = time.time()
         # Concatenate all signals
         signal_raw = np.concatenate([self.signal_gin, self.signal_gout,
                                      self.signal_b1, self.signal_b2,
                                      self.signal_b3, self.signal_b4],
                                     axis=1)
+        # print('--- Execution Time "Concat Vibration Signals": %.3f' % (time.time() - start))
+        # start = time.time()
+        # start_2 = start
         # Degradation signals
         if statei is not None:
             self.get_degr_signal(nolc, statei)
             # Concatenate degr signals
+            # print('------ Execution Time "Get Degr Signal": %.3f' % (time.time() - start_2))
+            # start_2 = time.time()
             signal_raw = np.concatenate([signal_raw, self.signal_degr],
                                          axis=1)
         # Pick random window to fit real sample time
         signal_raw = self.trim2realsampletime(signal_raw)
+        # print('------ Execution Time "Trim 2 Real Sample Time": %.3f' % (time.time() - start_2))
         # Accumulate
         self.signal_raw = np.sum(signal_raw, axis=1).reshape(-1, 1)
         # seed dependencie on number of load cycles
         if self.seed is not None:
             np.random.seed(self.seed)
+        # print('--- Execution Time "Degradation Vibration Signal": %.3f' % (time.time() - start))
         if output is True:
             return(self.signal_raw)
 
