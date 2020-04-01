@@ -39,6 +39,8 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
         self.sample_rate = sample_rate
         self.time = time
         self.torque = torque
+        self.interpret_dict()
+
 
     def interpret_dict(self):
         """
@@ -146,12 +148,12 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
             else:
                 self.exponent['%s' % (part)] = None
 
+
     def raw_signal(self):
         """
         Method to return the raw signal simulated by the given gear.
         """
         # Get Gear relevant parameters
-        self.interpret_dict()
         signal = np.zeros((self.time.shape[0], 1))
         # i and ids are used to save the id of the first signal of each element
         i = 0
