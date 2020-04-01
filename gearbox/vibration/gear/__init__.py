@@ -5,6 +5,7 @@ import os
 from copy import deepcopy as dc
 # import sys
 from IPython.display import display, HTML
+import time
 
 # import 3rd party libarys
 import numpy as np
@@ -46,6 +47,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.interpret_dict()
         self.interpret_deg_dict()
         self.element_signal()
+        self.element_degr_signal()
 
     def interpret_dict(self):
         """
@@ -279,6 +281,43 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             load_dict[str(self.teeth_no_list[idx])].append(np.mean(torque[id_low_up[0]:id_low_up[1]]))
         return(load_dict)
 
+
+    def element_degr_signal(self):
+        """
+        Method to initialize the degradation raw signal simulated
+        by the given gear.
+        """
+        #---------------------
+        # Get single tooth signal with amplitude=1
+        degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
+        period = 1 / self.rotational_frequency
+        time2tooth = period / self.no_teeth
+        tooth_signal, tooth_center = degr_signal_model.run(self.time,
+                                                           self.GearDegVibDict['fc_factor'],
+                                                           bw=self.GearDegVibDict['bw_factor'],
+                                                           bwr=self.GearDegVibDict['bwr_factor'],
+                                                           retquad=True)
+        # Remove first half (let signal start with zero)
+        tooth_signal = tooth_signal[tooth_center:]
+        tooth_center = 0
+        # Extend array to avoide "index out a range"
+        ext_tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
+        tooth_center += self.time.shape[0]
+        #---------------------
+        # Shift signal for each tooth
+        # Each row represents a tooth mesh
+        teeth_signal, _ = self.shift_signal(signal=ext_tooth_signal,
+                                            signal_center=tooth_center,
+                                            time=self.time, time_shift=time2tooth,
+                                            time_start=0, id_start=0)
+        # Get teeth list (not starting at zero due to following enumerate)
+        teeth_numbering = np.arange(0, self.no_teeth, 1, dtype=np.int32)
+        teeth_no_list = self.repeat2no_values(teeth_numbering,
+                                              no_values=teeth_signal.shape[1])
+        self.teeth_degr_no_list = teeth_no_list
+        self.teeth_degr_signal = teeth_signal
+
+
     def tooth_degr_signal(self, nolc, statei):
         """
         Method to get a degradation signal based on
@@ -286,33 +325,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         Method raw_signal must been run before.
         """
         if statei is not None:
-            #---------------------
-            # Get single tooth signal with amplitude=1
-            degr_signal_model = self.choose_signal_model(self.GearDegVibDict['signal'])
-            period = 1 / self.rotational_frequency
-            time2tooth = period / self.no_teeth
-            tooth_signal, tooth_center = degr_signal_model.run(self.time,
-                                                               self.GearDegVibDict['fc_factor'],
-                                                               bw=self.GearDegVibDict['bw_factor'],
-                                                               bwr=self.GearDegVibDict['bwr_factor'],
-                                                               retquad=True)
-            # Remove first half (let signal start with zero)
-            tooth_signal = tooth_signal[tooth_center:]
-            tooth_center = 0
-            # Extend array to avoide "index out a range"
-            ext_tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
-            tooth_center += self.time.shape[0]
-            #---------------------
-            # Shift signal for each tooth
-            # Each row represents a tooth mesh
-            teeth_signal, _ = self.shift_signal(signal=ext_tooth_signal,
-                                                signal_center=tooth_center,
-                                                time=self.time, time_shift=time2tooth,
-                                                time_start=0, id_start=0)
-            # Get teeth list (not starting at zero due to following enumerate)
-            teeth_numbering = np.arange(0, self.no_teeth, 1, dtype=np.int32)
-            teeth_no_list = self.repeat2no_values(teeth_numbering,
-                                                  no_values=teeth_signal.shape[1])
             #---------------------
             # Iterate over pitting (ordered by tooth number)
             pittings = []
@@ -325,8 +337,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                 # else pitting @ tooth
                 else:
                     # Condition on tooth to filter for itself tooth mesh
-                    condition = teeth_no_list == tooth
-                    tooth_signal = teeth_signal[:, condition]
+                    condition = self.teeth_degr_no_list == tooth
+                    tooth_signal = self.teeth_degr_signal[:, condition]
                     # Sum up all tooth mesh of tooth
                     tooth_signal = np.sum(tooth_signal, axis=1).reshape(-1,1)
                     pittings.append(pitting)
