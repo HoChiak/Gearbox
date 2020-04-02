@@ -175,9 +175,12 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         because here factors as time of tooth meshing
         are known, which are needed to accumulate the loads
         """
+        # Init torque_in and torque_out new!
+        self.init_torque_attributes(torque)
+        # Get loads
         loads = {}
         loads['GearIn'] = self.GearIn.load_per_tooth(self.torque_in)
-        loads['GearOut'] = self.GearOut.load_per_tooth(self.torque_in)
+        loads['GearOut'] = self.GearOut.load_per_tooth(self.torque_in) #!!!!!!!!!!!!!!!!!!!!! (Code1234)
         loads['Bearing1'] = 'tbd'
         loads['Bearing2'] = 'tbd'
         loads['Bearing3'] = 'tbd'
@@ -225,7 +228,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
                            self.sample_rate, self.temp_sample_time,
-                           self.torque_out,
+                           self.torque_in, #!!!!!!!!!!!!!!!!!!!!! (Code1234)
                            GearDegVibDict=self.GearDegVibDictOut)
         # print('--- Execution Time "Gears Init": %.3f' % (time.time() - start))
         # start = time.time()

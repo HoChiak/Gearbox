@@ -85,12 +85,18 @@ class Gearbox_Degradation(Gear_Degradation,
         # Init Bearing4 Degradation
         self.Bearing4_Degradation = Bearing_Degradation(self.Deg_Bearing4Prop,
                                                         self.seed)
-        statei = {}
+        # Init Statei
+        self.statei = {}
         display(HTML('<p><u>Gear in:</u></p>'))
-        statei['GearIn'] = self.GearIn_Degradation.init_gear_degradation()
+        self.statei['GearIn'] = self.GearIn_Degradation.init_gear_degradation()
         display(HTML('<p><u>Gear out:</u></p>'))
-        statei['GearOut'] = self.GearOut_Degradation.init_gear_degradation()
-        return(statei)
+        self.statei['GearOut'] = self.GearOut_Degradation.init_gear_degradation()
+        #
+        self.statei['Bearing1'] = None
+        self.statei['Bearing2'] = None
+        self.statei['Bearing3'] = None
+        self.statei['Bearing4'] = None
+        return(self.statei)
 
 
     def run_degradation(self, nolc, loads):
@@ -104,10 +110,14 @@ class Gearbox_Degradation(Gear_Degradation,
         if ((self.nolc[-1] == nolc) and (self.nolc[-1] is not None)):
             return(self.statei)
         else:
-            self.statei = {}
             self.statei['GearIn'] = self.GearIn_Degradation.run_gear_degradation(nolc, loads['GearIn'], nolc_ref=None)
+            #
+            self.statei['Bearing1'] = None
+            self.statei['Bearing2'] = None
             nolc_out = round(nolc / self.gear_ratio, 3)
             self.statei['GearOut'] = self.GearOut_Degradation.run_gear_degradation(nolc_out, loads['GearOut'], nolc_ref=nolc)
+            self.statei['Bearing3'] = None
+            self.statei['Bearing4'] = None
             self.nolc.append(nolc)
             return(self.statei)
 
