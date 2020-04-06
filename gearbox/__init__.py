@@ -88,6 +88,12 @@ class Gearbox(Vibration,
         # Degradation Vibration
         self.GearDegVibDictIn = GearDegVibDictIn
         self.GearDegVibDictOut = GearDegVibDictOut
+
+
+    def initialize(self, torque):
+        """
+        Method to initialize the model.
+        """
         self.Vibration = Vibration(self.ga_rotational_frequency_in,
                                     self.ga_sample_interval,
                                     self.ga_sample_rate,
@@ -111,11 +117,6 @@ class Gearbox(Vibration,
                                        self.ga_Deg_Bearing3,
                                        self.ga_Deg_Bearing4,
                                        self.ga_seed)
-
-    def initialize(self, torque):
-        """
-        Method to initialize the model.
-        """
         # start = time.time()
         display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))
         statei = self.Degradation.init_degradation()
