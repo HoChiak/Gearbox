@@ -20,7 +20,6 @@ def get_sample_time_torque(rotational_frequency_in, sample_rate, no_teeth_in, no
     toothmeshlcm = np.lcm(no_teeth_in,
                            no_teeth_out)
     min_time = time2tooth * toothmeshlcm
-    min_time
 
     sample_time = np.arange(0, min_time, 1/sample_rate)
     return(sample_time)

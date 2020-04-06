@@ -91,7 +91,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # Double Minimum (safety margin)
         # full_sample_interval = 2 * full_sample_interval
         # Ensure that full sample interval is greater than the specified one
-        while full_sample_interval <= (2 * self.sample_interval):
+        while full_sample_interval <= self.sample_interval:
             full_sample_interval = full_sample_interval * 2
         # Get sample time
         # must start with zero!!!!
@@ -161,7 +161,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # Get number of samples in min sample interval
         no_samples = np.arange(0, min_sample_interval, 1/self.sample_rate).size
         # Sanity check
-        assert torque.size == no_samples, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
+        assert torque.size >= no_samples, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
         # Extend torque array to same length as sample length
         torque = torque.reshape(-1)
         self.torque_in = self.repeat2no_values(torque, self.torque_sample_time.size)
