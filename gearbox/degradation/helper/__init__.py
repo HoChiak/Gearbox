@@ -76,7 +76,10 @@ class Degradation_Helper():
             # Get random uniform number
             if self.seed is not None:
                 np.random.seed(self.seed_counter)
-                self.seed_counter += int(uniform(low=0, high=100, size=1))
+                if self.seed_counter < 2**16: # pretend exceeding seed limit
+                    self.seed_counter += int(uniform(low=0, high=100, size=1))
+                else:
+                    self.seed_counter = int(uniform(low=0, high=100, size=1))
             random_nr = uniform(low=0.0, high=1.0, size=1)
             # Calculate lower condition (Insert a 0 at index 0)
             cond1 = (np.insert(chances_cdf, 0, 0) < random_nr)

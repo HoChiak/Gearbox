@@ -260,7 +260,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # self.init_torque_attributes(torque)
         # seed dependencie on number of load cycles
         if self.seed is not None:
-            np.random.seed(int(self.seed * (nolc + 1)))
+            np.random.seed(np.random.randint(1, high=2**16, size=1, dtype=np.int32)[0])
         # Gear Signals
         # start = time.time()
         self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
