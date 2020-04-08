@@ -56,6 +56,7 @@ class Gearbox(Vibration,
                  Deg_Bearing1, Deg_Bearing2, Deg_Bearing3, Deg_Bearing4,
                  # Arguments for both
                  seed=None,
+                 verbose=0,
                  fixed_start=True,
                  GearDegVibDictIn=None,
                  GearDegVibDictOut=None
@@ -157,7 +158,8 @@ class Gearbox(Vibration,
         # Append global Attributes
         self.ga_load_cycle.append(nolc)
         self.ga_statei.append(statei)
-        print('Load Cycle %i done' % (nolc), end="\r")
+        if self.verbose == 1:
+            print('Load Cycle %i done' % (nolc), end="\r")
         if output is True:
             return(self.ga_vibration)
 
