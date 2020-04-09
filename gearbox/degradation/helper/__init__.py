@@ -386,7 +386,6 @@ class State0_Helper():
         """
         Method to get a0, n0, aeol, neol, tooth
         """
-        np.random.seed(self.seed)
         self.state0 = pd.DataFrame()
         # Add a0 and n0
         self.state0['a0'] = self.init_a0s().reshape(-1)
