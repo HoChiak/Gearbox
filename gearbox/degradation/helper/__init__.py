@@ -443,12 +443,16 @@ class State0_Helper():
         """
         # all a0 > 0
         valid_a0 = all(list(self.state0['a0'] > 0))
+        # all n0 > 0
+        valid_n0 = all(list(self.state0['n0'] > 0))
+        # all a0 < aeol
+        valid_a0_aeol = all(list(self.state0['a0'] < self.state0['aeol']))
         # all n0 < neol
         valid_n0_neol = all(list(self.state0['n0'] < self.state0['neol']))
         # all theta are not nan
         valid_thetas = not(any(list(self.state0[['theta1', 'theta2', 'theta3']].isna().to_numpy().reshape(-1))))
         # all before are true
-        valid = all([valid_a0, valid_n0_neol, valid_thetas])
+        valid = all([valid_a0, valid_n0, valid_a0_aeol, valid_n0_neol, valid_thetas])
         return(valid)
 
     def get_initial_state0(self):
