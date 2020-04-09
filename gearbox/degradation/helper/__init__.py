@@ -437,20 +437,47 @@ class State0_Helper():
                                                               row['theta3'])[0]
         self.state0 = new_df
 
+    def check_valid_state0(self):
+        """
+        Method to check if state0 is valid
+        """
+        # all a0 > 0
+        valid_a0 = all(list(self.state0['a0'] > 0))
+        # all n0 < neol
+        valid_n0_neol = all(list(self.state0['n0'] < self.state0['neol']))
+        # all theta are not nan
+        valid_thetas = not(any(list(self.state0[['theta1', 'theta2', 'theta3']].isna().to_numpy().reshape(-1))))
+        # all before are true
+        valid = all([valid_a0, valid_n0_neol, valid_thetas])
+        return(valid)
+
     def get_initial_state0(self):
         """
         Method to initialise the uninfluenced degradation behaviour.
         """
-        # Get a0, n0, aeol, neol, tooth
-        self.get_initial_values()
-        # Get exp parameter theta1, theta2, theta3
-        self.run_optimizer4state0(np.arange(0, self.no_failing, 1))
-        # Get an Backup of state0
-        self.backup_state0 = dc(self.state0)
-        # only keep first n failing components (arg: no_failing)
-        self.state0.dropna(axis=0, how='any', inplace=True)
-        # Adjust a0, aeol to match exp function
-        self.match_a2function()
+        valid = False
+        while not(valid):
+            # Get random uniform number
+            if self.seed is not None:
+                np.random.seed(self.seed_counter)
+                if self.seed_counter < 2**16: # pretend exceeding seed limit
+                    self.seed_counter += int(uniform(low=0, high=100, size=1))
+                else:
+                    self.seed_counter = int(uniform(low=0, high=100, size=1))
+            # Get a0, n0, aeol, neol, tooth
+            self.get_initial_values()
+            # Get exp parameter theta1, theta2, theta3
+            self.run_optimizer4state0(np.arange(0, self.no_failing, 1))
+            # Get an Backup of state0
+            self.backup_state0 = dc(self.state0)
+            # only keep first n failing components (arg: no_failing)
+            self.state0.dropna(axis=0, how='any', inplace=True)
+            # Adjust a0, aeol to match exp function
+            self.match_a2function()
+            # Check validity of state0 here-> only failing teeth are listed
+            valid = self.check_valid_state0()
+        if self.seed is not None:
+            np.random.seed(self.seed)
 
     def plot_state0(self):
 
