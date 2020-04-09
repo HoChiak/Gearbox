@@ -39,6 +39,7 @@ class Gear_Degradation(Degradation_Helper,
     def __init__(self, no_teeth,
                  degdict,
                  seed, # arguments given by parent class
+                 verbose=0,
                  ):
         """
         Constructor method for Gear Degradation
@@ -61,6 +62,7 @@ class Gear_Degradation(Degradation_Helper,
         self.oppo_chance = degdict['Chances']['opposite']
         self.keeporder_chance = degdict['Chances']['keeporder']
         self.seed = seed
+        self.verbose = verbose
         self.seed_counter = seed
         # States:
         self.state0 = None

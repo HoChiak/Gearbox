@@ -118,7 +118,8 @@ class Gearbox(Vibration,
                                        self.ga_Deg_Bearing2,
                                        self.ga_Deg_Bearing3,
                                        self.ga_Deg_Bearing4,
-                                       self.ga_seed)
+                                       self.ga_seed,
+                                       verbose=self.verbose)
         # start = time.time()
         if self.verbose == 1:
             display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))

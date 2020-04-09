@@ -39,6 +39,7 @@ class Gearbox_Degradation(Gear_Degradation,
                  Deg_Bearing3,
                  Deg_Bearing4,
                  seed, # arguments given by parent class
+                 verbose=0,
                  ):
         """
         Constructor method for Gearbox Degradation
@@ -52,6 +53,7 @@ class Gearbox_Degradation(Gear_Degradation,
         self.Deg_Bearing3Prop = Deg_Bearing3
         self.Deg_Bearing4Prop = Deg_Bearing4
         self.seed = seed
+        self.verbose = verbose
         self.gear_ratio =  self.no_teeth_GearOut/self.no_teeth_GearIn
         self.nolc = [None]
 
@@ -68,28 +70,30 @@ class Gearbox_Degradation(Gear_Degradation,
         # Init Gear In Degradation
         self.GearIn_Degradation = Gear_Degradation(self.no_teeth_GearIn,
                                                     self.Deg_GearPropIn,
-                                                    self.seed)
+                                                    self.seed, self.verbose)
         # Init Gear Out Degradation
         self.GearOut_Degradation = Gear_Degradation(self.no_teeth_GearOut,
                                                     self.Deg_GearPropOut,
-                                                    self.seed)
+                                                    self.seed, self.verbose)
         # Init Bearing1 Degradation
         self.Bearing1_Degradation = Bearing_Degradation(self.Deg_Bearing1Prop,
-                                                        self.seed)
+                                                        self.seed, self.verbose)
         # Init Bearing2 Degradation
         self.Bearing2_Degradation = Bearing_Degradation(self.Deg_Bearing2Prop,
-                                                        self.seed)
+                                                        self.seed, self.verbose)
         # Init Bearing3 Degradation
         self.Bearing3_Degradation = Bearing_Degradation(self.Deg_Bearing3Prop,
-                                                        self.seed)
+                                                        self.seed, self.verbose)
         # Init Bearing4 Degradation
         self.Bearing4_Degradation = Bearing_Degradation(self.Deg_Bearing4Prop,
-                                                        self.seed)
+                                                        self.seed, self.verbose)
         # Init Statei
         self.statei = {}
-        display(HTML('<p><u>Gear in:</u></p>'))
+        if self.verbose == 1:
+            display(HTML('<p><u>Gear in:</u></p>'))
         self.statei['GearIn'] = self.GearIn_Degradation.init_gear_degradation()
-        display(HTML('<p><u>Gear out:</u></p>'))
+        if self.verbose == 1:
+            display(HTML('<p><u>Gear out:</u></p>'))
         self.statei['GearOut'] = self.GearOut_Degradation.init_gear_degradation()
         #
         self.statei['Bearing1'] = None

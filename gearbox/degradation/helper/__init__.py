@@ -77,9 +77,9 @@ class Degradation_Helper():
             if self.seed is not None:
                 np.random.seed(self.seed_counter)
                 if self.seed_counter < 2**16: # pretend exceeding seed limit
-                    self.seed_counter += int(uniform(low=0, high=100, size=1))
+                    self.seed_counter += int(uniform(low=1, high=10, size=1))
                 else:
-                    self.seed_counter = int(uniform(low=0, high=100, size=1))
+                    self.seed_counter = int(uniform(low=1, high=10, size=1))
             random_nr = uniform(low=0.0, high=1.0, size=1)
             # Calculate lower condition (Insert a 0 at index 0)
             cond1 = (np.insert(chances_cdf, 0, 0) < random_nr)
@@ -187,7 +187,10 @@ class Optimizer_Helper():
         s = theta1 * exp(theta2 * x) + theta3
         """
         y = np.array(y).reshape(-1, 1)
-        x = np.log((y - theta3) / theta1) / theta2
+        try:
+            x = np.log((y - theta3) / theta1) / theta2
+        except:
+            x = -999
         return(x)
 
     def inner_loop(self, x, y, theta1, theta2, theta3, no_states):
@@ -209,8 +212,9 @@ class Optimizer_Helper():
             fval['y_pred'] = np.nan
             fval['rmse'] = np.nan
         # Out Progress --> Costs an enourmous amount of speed
-        if self.curr_state % 1000 == 0:
-            self.prgr_bar(self.curr_state, no_states, txt='')
+        if self.verbose == 1:
+            if self.curr_state % 1000 == 0:
+                self.prgr_bar(self.curr_state, no_states, txt='')
         #self.curr_state += 1
         return(fval)
 
@@ -227,7 +231,8 @@ class Optimizer_Helper():
         assert len(df_val) == no_states, 'Internal Failure of Brute Force GridSearch'
         df_val = pd.DataFrame(df_val)
         # To tackle display mistakes
-        self.prgr_bar(no_states, no_states, txt=u'\u2713')
+        if self.verbose == 1:
+            self.prgr_bar(no_states, no_states, txt=u'\u2713')
         # Reset curr_state
         self.curr_state = 1
         return(df_val)
@@ -249,7 +254,8 @@ class Optimizer_Helper():
                          self.state0.loc[idx, 'neol']))
             y = np.array((self.state0.loc[idx, 'a0'],
                          self.state0.loc[idx, 'aeol']))
-            display(HTML('<p>Running for tooth %i failure</p>' % (self.state0.loc[idx, 'tooth'])))
+            if self.verbose == 1:
+                display(HTML('<p>Running for tooth %i failure</p>' % (self.state0.loc[idx, 'tooth'])))
             fval = self.opt_exp_function_brute(x, y, self.theta1s,
                                                self.theta2s, self.theta3s)
             # self.state0['fval'][idx] = fval
@@ -382,10 +388,11 @@ class State0_Helper():
             drawn_teeth.append(teeth[condition][0])
         return(drawn_teeth)
 
-    def get_initial_values(self):
+    def get_initial_values(self, seed=None):
         """
         Method to get a0, n0, aeol, neol, tooth
         """
+        np.random.seed(seed)
         self.state0 = pd.DataFrame()
         # Add a0 and n0
         self.state0['a0'] = self.init_a0s().reshape(-1)
@@ -464,21 +471,22 @@ class State0_Helper():
             if self.seed is not None:
                 np.random.seed(self.seed_counter)
                 if self.seed_counter < 2**16: # pretend exceeding seed limit
-                    self.seed_counter += int(uniform(low=0, high=100, size=1))
+                    self.seed_counter += int(uniform(low=1, high=10, size=1))
                 else:
-                    self.seed_counter = int(uniform(low=0, high=100, size=1))
+                    self.seed_counter = int(uniform(low=1, high=10, size=1))
             # Get a0, n0, aeol, neol, tooth
-            self.get_initial_values()
+            self.get_initial_values(seed=self.seed_counter)
             # Get exp parameter theta1, theta2, theta3
             self.run_optimizer4state0(np.arange(0, self.no_failing, 1))
             # Get an Backup of state0
             self.backup_state0 = dc(self.state0)
             # only keep first n failing components (arg: no_failing)
             self.state0.dropna(axis=0, how='any', inplace=True)
-            # Adjust a0, aeol to match exp function
-            self.match_a2function()
             # Check validity of state0 here-> only failing teeth are listed
             valid = self.check_valid_state0()
+        # Adjust a0, aeol to match exp function
+        # Outside while cause this might lead to heavy adjustments on n0 and a0
+        self.match_a2function()
         if self.seed is not None:
             np.random.seed(self.seed)
 
