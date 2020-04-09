@@ -120,11 +120,13 @@ class Gearbox(Vibration,
                                        self.ga_Deg_Bearing4,
                                        self.ga_seed)
         # start = time.time()
-        display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))
+        if self.verbose == 1:
+            display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))
         statei = self.Degradation.init_degradation()
         # print('### Execution Time "Degradation Init": %.3f' % (time.time() - start))
         # start = time.time()
-        display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Vibration</b></p></div>'))
+        if self.verbose == 1:
+            display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Vibration</b></p></div>'))
         self.Vibration.init_vibration(torque)
         # print('### Execution Time "Vibration Init": %.3f' % (time.time() - start))
         # start = time.time()
@@ -139,7 +141,8 @@ class Gearbox(Vibration,
         self.ga_loads = [loads]
         self.ga_statei = [statei]
         # print('### Execution Time "Save Parameters": %.3f' % (time.time() - start))
-        display(HTML('<p>Done</p>'))
+        if self.verbose == 1:
+            display(HTML('<p>Done</p>'))
 
 
     def run(self, nolc, output=True):
