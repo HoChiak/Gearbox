@@ -6,6 +6,7 @@ from copy import deepcopy as dc
 # import sys
 from IPython.display import display, HTML
 from itertools import product as cart_prod
+from math import log
 
 # import 3rd party libarys
 import numpy as np
@@ -188,8 +189,8 @@ class Optimizer_Helper():
         """
         y = np.array(y).reshape(-1, 1)
         try:
-            x = np.log((y - theta3) / theta1) / theta2
-        except:
+            x = log((y - theta3) / theta1) / theta2
+        except ValueError:
             x = -999
         return(x)
 
