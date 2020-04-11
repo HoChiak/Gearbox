@@ -485,9 +485,14 @@ class State0_Helper():
             self.state0.dropna(axis=0, how='any', inplace=True)
             # Check validity of state0 here-> only failing teeth are listed
             valid = self.check_valid_state0()
-        # Adjust a0, aeol to match exp function
-        # Outside while cause this might lead to heavy adjustments on n0 and a0
-        self.match_a2function()
+            if valid:
+                # Check a second time, because match_a2f.. could lead to heavy
+                # adjustments so that before invalid values are now valid.
+                # Adjust a0, aeol to match exp function
+                self.match_a2function()
+                # Check again if adjustment leads to still valid values
+                valid = self.check_valid_state0()
+        # Reset Seed
         if self.seed is not None:
             np.random.seed(self.seed)
 
