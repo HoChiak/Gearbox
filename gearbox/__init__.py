@@ -145,6 +145,46 @@ class Gearbox(Vibration,
         if self.verbose == 1:
             display(HTML('<p>Done</p>'))
 
+    def reinitialize(self, torque):
+        """
+        Method to REinitialize the model, Vibration is kept as it and
+        Degradation is reset. (Only Degradation changes over given nolc,
+        Vibration only depends only on given GearIn etc. dicts. Only REinit
+        Degradation saves a lot of time.)
+        """
+        # Only adjust seed in Gearbox Vibration
+        self.Vibration.seed = self.ga_seed
+        # Init Gearbox Degradation
+        self.Degradation = Degradation(self.ga_GearIn['no_teeth'],
+                                       self.ga_GearOut['no_teeth'],
+                                       self.ga_Deg_GearIn,
+                                       self.ga_Deg_GearOut,
+                                       self.ga_Deg_Bearing1,
+                                       self.ga_Deg_Bearing2,
+                                       self.ga_Deg_Bearing3,
+                                       self.ga_Deg_Bearing4,
+                                       self.ga_seed,
+                                       verbose=self.verbose)
+        # start = time.time()
+        if self.verbose == 1:
+            display(HTML('<div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>'))
+        statei = self.Degradation.init_degradation()
+        # print('### Execution Time "Degradation Init": %.3f' % (time.time() - start))
+        # start = time.time()
+        # Get loads
+        loads = self.Vibration.get_loads(torque)
+        # print('### Execution Time "Get Loads Init": %.3f' % (time.time() - start))
+        # start = time.time()
+        # Init global Attributes
+        self.ga_torque = [torque]
+        self.ga_load_cycle_torquechange = [np.nan]
+        self.ga_load_cycle = [np.nan]
+        self.ga_loads = [loads]
+        self.ga_statei = [statei]
+        # print('### Execution Time "Save Parameters": %.3f' % (time.time() - start))
+        if self.verbose == 1:
+            display(HTML('<p>Done</p>'))
+
 
     def run(self, nolc, output=True):
         """

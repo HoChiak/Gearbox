@@ -192,6 +192,7 @@ class Optimizer_Helper():
             x = log((y - theta3) / theta1) / theta2
         except ValueError:
             x = -999
+        x = float(x)
         return(x)
 
     def inner_loop(self, x, y, theta1, theta2, theta3, no_states):
@@ -437,11 +438,11 @@ class State0_Helper():
             new_df.loc[index, 'n0'] = self.inv_exp_function(row['a0'],
                                                             row['theta1'],
                                                             row['theta2'],
-                                                            row['theta3'])[0]
+                                                            row['theta3'])
             new_df.loc[index, 'neol'] = self.inv_exp_function(row['aeol'],
                                                               row['theta1'],
                                                               row['theta2'],
-                                                              row['theta3'])[0]
+                                                              row['theta3'])
         self.state0 = new_df
 
     def check_valid_state0(self):
