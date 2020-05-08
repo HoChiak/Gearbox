@@ -36,7 +36,7 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
         yt = scaler.fit_transform(yt.reshape(-1, 1))
     #rfft
     yf = np.abs(rfft(yt, n=sample_rate, axis=0))
-    xf = rfftfreq(sample_rate, d=1./sample_rate).reshape(-1, 1)
+    xf = rfftfreq(yt.size, d=1./sample_rate).reshape(-1, 1)
     #max pooling
     if yf.shape[0]%pp!=0:
         num_pad = (yf.shape[0]//pp) * pp + pp - yf.shape[0]
