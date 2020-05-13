@@ -48,6 +48,23 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
     xf_mp = np.arange((pp//2) * fac_xf,(yf_mp.shape[0]*pp) * fac_xf + 1, pp * fac_xf)
     return(yf_mp, xf_mp)
 
+def repeat2no_values(vector, no_values):
+    """
+    Repeat the given vector as many times needed,
+    to create a repeat_vector of given number of
+    values (no_values)
+    """
+    # Calculate number of repetitions
+    no_values_vector = vector.shape[0]
+    repetitions = np.ceil((no_values / no_values_vector))
+    repetitions = int(repetitions) #dtype decl. not working
+    # Repeat Vetor
+    repeat_vector = np.tile(vector, repetitions)
+    # Trim to final length
+    repeat_vector = np.delete(repeat_vector,
+                              np.s_[no_values:], axis=0)
+    return(repeat_vector)
+
 def plot_gear_polar(df, kind='order', no_teeth=None, **kwargs):
     """
     Function to plot different kinds of
