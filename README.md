@@ -8,7 +8,7 @@
 <br><br>
 ### Version History
 <br>
-<p><b>Version 0.0.6</b><u> (current)</u></p>
+<p><b>Version 0.6.0</b><u> (current)</u></p>
 <li>Optional key {'harmonics': []} (list) added to element dictionary for explicit modelling of the harmonic frequencies</li>
 <li>Massive performance increase</li>
 <li>Further warnings and checks added</li>
