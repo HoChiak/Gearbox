@@ -1,14 +1,11 @@
-<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Gearbox Simulation Model</b></p>
-</div>
+<br><br>#Gearbox Simulation Model
 
 
 <p><b>Simulation of the vibration behaviour of a gearbox under degradation</b></p>
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Gearbox.png" width="60%">
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Version History</b></p>
-</div><br>
+<p><b>Version History<br>
 <p><b>Version 0.0.6</b><u> (current)</u></p>
 <li>Optional key {'harmonics': []} (list) added to element dictionary for explicit modelling of the harmonic frequencies</li>
 <li>Massive performance increase</li>
@@ -17,9 +14,7 @@
 <li>"verbose" argument added (verbose=1: outputs information)</li>
 <li>Minor bug fixes</li>
 
-<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Brief Introduction</b></p>
-</div>
+<br><br>#Brief Introduction
 <br>
 <li>Toolbox to simulate gearbox vibration</li>
 <li>Virtual copy of an existing testbench</li>
@@ -36,16 +31,14 @@
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Motivation</b></p>
-</div><br>
+<p><b>Motivation<br>
 <li>Gear Wheel Pitting</li>
 <li>Degradation dominates at one tooth only</li>
 <li>Operating Strategy [Gretzinger2017]</li>
 <li>Local Stress reduction</li>
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Preliminary</b></p>
-</div>
+<p><b>Preliminary
 
 <p> Load Modules </p>
 
@@ -92,8 +85,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Module Structure</b></p>
-</div>
+<p><b>Module Structure
 <br>
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Modules.png" width="80%">
 
@@ -104,8 +96,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 <li>Modules consisting of several Module Methods</li>
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>State Model</b></p>
-</div>
+<p><b>State Model
 <br>
 
 <li>Acts as a state model:</li>
@@ -116,8 +107,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/State_Definition.png" width="80%">
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Inputs and main Methods&#40;&#41;</b></p>
-</div>
+<p><b>Inputs and main Methods&#40;&#41;
 <br>
 <p>General Input Arguments:</p>
 <li>f<sub>i</sub>: Rotational Frequency input shaft - in revolutions per second (float)</li>
@@ -135,8 +125,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Torque Definition</b></p>
-</div>
+<p><b>Torque Definition
 <br>
 
 <p><b>Vibration/Degradation Output is calculated for previous given torque<sub>p-1</sub> argument.</b></p>
@@ -160,9 +149,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 
 <p><b>Gear Degradation strongly depends on the Gearbox Design &#8594; Both Input and Output Gear Degradation are defined for input torque!!!</b></p>
 
-<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Brief Running Example</b></p>
-</div>
+<br><br>#Brief Running Example
 <p>Complete High Level Example. Details and Theory will follow.</p>
 <p>Detailed Element Dictionary Explanation will follow</p>
 <br>
@@ -190,8 +177,7 @@ seed = 4
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Define Vibration Elements</b></p>
-</div>
+<p><b>Define Vibration Elements
 
 
 ```python
@@ -283,8 +269,7 @@ Bearing4 = {**{'no_elements': 12}, **BearingI}                     # Number of r
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Define Degradation Elements</b></p>
-</div>
+<p><b>Define Degradation Elements
 
 
 ```python
@@ -332,8 +317,7 @@ Deg_Bearing4 = 'tbd'
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Define Degradation-Vibration-Dependency</b></p>
-</div>
+<p><b>Define Degradation-Vibration-Dependency
 
 
 ```python
@@ -372,8 +356,7 @@ GearDegVibDictOut = {'signal': 'gausspulse',                                # Si
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Torque Definition (Workaround)</b></p>
-</div>
+<p><b>Torque Definition (Workaround)
 
 
 ```python
@@ -382,8 +365,7 @@ torque_in = np.sin((2 * np.pi * rotational_frequency_in * sample_time)) * 5 + 20
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Instance Initialization</b></p>
-</div>
+<p><b>Instance Initialization
 <br>
 <p>Initialize a new Instance:</p>
 
@@ -407,8 +389,7 @@ model = Gearbox(# Vibration Arguments
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Initialize <u>All</u> Vibration and Degradation</b></p>
-</div>
+<p><b>Initialize <u>All</u> Vibration and Degradation
 <br>
 <p>Initialize Degradation Module: <b>initialize(torque)</b></p>
 <p>Input Arguments:</p>
@@ -473,8 +454,7 @@ model.initialize(torque_in)
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run and Set <u>All</u> Vibration and Degradation</b></p>
-</div>
+<p><b>Run and Set <u>All</u> Vibration and Degradation
 <br>
 <p>Run Vibration and Degradation: <b>run(nolc, output=True)</b></p>
 <p>Input Arguments:</p>
@@ -502,8 +482,7 @@ for nolc in np.linspace(0, 12e6, 12):
     Load Cycle 12000000 done
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Summary <u>All</u> Vibration and Degradation</b></p>
-</div>
+<p><b>Summary <u>All</u> Vibration and Degradation
 <br>
 <p>Initialize Degradation Module: <b>initialize(torque)</b></p>
 <p>Input Arguments:</p>
@@ -1128,12 +1107,9 @@ model.summary()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_43.png)
 
 
-<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Running Example - Only Vibration or Only Degradation</b></p>
-</div>
+<br><br>#Running Example - Only Vibration or Only Degradation
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run <u>only</u> Vibration</b></p>
-</div>
+<p><b>Run <u>only</u> Vibration
 <br>
 <p>Initialize Vibration Module: <b>init_vibration(torque)</b></p>
 <p>Input Arguments:</p>
@@ -1491,8 +1467,7 @@ model.Vibration.summary_vibration()
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run <u>only</u> Degradation</b></p>
-</div>
+<p><b>Run <u>only</u> Degradation
 <br>
 <p>Initialize Degradation Module: <b>init_degradation()</b></p>
 <p>Input Arguments:</p>
@@ -3811,12 +3786,9 @@ model.Degradation.summary_degradation()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_25.png)
 
 
-<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Details and Theory</b></p>
-</div>
+<br><br>#Details and Theory
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Vibration Element Definition</b></p>
-</div>
+<p><b>Vibration Element Definition
 <br>
 <h3>Gear Element</h3>
 <p>Keyword Attributes: <br>
@@ -3944,8 +3916,7 @@ Bearing =   {'no_elements': 11,                                    # Number of R
 </ul>
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Vibration Methods and Theory</b></p>
-</div>
+<p><b>Vibration Methods and Theory
 <br>
 
 <p>Module Methods Structure:</p>
@@ -4200,8 +4171,7 @@ plt.show()
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation Element Definition</b></p>
-</div>
+<p><b>Degradation Element Definition
 <br>
 <h3>Gear Element</h3>
 <p>Keyword Attributes: <br>
@@ -4245,8 +4215,7 @@ Deg_Gear = {'Failing_Teeth': 2,                                      # Number of
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation Methods</b></p>
-</div>
+<p><b>Degradation Methods
 <br>
 
 
@@ -4615,8 +4584,7 @@ Deg_Gear['GridSearch'] = {'slice_theta1': (0.0001, 0.0902, 0.01),
 ```
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation Theory</b></p>
-</div>
+<p><b>Degradation Theory
 <br>
 
 <li>How Degradation Simulation Works</li>
@@ -5110,8 +5078,7 @@ print('D(p) = D(p-1) + \u0394D = %.3e' % (curr_damage))
 
 
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation-Vibration Dependency Element Definition</b></p>
-</div>
+<p><b>Degradation-Vibration Dependency Element Definition
 <br>
 <p>Module Methods Connection Vibration and Degradtion:</p>
 <li>Getting Loads from Torque Signal for Gear Degradation</li>
@@ -5153,12 +5120,9 @@ GearDegVibDict = {'signal': 'gausspulse',                                # Signa
                    }
 ```
 
-<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Vibration Signal Analyses</b></p>
-</div>
+<br><br>#Vibration Signal Analyses
 <br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>TBD</b></p>
-</div>
+<p><b>TBD
 <br>
 
 
