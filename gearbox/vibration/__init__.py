@@ -5,6 +5,7 @@ import os
 from copy import deepcopy as dc
 # import sys
 from IPython.display import display, HTML
+# import time
 
 # import 3rd party libarys
 import numpy as np
@@ -90,7 +91,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # Double Minimum (safety margin)
         # full_sample_interval = 2 * full_sample_interval
         # Ensure that full sample interval is greater than the specified one
-        while full_sample_interval <= (2 * self.sample_interval):
+        while full_sample_interval <= self.sample_interval:
             full_sample_interval = full_sample_interval * 2
         # Get sample time
         # must start with zero!!!!
@@ -160,7 +161,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # Get number of samples in min sample interval
         no_samples = np.arange(0, min_sample_interval, 1/self.sample_rate).size
         # Sanity check
-        assert torque.size == no_samples, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
+        assert torque.size >= no_samples, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
         # Extend torque array to same length as sample length
         torque = torque.reshape(-1)
         self.torque_in = self.repeat2no_values(torque, self.torque_sample_time.size)
@@ -174,9 +175,12 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         because here factors as time of tooth meshing
         are known, which are needed to accumulate the loads
         """
+        # Init torque_in and torque_out new!
+        self.init_torque_attributes(torque)
+        # Get loads
         loads = {}
         loads['GearIn'] = self.GearIn.load_per_tooth(self.torque_in)
-        loads['GearOut'] = self.GearOut.load_per_tooth(self.torque_in)
+        loads['GearOut'] = self.GearOut.load_per_tooth(self.torque_in) #!!!!!!!!!!!!!!!!!!!!! (Code1234)
         loads['Bearing1'] = 'tbd'
         loads['Bearing2'] = 'tbd'
         loads['Bearing3'] = 'tbd'
@@ -211,7 +215,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         Method to initialize the gearbox elements
         """
+        # start = time.time()
         self.init_torque_attributes(torque)
+        # print('--- Execution Time "Init Torque Attributes": %.3f' % (time.time() - start))
+        # start = time.time()
 
         self.GearIn = Gear(self.rotational_frequency_in,
                            self.GearPropIn,
@@ -221,8 +228,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
                            self.sample_rate, self.temp_sample_time,
-                           self.torque_out,
+                           self.torque_in, #!!!!!!!!!!!!!!!!!!!!! (Code1234)
                            GearDegVibDict=self.GearDegVibDictOut)
+        # print('--- Execution Time "Gears Init": %.3f' % (time.time() - start))
+        # start = time.time()
         self.Bearing1 = Bearing(self.rotational_frequency_in,
                                 self.Bearing1Prop,
                                 self.sample_rate, self.temp_sample_time,
@@ -239,6 +248,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                                 self.Bearing4Prop,
                                 self.sample_rate, self.temp_sample_time,
                                 self.torque_out)
+        # print('--- Execution Time "Bearings Init": %.3f' % (time.time() - start))
 
 
     def run_vibration(self, nolc, torque, statei=None, output=True):
@@ -246,36 +256,49 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         Method to get the raw_signals of all elements, as well as
         the sum.
         """
-        self.init_torque_attributes(torque)
+        # init torque attributes removed because already in init_vibration
+        # self.init_torque_attributes(torque)
         # seed dependencie on number of load cycles
         if self.seed is not None:
-            np.random.seed(int(self.seed * (nolc + 1)))
+            np.random.seed(np.random.randint(1, high=2**16, size=1, dtype=np.int32)[0])
         # Gear Signals
-        self.signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
-        self.signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
+        # start = time.time()
+        self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
+        self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
+        # print('--- Execution Time "Gears Vibration Signal": %.3f' % (time.time() - start))
+        # start = time.time()
         # Bearing Signals
-        self.signal_b1, self.parts_b1 = self.Bearing1.raw_signal()
-        self.signal_b2, self.parts_b2 = self.Bearing2.raw_signal()
-        self.signal_b3, self.parts_b3 = self.Bearing3.raw_signal()
-        self.signal_b4, self.parts_b4 = self.Bearing4.raw_signal()
+        self.signal_b1, self.ids_b1, self.parts_b1 = self.Bearing1.raw_signal()
+        self.signal_b2, self.ids_b2, self.parts_b2 = self.Bearing2.raw_signal()
+        self.signal_b3, self.ids_b3, self.parts_b3 = self.Bearing3.raw_signal()
+        self.signal_b4, self.ids_b4, self.parts_b4 = self.Bearing4.raw_signal()
+        # print('--- Execution Time "Bearings Vibration Signal": %.3f' % (time.time() - start))
+        # start = time.time()
         # Concatenate all signals
         signal_raw = np.concatenate([self.signal_gin, self.signal_gout,
                                      self.signal_b1, self.signal_b2,
                                      self.signal_b3, self.signal_b4],
                                     axis=1)
+        # print('--- Execution Time "Concat Vibration Signals": %.3f' % (time.time() - start))
+        # start = time.time()
+        # start_2 = start
         # Degradation signals
         if statei is not None:
             self.get_degr_signal(nolc, statei)
             # Concatenate degr signals
+            # print('------ Execution Time "Get Degr Signal": %.3f' % (time.time() - start_2))
+            # start_2 = time.time()
             signal_raw = np.concatenate([signal_raw, self.signal_degr],
                                          axis=1)
         # Pick random window to fit real sample time
         signal_raw = self.trim2realsampletime(signal_raw)
+        # print('------ Execution Time "Trim 2 Real Sample Time": %.3f' % (time.time() - start_2))
         # Accumulate
         self.signal_raw = np.sum(signal_raw, axis=1).reshape(-1, 1)
         # seed dependencie on number of load cycles
         if self.seed is not None:
             np.random.seed(self.seed)
+        # print('--- Execution Time "Degradation Vibration Signal": %.3f' % (time.time() - start))
         if output is True:
             return(self.signal_raw)
 
@@ -316,7 +339,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         # Min length of sample, max length of bigger gear
         supplots = max(self.GearPropOut['no_teeth'], self.GearPropIn['no_teeth'])
-        supplots = min(self.signal_gin.shape[1], supplots)
+        supplots = min(self.teeth_signal_gin.shape[1], supplots)
 
         plt.figure(figsize=[15, 2*supplots*1.1])
         # Get max for fixed ylim
@@ -324,8 +347,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         a_max = np.round(a_max, 1)
         for i in range(0, supplots):
             plt.subplot(supplots, 1, i+1)
-            plt.plot(self.temp_sample_time, self.signal_gin[:, i]);
-            plt.plot(self.temp_sample_time, self.signal_gout[:, i]);
+            plt.plot(self.temp_sample_time, self.teeth_signal_gin[:, i]);
+            plt.plot(self.temp_sample_time, self.teeth_signal_gout[:, i]);
             plt.legend(['Input Gear - Tooth Nr.: %i' % (self.teeth_no_gin[i]),
                         'Output Gear - Tooth Nr.: %i' % (self.teeth_no_gout[i])],
                         loc='upper right')
@@ -368,9 +391,9 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         display(HTML('<h3>Accumulated Signal</h3>'))
         self.plot_acc_signal(self.signal_raw, [''], 'Accumulated Signal')
         # Plot Bearings
-        for signal, title in zip([self.signal_b1, self.signal_b2, self.signal_b3, self.signal_b4], ['Bearing 1', 'Bearing 2', 'Bearing 3', 'Bearing 4']):
+        for signal, ids, parts, title in zip([self.signal_b1, self.signal_b2, self.signal_b3, self.signal_b4], [self.ids_b1, self.ids_b2, self.ids_b3, self.ids_b4], [self.parts_b1, self.parts_b2, self.parts_b3, self.parts_b4], ['Bearing 1', 'Bearing 2', 'Bearing 3', 'Bearing 4']):
             display(HTML('<h3>%s Signal</h3>' % (title)))
-            self.plot_signal(signal, self.parts_b1, title)
+            self.plot_signal(signal[:, ids], parts, title)
         # Plot Degradation
         display(HTML('<h3>Degradation Signal</h3>'))
         if self.signal_degr is not None:

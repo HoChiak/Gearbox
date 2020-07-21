@@ -1,5 +1,4 @@
-
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
+<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
 <p><b>Gearbox Simulation Model</b></p>
 </div>
 
@@ -7,7 +6,44 @@
 <p><b>Simulation of the vibration behaviour of a gearbox under degradation</b></p>
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Gearbox.png" width="60%">
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Version History</b></p>
+</div><br>
+<p><b>Version 0.0.6</b><u> (current)</u></p>
+<li>Optional key {'harmonics': []} (list) added to element dictionary for explicit modelling of the harmonic frequencies</li>
+<li>Massive performance increase</li>
+<li>Further warnings and checks added</li>
+<li>model.reinitialize() method added (can be used if Element Dictionarys stay the same, performance increase)</li>
+<li>"verbose" argument added (verbose=1: outputs information)</li>
+<li>Minor bug fixes</li>
+
+<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
+<p><b>Brief Introduction</b></p>
+</div>
+<br>
+<li>Toolbox to simulate gearbox vibration</li>
+<li>Virtual copy of an existing testbench</li>
+  <ul>
+    <li>Match on Vibration Spectra</li>
+    <li>Match on Gear Degradation</li>
+  </ul>
+<li>No consideration of:</li>
+  <ul>
+    <li>Transmission paths formulation (Structure Borne Acoustics)</li>
+    <li>Bearing Degradation (not seen in testbench)</li>
+  </ul>
+<li>Used element parameters are not matched with tenstbench (confidencial)</li>
+
+
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Motivation</b></p>
+</div><br>
+<li>Gear Wheel Pitting</li>
+<li>Degradation dominates at one tooth only</li>
+<li>Operating Strategy [Gretzinger2017]</li>
+<li>Local Stress reduction</li>
+
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Preliminary</b></p>
 </div>
 
@@ -34,7 +70,10 @@ import gearbox_functions as gf
 
 ```python
 wd = os.getcwd()
-hd = r'####' # Gearbox Toolbox directory  
+if 'nt' in os.name:
+    hd = r'######' # win directory  
+elif 'posix' in os.name:
+    hd = r"'######'" # mac directory
 
 ```
 
@@ -52,33 +91,19 @@ rcParams['axes.titleweight'] = 8 * sizefactor
 rcParams.update({'font.size': 8 * sizefactor})
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Motivation</b></p>
-</div><br>
-<li>Gear Wheel Pitting</li>
-<li>Degradation dominates at one tooth only</li>
-
-<li>Operating Strategy [Gretzinger2017]</li>
-<li>Local Stress reduction</li>
-
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Brief Introduction</b></p>
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Module Structure</b></p>
 </div>
 <br>
-<li>Toolbox to simulate gearbox vibration</li>
-<li>Virtual copy of an existing testbench</li>
-  <ul>
-    <li>Match on Vibration Spectra</li>
-    <li>Match on Gear Degradation</li>
-  </ul>
-<li>No consideration of:</li>
-  <ul>
-    <li>Transmission paths formulation (Structure Borne Acoustics)</li>
-    <li>Bearing Degradation (not seen in testbench)</li>
-  </ul>
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Modules.png" width="80%">
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<li>GearBox Simulation Toolbox is structured in Modules</li>
+<li>Top Modules are accessing lower Modules</li>
+<li>Helper-Module is used by Modules on the same level</li>
+<li>Modules consisting of several Module Methods</li>
+
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>State Model</b></p>
 </div>
 <br>
@@ -90,7 +115,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/State_Definition.png" width="80%">
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Inputs and main Methods&#40;&#41;</b></p>
 </div>
 <br>
@@ -109,7 +134,7 @@ rcParams.update({'font.size': 8 * sizefactor})
 
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Torque Definition</b></p>
 </div>
 <br>
@@ -135,11 +160,12 @@ rcParams.update({'font.size': 8 * sizefactor})
 
 <p><b>Gear Degradation strongly depends on the Gearbox Design &#8594; Both Input and Output Gear Degradation are defined for input torque!!!</b></p>
 
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Toolbox Running Example - Definition</b></p>
+<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
+<p><b>Brief Running Example</b></p>
 </div>
 <p>Complete High Level Example. Details and Theory will follow.</p>
-
+<p>Detailed Element Dictionary Explanation will follow</p>
+<br>
 <p>Load Gearbox Simulation Toolbox:</p>
 
 
@@ -163,7 +189,7 @@ seed = 4
 
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Define Vibration Elements</b></p>
 </div>
 
@@ -256,7 +282,7 @@ Bearing4 = {**{'no_elements': 12}, **BearingI}                     # Number of r
 
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Define Degradation Elements</b></p>
 </div>
 
@@ -272,12 +298,12 @@ Deg_GearIn = {'Failing_Teeth': 2,                                      # Number 
                                'a': norm(loc=0.450, scale=0.305)},     # P(a_0) a in %
               'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol) n in Load Cycles (ref: input shaft)
                               'a': norm(loc=4.0, scale=0.)},           # P(a_eol) a in %
-              'Woehler': {'k': 8.5,                                   # Woehler Exponent
+              'Woehler': {'k': 10.5,                                   # Woehler Exponent
                           'np': 10390000,                              # Woehler Reference n in Load Cycles (ref: input shaft)
                           'torqp': 200},                               # Woehler Reference sigma in Nm
               'GridSearch': {'slice_theta1': (0.0001, 0.0902, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
-                             'slice_theta2': (0.10/1e6, 1.51/1e6, 0.2/1e6), #tbd change step to 0.02/1e6
-                             'slice_theta3':(-2.0, 0.5, 0.1)}
+                             'slice_theta2': (0.10/1e6, 1.51/1e6, 0.005/1e6), #tbd change step to 0.02/1e6
+                             'slice_theta3':(-2.0, 0.5, 0.05)}
              }
 
 Deg_GearOut = {'Failing_Teeth': 3,                                      # Number of Teeth falling at Gear
@@ -288,12 +314,12 @@ Deg_GearOut = {'Failing_Teeth': 3,                                      # Number
                                 'a': norm(loc=0.450, scale=0.305)},     # P(a_0) a in %
                'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol) n in Load Cycles (ref: input shaft)
                                'a': norm(loc=4.0, scale=0.)},           # P(a_eol) a in %
-               'Woehler': {'k': 8.5,                                   # Woehler Exponent
+               'Woehler': {'k': 10.5,                                   # Woehler Exponent
                            'np': 10390000,                              # Woehler Reference n in Load Cycles (ref: input shaft)
                            'torqp': 200},                               # Woehler Reference sigma in Nm
                'GridSearch': {'slice_theta1': (0.0001, 0.0902, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
-                              'slice_theta2': (0.10/1e6, 1.51/1e6, 0.2/1e6), #tbd change step to 0.02/1e6
-                              'slice_theta3':(-2.0, 0.5, 0.1)}
+                              'slice_theta2': (0.10/1e6, 1.51/1e6, 0.005/1e6), #tbd change step to 0.02/1e6
+                              'slice_theta3':(-2.0, 0.5, 0.05)}
               }
 ```
 
@@ -305,8 +331,8 @@ Deg_Bearing3 = 'tbd'
 Deg_Bearing4 = 'tbd'
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Define Degradation-Vibration-Dependencie</b></p>
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Define Degradation-Vibration-Dependency</b></p>
 </div>
 
 
@@ -345,7 +371,7 @@ GearDegVibDictOut = {'signal': 'gausspulse',                                # Si
 
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Torque Definition (Workaround)</b></p>
 </div>
 
@@ -355,10 +381,7 @@ sample_time = gf.get_sample_time_torque(rotational_frequency_in, sample_rate, Ge
 torque_in = np.sin((2 * np.pi * rotational_frequency_in * sample_time)) * 5 + 200 # Nm | array
 ```
 
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Toolbox Running Example - Run</b></p>
-</div>
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Instance Initialization</b></p>
 </div>
 <br>
@@ -383,7 +406,732 @@ model = Gearbox(# Vibration Arguments
                 GearDegVibDictOut=GearDegVibDictOut)
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Initialize <u>All</u> Vibration and Degradation</b></p>
+</div>
+<br>
+<p>Initialize Degradation Module: <b>initialize(torque)</b></p>
+<p>Input Arguments:</p>
+<li>torque: input torque</li>
+<p>Returns:</p>
+<li>-</li>
+
+
+
+```python
+model.initialize(torque_in)
+```
+
+
+<br><br><div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>
+
+
+
+<p><u>Gear in:</u></p>
+
+
+
+<p>Running for tooth 7 failure</p>
+
+
+
+
+
+<p>Running for tooth 3 failure</p>
+
+
+
+
+
+<p><u>Gear out:</u></p>
+
+
+
+<p>Running for tooth 12 failure</p>
+
+
+
+
+
+<p>Running for tooth 5 failure</p>
+
+
+
+
+
+<p>Running for tooth 14 failure</p>
+
+
+
+
+
+<br><br><div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Vibration</b></p></div>
+
+
+
+<p>Done</p>
+
+
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Run and Set <u>All</u> Vibration and Degradation</b></p>
+</div>
+<br>
+<p>Run Vibration and Degradation: <b>run(nolc, output=True)</b></p>
+<p>Input Arguments:</p>
+<li>nolc: current number of load cycle (must be greater than the previous given nolc)</li>
+<li>output: if true returns vibration signal</li>
+<p>Returns:</p>
+<li>vibration (if output is True)</li>
+
+<p>Set Torque for upcoming cycles: <b>set(nolc, torque)</b></p>
+<p>Input Arguments:</p>
+<li>nolc: current number of load cycle (must be <b>equal</b> to the previous nolc in run())</li>
+<li>torque: input torque</li>
+<p>Returns:</p>
+
+
+
+```python
+vibrations = []
+for nolc in np.linspace(0, 12e6, 12):
+    vibrations.append(model.run(nolc, output=True))
+    model.set(nolc, torque_in)
+
+```
+
+    Load Cycle 12000000 done
+
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>Summary <u>All</u> Vibration and Degradation</b></p>
+</div>
+<br>
+<p>Initialize Degradation Module: <b>initialize(torque)</b></p>
+<p>Input Arguments:</p>
+<li>torque: input torque</li>
+<p>Returns:</p>
+<li>-</li>
+
+
+```python
+model.summary()
+
+```
+
+
+<br><br><div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Degradation</b></p></div>
+
+
+
+<h1>Degradation Gear In</h1>
+
+
+
+<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a0</th>
+      <th>n0</th>
+      <th>tooth</th>
+      <th>neol</th>
+      <th>aeol</th>
+      <th>theta1</th>
+      <th>theta2</th>
+      <th>theta3</th>
+      <th>n0_old</th>
+      <th>neol_old</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.661548</td>
+      <td>5.620661e+06</td>
+      <td>7</td>
+      <td>8.720913e+06</td>
+      <td>4.0</td>
+      <td>0.0101</td>
+      <td>6.800000e-07</td>
+      <td>0.2</td>
+      <td>5.656872e+06</td>
+      <td>8.721440e+06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.100020</td>
+      <td>-1.713965e+06</td>
+      <td>3</td>
+      <td>1.112770e+07</td>
+      <td>4.0</td>
+      <td>0.0001</td>
+      <td>9.500000e-07</td>
+      <td>0.1</td>
+      <td>5.839910e+06</td>
+      <td>1.112036e+07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_5.png)
+
+
+
+<h3>Damage Accumulation (until load cycle 12000000)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>0.000000e+00</th>
+      <th>1.090909e+06</th>
+      <th>2.181818e+06</th>
+      <th>3.272727e+06</th>
+      <th>4.363636e+06</th>
+      <th>5.454545e+06</th>
+      <th>6.545455e+06</th>
+      <th>7.636364e+06</th>
+      <th>8.727273e+06</th>
+      <th>9.818182e+06</th>
+      <th>1.090909e+07</th>
+      <th>1.200000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>-1.812969</td>
+      <td>-1.812969</td>
+      <td>-1.485425</td>
+      <td>-1.157880</td>
+      <td>-0.830335</td>
+      <td>-0.502791</td>
+      <td>-0.175246</td>
+      <td>0.152299</td>
+      <td>0.479844</td>
+      <td>0.807388</td>
+      <td>1.134933</td>
+      <td>1.462478</td>
+      <td>1.790022</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.133469</td>
+      <td>0.133469</td>
+      <td>0.240632</td>
+      <td>0.347794</td>
+      <td>0.454957</td>
+      <td>0.562120</td>
+      <td>0.669282</td>
+      <td>0.776445</td>
+      <td>0.883608</td>
+      <td>0.990770</td>
+      <td>1.097933</td>
+      <td>1.205095</td>
+      <td>1.312258</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_9.png)
+
+
+
+<h3>Pitting Growth (until load cycle 12000000)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>0.000000e+00</th>
+      <th>1.090909e+06</th>
+      <th>2.181818e+06</th>
+      <th>3.272727e+06</th>
+      <th>4.363636e+06</th>
+      <th>5.454545e+06</th>
+      <th>6.545455e+06</th>
+      <th>7.636364e+06</th>
+      <th>8.727273e+06</th>
+      <th>9.818182e+06</th>
+      <th>1.090909e+07</th>
+      <th>1.200000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.836292</td>
+      <td>1.469245</td>
+      <td>2.731830</td>
+      <td>5.250376</td>
+      <td>10.274253</td>
+      <td>20.295647</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.1001</td>
+      <td>0.1001</td>
+      <td>0.10037</td>
+      <td>0.101366</td>
+      <td>0.10505</td>
+      <td>0.118667</td>
+      <td>0.169</td>
+      <td>0.355048</td>
+      <td>1.042742</td>
+      <td>3.584681</td>
+      <td>12.980520</td>
+      <td>47.710614</td>
+      <td>176.084395</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_13.png)
+
+
+
+<h1>Degradation Gear Out</h1>
+
+
+
+<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a0</th>
+      <th>n0</th>
+      <th>tooth</th>
+      <th>neol</th>
+      <th>aeol</th>
+      <th>theta1</th>
+      <th>theta2</th>
+      <th>theta3</th>
+      <th>n0_old</th>
+      <th>neol_old</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.579647</td>
+      <td>4.328162e+06</td>
+      <td>12</td>
+      <td>9.342841e+06</td>
+      <td>4.0</td>
+      <td>0.0301</td>
+      <td>5.150000e-07</td>
+      <td>0.30</td>
+      <td>4.391948e+06</td>
+      <td>9.341308e+06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.551336</td>
+      <td>5.419820e+06</td>
+      <td>5</td>
+      <td>1.073989e+07</td>
+      <td>4.0</td>
+      <td>0.0401</td>
+      <td>4.250000e-07</td>
+      <td>0.15</td>
+      <td>5.441903e+06</td>
+      <td>1.073986e+07</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.146248</td>
+      <td>5.430618e+06</td>
+      <td>14</td>
+      <td>9.355148e+06</td>
+      <td>4.0</td>
+      <td>0.0001</td>
+      <td>1.130000e-06</td>
+      <td>0.10</td>
+      <td>5.601978e+06</td>
+      <td>9.354910e+06</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_18.png)
+
+
+
+<h3>Damage Accumulation (until load cycle 6285714)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>0.000000e+00</th>
+      <th>1.090909e+06</th>
+      <th>2.181818e+06</th>
+      <th>3.272727e+06</th>
+      <th>4.363636e+06</th>
+      <th>5.454545e+06</th>
+      <th>6.545455e+06</th>
+      <th>7.636364e+06</th>
+      <th>8.727273e+06</th>
+      <th>9.818182e+06</th>
+      <th>1.090909e+07</th>
+      <th>1.200000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>-0.863098</td>
+      <td>-0.863098</td>
+      <td>-0.762304</td>
+      <td>-0.661510</td>
+      <td>-0.560715</td>
+      <td>-0.459921</td>
+      <td>-0.359126</td>
+      <td>-0.258332</td>
+      <td>-0.157538</td>
+      <td>-0.056743</td>
+      <td>0.044051</td>
+      <td>0.144846</td>
+      <td>0.245640</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>-1.018750</td>
+      <td>-1.018750</td>
+      <td>-0.883952</td>
+      <td>-0.749154</td>
+      <td>-0.614356</td>
+      <td>-0.479558</td>
+      <td>-0.344760</td>
+      <td>-0.209962</td>
+      <td>-0.075164</td>
+      <td>0.059634</td>
+      <td>0.194432</td>
+      <td>0.329230</td>
+      <td>0.464028</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>-1.383763</td>
+      <td>-1.383763</td>
+      <td>-1.218378</td>
+      <td>-1.052994</td>
+      <td>-0.887610</td>
+      <td>-0.722225</td>
+      <td>-0.556841</td>
+      <td>-0.391457</td>
+      <td>-0.226072</td>
+      <td>-0.060688</td>
+      <td>0.104696</td>
+      <td>0.270081</td>
+      <td>0.435465</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_22.png)
+
+
+
+<h3>Pitting Growth (until load cycle 6285714)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>0.000000e+00</th>
+      <th>1.090909e+06</th>
+      <th>2.181818e+06</th>
+      <th>3.272727e+06</th>
+      <th>4.363636e+06</th>
+      <th>5.454545e+06</th>
+      <th>6.545455e+06</th>
+      <th>7.636364e+06</th>
+      <th>8.727273e+06</th>
+      <th>9.818182e+06</th>
+      <th>1.090909e+07</th>
+      <th>1.200000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.613341</td>
+      <td>0.706507</td>
+      <td>0.827373</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.609268</td>
+      <td>0.772919</td>
+      <td>0.994883</td>
+      <td>1.295940</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.173575</td>
+      <td>0.253200</td>
+      <td>0.418996</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_26.png)
+
+
+
+<br><br><div style="background-color:rgb(62, 68, 76);color:white;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Vibration</b></p></div>
+
+
+
+<h3>Controls</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_29.png)
+
+
+
+<h3>Accumulated Signal</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_31.png)
+
+
+
+<h3>Bearing 1 Signal</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_33.png)
+
+
+
+<h3>Bearing 2 Signal</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_35.png)
+
+
+
+<h3>Bearing 3 Signal</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_37.png)
+
+
+
+<h3>Bearing 4 Signal</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_39.png)
+
+
+
+<h3>Degradation Signal</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_41.png)
+
+
+
+<h3>Gear Signals</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_43.png)
+
+
+<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
+<p><b>Running Example - Only Vibration or Only Degradation</b></p>
+</div>
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Run <u>only</u> Vibration</b></p>
 </div>
 <br>
@@ -425,6 +1173,19 @@ df_loads
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -585,7 +1346,7 @@ df_loads
     <tr>
       <td>17</td>
       <td>NaN</td>
-      <td>[201.40836172680946, 203.75466393081751, 204.8...</td>
+      <td>[201.40836172680946, 203.75466393081751, 204.6...</td>
       <td>tbd</td>
       <td>tbd</td>
       <td>tbd</td>
@@ -594,7 +1355,7 @@ df_loads
     <tr>
       <td>18</td>
       <td>NaN</td>
-      <td>[198.64161950289116, 201.41073791519926, 203.7...</td>
+      <td>[198.64161950289116, 201.41073791519926]</td>
       <td>tbd</td>
       <td>tbd</td>
       <td>tbd</td>
@@ -603,7 +1364,7 @@ df_loads
     <tr>
       <td>19</td>
       <td>NaN</td>
-      <td>[196.3022018523581, 198.64400338090186, 201.41...</td>
+      <td>[196.3022018523581, 198.64400338090186]</td>
       <td>tbd</td>
       <td>tbd</td>
       <td>tbd</td>
@@ -612,7 +1373,7 @@ df_loads
     <tr>
       <td>20</td>
       <td>NaN</td>
-      <td>[195.12118534653806, 196.28257518840692, 198.6...</td>
+      <td>[195.12118534653806, 196.28257518840692]</td>
       <td>tbd</td>
       <td>tbd</td>
       <td>tbd</td>
@@ -621,7 +1382,7 @@ df_loads
     <tr>
       <td>21</td>
       <td>NaN</td>
-      <td>[195.49622128638393, 195.12155229545505, 196.2...</td>
+      <td>[195.49622128638393, 195.12155229545505]</td>
       <td>tbd</td>
       <td>tbd</td>
       <td>tbd</td>
@@ -655,7 +1416,7 @@ plt.show()
 ```
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_38_0.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_47_0.png)
 
 
 <p>Summarize Vibration: <b>summary_vibration()</b></p>
@@ -670,7 +1431,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_1.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_1.png)
 
 
 
@@ -678,7 +1439,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_3.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_3.png)
 
 
 
@@ -686,7 +1447,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_5.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_5.png)
 
 
 
@@ -694,7 +1455,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_7.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_7.png)
 
 
 
@@ -702,7 +1463,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_9.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_9.png)
 
 
 
@@ -710,7 +1471,7 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_11.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_11.png)
 
 
 
@@ -718,7 +1479,7 @@ model.Vibration.summary_vibration()
 
 
 
-<p>Degradation not available (probably no statei argument given)</p>
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_13.png)
 
 
 
@@ -726,10 +1487,10 @@ model.Vibration.summary_vibration()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_40_15.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_49_15.png)
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Run <u>only</u> Degradation</b></p>
 </div>
 <br>
@@ -752,16 +1513,12 @@ statei = model.Degradation.init_degradation()
 <p>Running for tooth 7 failure</p>
 
 
-    [================================================================================] 2000/2000  
+
 
 
 <p>Running for tooth 3 failure</p>
 
 
-    [================================================================================] 2000/2000  
-
-    \\imapc\benutzer\Mitarbeiterdaten\henss\_02_software\_08_github\Gearbox\gearbox\degradation\helper\__init__.py:181: RuntimeWarning: invalid value encountered in log
-      x = np.log((y - theta3) / theta1) / theta2
 
 
 
@@ -772,19 +1529,19 @@ statei = model.Degradation.init_degradation()
 <p>Running for tooth 12 failure</p>
 
 
-    [================================================================================] 2000/2000  
+
 
 
 <p>Running for tooth 5 failure</p>
 
 
-    [================================================================================] 2000/2000  
+
 
 
 <p>Running for tooth 14 failure</p>
 
 
-    [================================================================================] 2000/2000  
+
 
 
 ```python
@@ -796,6 +1553,19 @@ pd.DataFrame(statei['GearIn'])
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -818,7 +1588,7 @@ pd.DataFrame(statei['GearIn'])
       <td>$a_{0}$</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>NaN</td>
+      <td>0.100100</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -832,11 +1602,11 @@ pd.DataFrame(statei['GearIn'])
       <td>$d_{0}$</td>
       <td>NaN</td>
       <td>NaN</td>
+      <td>0.133469</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>NaN</td>
-      <td>-1.434069</td>
+      <td>-1.812969</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -858,6 +1628,19 @@ pd.DataFrame(statei['GearOut'])
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -916,16 +1699,16 @@ pd.DataFrame(statei['GearOut'])
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>-1.671099</td>
+      <td>-1.01875</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>...</td>
-      <td>-1.382792</td>
+      <td>-0.863098</td>
       <td>NaN</td>
-      <td>-0.391062</td>
+      <td>-1.383763</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -958,6 +1741,19 @@ model.Degradation.summary_degradation()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -978,1243 +1774,26 @@ model.Degradation.summary_degradation()
     <tr>
       <td>0</td>
       <td>0.661548</td>
-      <td>5.161122e+06</td>
+      <td>5.620661e+06</td>
       <td>7</td>
-      <td>8.760057e+06</td>
+      <td>8.720913e+06</td>
       <td>4.0</td>
-      <td>0.0501</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0101</td>
+      <td>6.800000e-07</td>
+      <td>0.2</td>
       <td>5.656872e+06</td>
       <td>8.721440e+06</td>
     </tr>
     <tr>
       <td>1</td>
       <td>0.100020</td>
-      <td>NaN</td>
+      <td>-1.713965e+06</td>
       <td>3</td>
-      <td>1.175231e+07</td>
+      <td>1.112770e+07</td>
       <td>4.0</td>
-      <td>0.0101</td>
-      <td>5.000000e-07</td>
-      <td>4.000000e-01</td>
-      <td>5.839910e+06</td>
-      <td>1.112036e+07</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_4.png)
-
-
-
-<h3>Damage Accumulation (until load cycle 0)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>-1.434069</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_8.png)
-
-
-
-<h3>Pitting Growth (until load cycle 0)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_12.png)
-
-
-
-<h1>Degradation Gear Out</h1>
-
-
-
-<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>a0</th>
-      <th>n0</th>
-      <th>tooth</th>
-      <th>neol</th>
-      <th>aeol</th>
-      <th>theta1</th>
-      <th>theta2</th>
-      <th>theta3</th>
-      <th>n0_old</th>
-      <th>neol_old</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.579647</td>
-      <td>5.342086e+06</td>
-      <td>12</td>
-      <td>9.205347e+06</td>
-      <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>4.391948e+06</td>
-      <td>9.341308e+06</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>0.551336</td>
-      <td>6.623250e+06</td>
-      <td>5</td>
-      <td>1.058666e+07</td>
-      <td>4.0</td>
-      <td>0.0201</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>5.441903e+06</td>
-      <td>1.073986e+07</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.146248</td>
-      <td>2.587852e+06</td>
-      <td>14</td>
-      <td>9.205347e+06</td>
-      <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>5.601978e+06</td>
-      <td>9.354910e+06</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_17.png)
-
-
-
-<h3>Damage Accumulation (until load cycle 0)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>-1.382792</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>-1.671099</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>-0.391062</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_21.png)
-
-
-
-<h3>Pitting Growth (until load cycle 0)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_46_25.png)
-
-
-<p>Get Degradation Growth: <b>run_degradation(nolc, loads)</b></p>
-<p>Input Arguments:</p>
-<li>nolc: current number of load cycle (must be greater than the previous given nolc)</li>
-<li>loads: Dictionary regarding get_loads(torque) return</li>
-<p>Returns:</p>
-<li>statei </li>
-
-
-```python
-loads = {'GearIn': {'7': [200], '3': [200]},
-         'GearOut': {'12': [200], '5': [200], '14': [200]}}
-
-for nolc in np.linspace(1e6, 6e6, 50):
-    statei = model.Degradation.run_degradation(nolc, loads)
-
-```
-
-
-```python
-pd.DataFrame(statei['GearIn'])
-
-```
-
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>1.0</th>
-      <th>2.0</th>
-      <th>3.0</th>
-      <th>4.0</th>
-      <th>5.0</th>
-      <th>6.0</th>
-      <th>7.0</th>
-      <th>8.0</th>
-      <th>9.0</th>
-      <th>10.0</th>
-      <th>11.0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$a_{6000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1.006265</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>$d_{6000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.233080</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-pd.DataFrame(statei['GearOut'])
-
-```
-
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>1.0</th>
-      <th>2.0</th>
-      <th>3.0</th>
-      <th>4.0</th>
-      <th>5.0</th>
-      <th>6.0</th>
-      <th>7.0</th>
-      <th>8.0</th>
-      <th>9.0</th>
-      <th>10.0</th>
-      <th>...</th>
-      <th>12.0</th>
-      <th>13.0</th>
-      <th>14.0</th>
-      <th>15.0</th>
-      <th>16.0</th>
-      <th>17.0</th>
-      <th>18.0</th>
-      <th>19.0</th>
-      <th>20.0</th>
-      <th>21.0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$a_{6000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.193018</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>$d_{6000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>-0.878143</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-0.56928</td>
-      <td>NaN</td>
-      <td>0.083862</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 21 columns</p>
-</div>
-
-
-
-
-```python
-model.Degradation.summary_degradation()
-
-```
-
-
-<h1>Degradation Gear In</h1>
-
-
-
-<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>a0</th>
-      <th>n0</th>
-      <th>tooth</th>
-      <th>neol</th>
-      <th>aeol</th>
-      <th>theta1</th>
-      <th>theta2</th>
-      <th>theta3</th>
-      <th>n0_old</th>
-      <th>neol_old</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.661548</td>
-      <td>5.161122e+06</td>
-      <td>7</td>
-      <td>8.760057e+06</td>
-      <td>4.0</td>
-      <td>0.0501</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>5.656872e+06</td>
-      <td>8.721440e+06</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>0.100020</td>
-      <td>NaN</td>
-      <td>3</td>
-      <td>1.175231e+07</td>
-      <td>4.0</td>
-      <td>0.0101</td>
-      <td>5.000000e-07</td>
-      <td>4.000000e-01</td>
-      <td>5.839910e+06</td>
-      <td>1.112036e+07</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_4.png)
-
-
-
-<h3>Damage Accumulation (until load cycle 6000000)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>5.081633e+06</th>
-      <th>5.183673e+06</th>
-      <th>5.285714e+06</th>
-      <th>5.387755e+06</th>
-      <th>5.489796e+06</th>
-      <th>5.591837e+06</th>
-      <th>5.693878e+06</th>
-      <th>5.795918e+06</th>
-      <th>5.897959e+06</th>
-      <th>6.000000e+06</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>-1.434069</td>
-      <td>-1.156209</td>
-      <td>-1.127856</td>
-      <td>-1.099503</td>
-      <td>-1.071151</td>
-      <td>-1.042798</td>
-      <td>-1.014445</td>
-      <td>-0.986092</td>
-      <td>-0.957739</td>
-      <td>-0.929386</td>
-      <td>...</td>
-      <td>-0.022096</td>
-      <td>0.006257</td>
-      <td>0.03461</td>
-      <td>0.062963</td>
-      <td>0.091315</td>
-      <td>0.119668</td>
-      <td>0.148021</td>
-      <td>0.176374</td>
-      <td>0.204727</td>
-      <td>0.23308</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 51 columns</p>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_8.png)
-
-
-
-<h3>Pitting Growth (until load cycle 6000000)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>5.081633e+06</th>
-      <th>5.183673e+06</th>
-      <th>5.285714e+06</th>
-      <th>5.387755e+06</th>
-      <th>5.489796e+06</th>
-      <th>5.591837e+06</th>
-      <th>5.693878e+06</th>
-      <th>5.795918e+06</th>
-      <th>5.897959e+06</th>
-      <th>6.000000e+06</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>0.669038</td>
-      <td>0.704058</td>
-      <td>0.740911</td>
-      <td>0.779694</td>
-      <td>0.820506</td>
-      <td>0.863454</td>
-      <td>0.908651</td>
-      <td>0.956213</td>
-      <td>1.006265</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 51 columns</p>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_12.png)
-
-
-
-<h1>Degradation Gear Out</h1>
-
-
-
-<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>a0</th>
-      <th>n0</th>
-      <th>tooth</th>
-      <th>neol</th>
-      <th>aeol</th>
-      <th>theta1</th>
-      <th>theta2</th>
-      <th>theta3</th>
-      <th>n0_old</th>
-      <th>neol_old</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.579647</td>
-      <td>5.342086e+06</td>
-      <td>12</td>
-      <td>9.205347e+06</td>
-      <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>4.391948e+06</td>
-      <td>9.341308e+06</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>0.551336</td>
-      <td>6.623250e+06</td>
-      <td>5</td>
-      <td>1.058666e+07</td>
-      <td>4.0</td>
-      <td>0.0201</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>5.441903e+06</td>
-      <td>1.073986e+07</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>0.146248</td>
-      <td>2.587852e+06</td>
-      <td>14</td>
-      <td>9.205347e+06</td>
-      <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>5.601978e+06</td>
-      <td>9.354910e+06</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_17.png)
-
-
-
-<h3>Damage Accumulation (until load cycle 3142857)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>5.081633e+06</th>
-      <th>5.183673e+06</th>
-      <th>5.285714e+06</th>
-      <th>5.387755e+06</th>
-      <th>5.489796e+06</th>
-      <th>5.591837e+06</th>
-      <th>5.693878e+06</th>
-      <th>5.795918e+06</th>
-      <th>5.897959e+06</th>
-      <th>6.000000e+06</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>-1.382792</td>
-      <td>-1.247205</td>
-      <td>-1.233370</td>
-      <td>-1.219534</td>
-      <td>-1.205699</td>
-      <td>-1.191864</td>
-      <td>-1.178029</td>
-      <td>-1.164194</td>
-      <td>-1.150358</td>
-      <td>-1.136523</td>
-      <td>...</td>
-      <td>-0.693797</td>
-      <td>-0.679961</td>
-      <td>-0.666126</td>
-      <td>-0.652291</td>
-      <td>-0.638456</td>
-      <td>-0.624621</td>
-      <td>-0.610785</td>
-      <td>-0.596950</td>
-      <td>-0.583115</td>
-      <td>-0.569280</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>-1.671099</td>
-      <td>-1.538938</td>
-      <td>-1.525452</td>
-      <td>-1.511967</td>
-      <td>-1.498481</td>
-      <td>-1.484995</td>
-      <td>-1.471510</td>
-      <td>-1.458024</td>
-      <td>-1.444539</td>
-      <td>-1.431053</td>
-      <td>...</td>
-      <td>-0.999513</td>
-      <td>-0.986028</td>
-      <td>-0.972542</td>
-      <td>-0.959057</td>
-      <td>-0.945571</td>
-      <td>-0.932085</td>
-      <td>-0.918600</td>
-      <td>-0.905114</td>
-      <td>-0.891629</td>
-      <td>-0.878143</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>-0.391062</td>
-      <td>-0.311907</td>
-      <td>-0.303830</td>
-      <td>-0.295753</td>
-      <td>-0.287676</td>
-      <td>-0.279599</td>
-      <td>-0.271522</td>
-      <td>-0.263445</td>
-      <td>-0.255369</td>
-      <td>-0.247292</td>
-      <td>...</td>
-      <td>0.011170</td>
-      <td>0.019247</td>
-      <td>0.027324</td>
-      <td>0.035401</td>
-      <td>0.043478</td>
-      <td>0.051555</td>
-      <td>0.059631</td>
-      <td>0.067708</td>
-      <td>0.075785</td>
-      <td>0.083862</td>
-    </tr>
-  </tbody>
-</table>
-<p>3 rows × 51 columns</p>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_21.png)
-
-
-
-<h3>Pitting Growth (until load cycle 3142857)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>5.081633e+06</th>
-      <th>5.183673e+06</th>
-      <th>5.285714e+06</th>
-      <th>5.387755e+06</th>
-      <th>5.489796e+06</th>
-      <th>5.591837e+06</th>
-      <th>5.693878e+06</th>
-      <th>5.795918e+06</th>
-      <th>5.897959e+06</th>
-      <th>6.000000e+06</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>0.151754</td>
-      <td>0.155864</td>
-      <td>0.160086</td>
-      <td>0.164422</td>
-      <td>0.168875</td>
-      <td>0.173449</td>
-      <td>0.178147</td>
-      <td>0.182972</td>
-      <td>0.187928</td>
-      <td>0.193018</td>
-    </tr>
-  </tbody>
-</table>
-<p>3 rows × 51 columns</p>
-</div>
-
-
-
-<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_51_25.png)
-
-
-
-```python
-loads = {'GearIn': {'7': [200], '3': [200]},
-         'GearOut': {'12': [188], '5': [194], '14': [200]}}
-
-for nolc in np.linspace(6.1e6, 10e6, 40):
-    statei = model.Degradation.run_degradation(nolc, loads)
-
-```
-
-
-```python
-pd.DataFrame(statei['GearIn'])
-```
-
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>1.0</th>
-      <th>2.0</th>
-      <th>3.0</th>
-      <th>4.0</th>
-      <th>5.0</th>
-      <th>6.0</th>
-      <th>7.0</th>
-      <th>8.0</th>
-      <th>9.0</th>
-      <th>10.0</th>
-      <th>11.0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$a_{10000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>7.435351</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>$d_{10000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1.344519</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-pd.DataFrame(statei['GearOut'])
-```
-
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>1.0</th>
-      <th>2.0</th>
-      <th>3.0</th>
-      <th>4.0</th>
-      <th>5.0</th>
-      <th>6.0</th>
-      <th>7.0</th>
-      <th>8.0</th>
-      <th>9.0</th>
-      <th>10.0</th>
-      <th>...</th>
-      <th>12.0</th>
-      <th>13.0</th>
-      <th>14.0</th>
-      <th>15.0</th>
-      <th>16.0</th>
-      <th>17.0</th>
-      <th>18.0</th>
-      <th>19.0</th>
-      <th>20.0</th>
-      <th>21.0</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$a_{10000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.550255</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <td>$d_{10000000}$</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>-0.494206</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-0.286066</td>
-      <td>NaN</td>
-      <td>0.400478</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 21 columns</p>
-</div>
-
-
-
-
-```python
-model.Degradation.summary_degradation()
-
-```
-
-
-<h1>Degradation Gear In</h1>
-
-
-
-<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
-
-
-
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>a0</th>
-      <th>n0</th>
-      <th>tooth</th>
-      <th>neol</th>
-      <th>aeol</th>
-      <th>theta1</th>
-      <th>theta2</th>
-      <th>theta3</th>
-      <th>n0_old</th>
-      <th>neol_old</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>0.661548</td>
-      <td>5.161122e+06</td>
-      <td>7</td>
-      <td>8.760057e+06</td>
-      <td>4.0</td>
-      <td>0.0501</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
-      <td>5.656872e+06</td>
-      <td>8.721440e+06</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>0.100020</td>
-      <td>NaN</td>
-      <td>3</td>
-      <td>1.175231e+07</td>
-      <td>4.0</td>
-      <td>0.0101</td>
-      <td>5.000000e-07</td>
-      <td>4.000000e-01</td>
+      <td>0.0001</td>
+      <td>9.500000e-07</td>
+      <td>0.1</td>
       <td>5.839910e+06</td>
       <td>1.112036e+07</td>
     </tr>
@@ -2232,95 +1811,47 @@ model.Degradation.summary_degradation()
 
 
 
-<h3>Damage Accumulation (until load cycle 10000000)</h3>
+<h3>Damage Accumulation (until load cycle 0)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>9.100000e+06</th>
-      <th>9.200000e+06</th>
-      <th>9.300000e+06</th>
-      <th>9.400000e+06</th>
-      <th>9.500000e+06</th>
-      <th>9.600000e+06</th>
-      <th>9.700000e+06</th>
-      <th>9.800000e+06</th>
-      <th>9.900000e+06</th>
-      <th>1.000000e+07</th>
+      <th>0</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
-      <td>-1.434069</td>
-      <td>-1.156209</td>
-      <td>-1.127856</td>
-      <td>-1.099503</td>
-      <td>-1.071151</td>
-      <td>-1.042798</td>
-      <td>-1.014445</td>
-      <td>-0.986092</td>
-      <td>-0.957739</td>
-      <td>-0.929386</td>
-      <td>...</td>
-      <td>1.094445</td>
-      <td>1.122231</td>
-      <td>1.150017</td>
-      <td>1.177803</td>
-      <td>1.205589</td>
-      <td>1.233375</td>
-      <td>1.261161</td>
-      <td>1.288947</td>
-      <td>1.316733</td>
-      <td>1.344519</td>
+      <td>-1.812969</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
+      <td>0.133469</td>
     </tr>
   </tbody>
 </table>
-<p>2 rows × 91 columns</p>
 </div>
 
 
 
-<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3</p>
 
 
 
@@ -2328,90 +1859,42 @@ model.Degradation.summary_degradation()
 
 
 
-<h3>Pitting Growth (until load cycle 10000000)</h3>
+<h3>Pitting Growth (until load cycle 0)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>9.100000e+06</th>
-      <th>9.200000e+06</th>
-      <th>9.300000e+06</th>
-      <th>9.400000e+06</th>
-      <th>9.500000e+06</th>
-      <th>9.600000e+06</th>
-      <th>9.700000e+06</th>
-      <th>9.800000e+06</th>
-      <th>9.900000e+06</th>
-      <th>1.000000e+07</th>
+      <th>0</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
       <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>4.740989</td>
-      <td>4.984065</td>
-      <td>5.239603</td>
-      <td>5.508243</td>
-      <td>5.790657</td>
-      <td>6.08755</td>
-      <td>6.399666</td>
-      <td>6.727783</td>
-      <td>7.072724</td>
-      <td>7.435351</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
+      <td>0.1001</td>
     </tr>
   </tbody>
 </table>
-<p>2 rows × 91 columns</p>
 </div>
 
 
@@ -2433,6 +1916,19 @@ model.Degradation.summary_degradation()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -2453,39 +1949,39 @@ model.Degradation.summary_degradation()
     <tr>
       <td>0</td>
       <td>0.579647</td>
-      <td>5.342086e+06</td>
+      <td>4.328162e+06</td>
       <td>12</td>
-      <td>9.205347e+06</td>
+      <td>9.342841e+06</td>
       <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0301</td>
+      <td>5.150000e-07</td>
+      <td>0.30</td>
       <td>4.391948e+06</td>
       <td>9.341308e+06</td>
     </tr>
     <tr>
       <td>1</td>
       <td>0.551336</td>
-      <td>6.623250e+06</td>
+      <td>5.419820e+06</td>
       <td>5</td>
-      <td>1.058666e+07</td>
+      <td>1.073989e+07</td>
       <td>4.0</td>
-      <td>0.0201</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0401</td>
+      <td>4.250000e-07</td>
+      <td>0.15</td>
       <td>5.441903e+06</td>
       <td>1.073986e+07</td>
     </tr>
     <tr>
       <td>2</td>
       <td>0.146248</td>
-      <td>2.587852e+06</td>
+      <td>5.430618e+06</td>
       <td>14</td>
-      <td>9.205347e+06</td>
+      <td>9.355148e+06</td>
       <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0001</td>
+      <td>1.130000e-06</td>
+      <td>0.10</td>
       <td>5.601978e+06</td>
       <td>9.354910e+06</td>
     </tr>
@@ -2503,120 +1999,51 @@ model.Degradation.summary_degradation()
 
 
 
-<h3>Damage Accumulation (until load cycle 5238095)</h3>
+<h3>Damage Accumulation (until load cycle 0)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>9.100000e+06</th>
-      <th>9.200000e+06</th>
-      <th>9.300000e+06</th>
-      <th>9.400000e+06</th>
-      <th>9.500000e+06</th>
-      <th>9.600000e+06</th>
-      <th>9.700000e+06</th>
-      <th>9.800000e+06</th>
-      <th>9.900000e+06</th>
-      <th>1.000000e+07</th>
+      <th>0</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
-      <td>-1.382792</td>
-      <td>-1.247205</td>
-      <td>-1.233370</td>
-      <td>-1.219534</td>
-      <td>-1.205699</td>
-      <td>-1.191864</td>
-      <td>-1.178029</td>
-      <td>-1.164194</td>
-      <td>-1.150358</td>
-      <td>-1.136523</td>
-      <td>...</td>
-      <td>-0.349789</td>
-      <td>-0.342709</td>
-      <td>-0.335629</td>
-      <td>-0.328548</td>
-      <td>-0.321468</td>
-      <td>-0.314388</td>
-      <td>-0.307307</td>
-      <td>-0.300227</td>
-      <td>-0.293147</td>
-      <td>-0.286066</td>
+      <td>-0.863098</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>-1.671099</td>
-      <td>-1.538938</td>
-      <td>-1.525452</td>
-      <td>-1.511967</td>
-      <td>-1.498481</td>
-      <td>-1.484995</td>
-      <td>-1.471510</td>
-      <td>-1.458024</td>
-      <td>-1.444539</td>
-      <td>-1.431053</td>
-      <td>...</td>
-      <td>-0.580592</td>
-      <td>-0.570994</td>
-      <td>-0.561395</td>
-      <td>-0.551797</td>
-      <td>-0.542198</td>
-      <td>-0.532600</td>
-      <td>-0.523001</td>
-      <td>-0.513403</td>
-      <td>-0.503805</td>
-      <td>-0.494206</td>
+      <td>-1.018750</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>-0.391062</td>
-      <td>-0.311907</td>
-      <td>-0.303830</td>
-      <td>-0.295753</td>
-      <td>-0.287676</td>
-      <td>-0.279599</td>
-      <td>-0.271522</td>
-      <td>-0.263445</td>
-      <td>-0.255369</td>
-      <td>-0.247292</td>
-      <td>...</td>
-      <td>0.329239</td>
-      <td>0.337154</td>
-      <td>0.345070</td>
-      <td>0.352985</td>
-      <td>0.360901</td>
-      <td>0.368816</td>
-      <td>0.376731</td>
-      <td>0.384647</td>
-      <td>0.392562</td>
-      <td>0.400478</td>
+      <td>-1.383763</td>
     </tr>
   </tbody>
 </table>
-<p>3 rows × 91 columns</p>
 </div>
 
 
 
-<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14</p>
 
 
 
@@ -2624,115 +2051,46 @@ model.Degradation.summary_degradation()
 
 
 
-<h3>Pitting Growth (until load cycle 5238095)</h3>
+<h3>Pitting Growth (until load cycle 0)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>0.000000e+00</th>
-      <th>1.000000e+06</th>
-      <th>1.102041e+06</th>
-      <th>1.204082e+06</th>
-      <th>1.306122e+06</th>
-      <th>1.408163e+06</th>
-      <th>1.510204e+06</th>
-      <th>1.612245e+06</th>
-      <th>1.714286e+06</th>
-      <th>1.816327e+06</th>
-      <th>...</th>
-      <th>9.100000e+06</th>
-      <th>9.200000e+06</th>
-      <th>9.300000e+06</th>
-      <th>9.400000e+06</th>
-      <th>9.500000e+06</th>
-      <th>9.600000e+06</th>
-      <th>9.700000e+06</th>
-      <th>9.800000e+06</th>
-      <th>9.900000e+06</th>
-      <th>1.000000e+07</th>
+      <th>0</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
       <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
       <td>NaN</td>
     </tr>
     <tr>
       <td>2</td>
       <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>0.434707</td>
-      <td>0.446242</td>
-      <td>0.458083</td>
-      <td>0.470239</td>
-      <td>0.482717</td>
-      <td>0.495527</td>
-      <td>0.508676</td>
-      <td>0.522174</td>
-      <td>0.536031</td>
-      <td>0.550255</td>
     </tr>
   </tbody>
 </table>
-<p>3 rows × 91 columns</p>
 </div>
 
 
@@ -2744,143 +2102,209 @@ model.Degradation.summary_degradation()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_55_25.png)
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run <u>All</u> Vibration and Degradation</b></p>
-</div>
-<br>
-<p>Initialize Degradation Module: <b>initialize(torque)</b></p>
-<p>Input Arguments:</p>
-<li>torque: input torque</li>
-<p>Returns:</p>
-
-
-```python
-model.initialize(torque_in)
-```
-
-
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Degradation</b></p></div>
-
-
-
-<p><u>Gear in:</u></p>
-
-
-
-<p>Running for tooth 8 failure</p>
-
-
-    [================================================================================] 2000/2000  
-
-
-<p>Running for tooth 6 failure</p>
-
-
-    [================================================================================] 2000/2000  
-
-
-<p><u>Gear out:</u></p>
-
-
-
-<p>Running for tooth 9 failure</p>
-
-
-    [================================================================================] 2000/2000  
-
-
-<p>Running for tooth 18 failure</p>
-
-
-    [================================================================================] 2000/2000  
-
-
-<p>Running for tooth 21 failure</p>
-
-
-    [================================================================================] 2000/2000  
-
-
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Initialize Vibration</b></p></div>
-
-
-
-<p>Done</p>
-
-
-<p>Run Vibration and Degradation: <b>run(nolc, output=True)</b></p>
+<p>Get Degradation Growth: <b>run_degradation(nolc, loads)</b></p>
 <p>Input Arguments:</p>
 <li>nolc: current number of load cycle (must be greater than the previous given nolc)</li>
-<li>output: if true returns vibration signal</li>
+<li>loads: Dictionary regarding get_loads(torque) return</li>
 <p>Returns:</p>
-<li>vibration (if output is True)</li>
-
-<p>Set Torque for upcoming cycles: <b>set(nolc, torque)</b></p>
-<p>Input Arguments:</p>
-<li>nolc: current number of load cycle (must be <b>equal</b> to the previous nolc in run())</li>
-<li>torque: input torque</li>
-<p>Returns:</p>
-
+<li>statei </li>
 
 
 ```python
-for nolc in np.linspace(6.1e6, 9e6, 10):
-    vibration = model.run(nolc, output=True)
-    model.set(nolc, torque_in)
+loads = {'GearIn': {'%i' %(int(i)): [200] for i in range(1, GearIn['no_teeth']+1, 1)},
+         'GearOut': {'%i' %(int(i)): [200] for i in range(1, GearOut['no_teeth']+1, 1)}}
+
+for nolc in np.linspace(1e6, 6e6, 50):
+    statei = model.Degradation.run_degradation(nolc, loads)
 
 ```
 
 
-<p>Load Cycle 6100000 done</p>
-
-
-
-<p>Load Cycle 6422222 done</p>
-
-
-
-<p>Load Cycle 6744444 done</p>
-
-
-
-<p>Load Cycle 7066666 done</p>
-
-
-
-<p>Load Cycle 7388888 done</p>
-
-
-
-<p>Load Cycle 7711111 done</p>
-
-
-
-<p>Load Cycle 8033333 done</p>
-
-
-
-<p>Load Cycle 8355555 done</p>
-
-
-
-<p>Load Cycle 8677777 done</p>
-
-
-
-<p>Load Cycle 9000000 done</p>
-
-
-<p>Summarize Vibration and Degradation: <b>summary()</b></p>
-
-
 ```python
-model.summary()
+pd.DataFrame(statei['GearIn'])
 
 ```
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Degradation</b></p></div>
 
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1.0</th>
+      <th>2.0</th>
+      <th>3.0</th>
+      <th>4.0</th>
+      <th>5.0</th>
+      <th>6.0</th>
+      <th>7.0</th>
+      <th>8.0</th>
+      <th>9.0</th>
+      <th>10.0</th>
+      <th>11.0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$a_{6000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.129886</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.797353</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>$d_{6000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.600695</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.122344</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.DataFrame(statei['GearOut'])
+
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1.0</th>
+      <th>2.0</th>
+      <th>3.0</th>
+      <th>4.0</th>
+      <th>5.0</th>
+      <th>6.0</th>
+      <th>7.0</th>
+      <th>8.0</th>
+      <th>9.0</th>
+      <th>10.0</th>
+      <th>...</th>
+      <th>12.0</th>
+      <th>13.0</th>
+      <th>14.0</th>
+      <th>15.0</th>
+      <th>16.0</th>
+      <th>17.0</th>
+      <th>18.0</th>
+      <th>19.0</th>
+      <th>20.0</th>
+      <th>21.0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$a_{6000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>$d_{6000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.428004</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>-0.236376</td>
+      <td>NaN</td>
+      <td>-0.582951</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 21 columns</p>
+</div>
+
+
+
+
+```python
+model.Degradation.summary_degradation()
+
+```
 
 
 <h1>Degradation Gear In</h1>
@@ -2892,7 +2316,19 @@ model.summary()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -2913,28 +2349,28 @@ model.summary()
     <tr>
       <td>0</td>
       <td>0.661548</td>
-      <td>5.161122e+06</td>
-      <td>8</td>
-      <td>8.760057e+06</td>
+      <td>5.620661e+06</td>
+      <td>7</td>
+      <td>8.720913e+06</td>
       <td>4.0</td>
-      <td>0.0501</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0101</td>
+      <td>6.800000e-07</td>
+      <td>0.2</td>
       <td>5.656872e+06</td>
       <td>8.721440e+06</td>
     </tr>
     <tr>
       <td>1</td>
       <td>0.100020</td>
-      <td>1.827980e+06</td>
-      <td>6</td>
-      <td>9.205347e+06</td>
+      <td>-1.713965e+06</td>
+      <td>3</td>
+      <td>1.112770e+07</td>
       <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0001</td>
+      <td>9.500000e-07</td>
+      <td>0.1</td>
       <td>5.839910e+06</td>
-      <td>9.181707e+06</td>
+      <td>1.112036e+07</td>
     </tr>
   </tbody>
 </table>
@@ -2946,97 +2382,162 @@ model.summary()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_5.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_60_4.png)
 
 
 
-<h3>Damage Accumulation (until load cycle 9000000)</h3>
+<h3>Damage Accumulation (until load cycle 6000000)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
       <th>0.000000e+00</th>
-      <th>6.100000e+06</th>
-      <th>6.422222e+06</th>
-      <th>6.744444e+06</th>
-      <th>7.066667e+06</th>
-      <th>7.388889e+06</th>
-      <th>7.711111e+06</th>
-      <th>8.033333e+06</th>
-      <th>8.355556e+06</th>
-      <th>8.677778e+06</th>
-      <th>9.000000e+06</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>5.081633e+06</th>
+      <th>5.183673e+06</th>
+      <th>5.285714e+06</th>
+      <th>5.387755e+06</th>
+      <th>5.489796e+06</th>
+      <th>5.591837e+06</th>
+      <th>5.693878e+06</th>
+      <th>5.795918e+06</th>
+      <th>5.897959e+06</th>
+      <th>6.000000e+06</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
-      <td>-1.434069</td>
-      <td>-0.041508</td>
-      <td>0.032052</td>
-      <td>0.105611</td>
-      <td>0.179171</td>
-      <td>0.252731</td>
-      <td>0.326290</td>
-      <td>0.399850</td>
-      <td>0.473410</td>
-      <td>0.546969</td>
-      <td>0.620529</td>
+      <td>-1.812969</td>
+      <td>-1.490415</td>
+      <td>-1.457501</td>
+      <td>-1.424588</td>
+      <td>-1.391674</td>
+      <td>-1.358761</td>
+      <td>-1.325848</td>
+      <td>-1.292934</td>
+      <td>-1.260021</td>
+      <td>-1.227107</td>
+      <td>...</td>
+      <td>-0.173877</td>
+      <td>-0.140963</td>
+      <td>-0.108050</td>
+      <td>-0.075136</td>
+      <td>-0.042223</td>
+      <td>-0.009309</td>
+      <td>0.023604</td>
+      <td>0.056518</td>
+      <td>0.089431</td>
+      <td>0.122344</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>-0.247782</td>
-      <td>0.642824</td>
-      <td>0.689869</td>
-      <td>0.736914</td>
-      <td>0.783959</td>
-      <td>0.831003</td>
-      <td>0.878048</td>
-      <td>0.925093</td>
-      <td>0.972138</td>
-      <td>1.019182</td>
-      <td>1.066227</td>
+      <td>0.133469</td>
+      <td>0.211341</td>
+      <td>0.219287</td>
+      <td>0.227233</td>
+      <td>0.235179</td>
+      <td>0.243125</td>
+      <td>0.251071</td>
+      <td>0.259017</td>
+      <td>0.266963</td>
+      <td>0.274909</td>
+      <td>...</td>
+      <td>0.529181</td>
+      <td>0.537127</td>
+      <td>0.545073</td>
+      <td>0.553019</td>
+      <td>0.560965</td>
+      <td>0.568911</td>
+      <td>0.576857</td>
+      <td>0.584803</td>
+      <td>0.592749</td>
+      <td>0.600695</td>
     </tr>
   </tbody>
 </table>
+<p>2 rows × 51 columns</p>
 </div>
 
 
 
-<p>Legend: Row: 0 <=> Tooth: 8 | Row: 1 <=> Tooth: 6)</p>
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3</p>
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_9.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_60_8.png)
 
 
 
-<h3>Pitting Growth (until load cycle 9000000)</h3>
+<h3>Pitting Growth (until load cycle 6000000)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
       <th>0.000000e+00</th>
-      <th>6.100000e+06</th>
-      <th>6.422222e+06</th>
-      <th>6.744444e+06</th>
-      <th>7.066667e+06</th>
-      <th>7.388889e+06</th>
-      <th>7.711111e+06</th>
-      <th>8.033333e+06</th>
-      <th>8.355556e+06</th>
-      <th>8.677778e+06</th>
-      <th>9.000000e+06</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>5.081633e+06</th>
+      <th>5.183673e+06</th>
+      <th>5.285714e+06</th>
+      <th>5.387755e+06</th>
+      <th>5.489796e+06</th>
+      <th>5.591837e+06</th>
+      <th>5.693878e+06</th>
+      <th>5.795918e+06</th>
+      <th>5.897959e+06</th>
+      <th>6.000000e+06</th>
     </tr>
   </thead>
   <tbody>
@@ -3044,41 +2545,62 @@ model.summary()
       <td>0</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>0.700825</td>
-      <td>0.800012</td>
-      <td>0.913236</td>
-      <td>1.042485</td>
-      <td>1.190027</td>
-      <td>1.358449</td>
-      <td>1.550709</td>
-      <td>1.770178</td>
-      <td>2.020709</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.685096</td>
+      <td>0.719951</td>
+      <td>0.757310</td>
+      <td>0.797353</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>NaN</td>
-      <td>1.071208</td>
-      <td>1.274202</td>
-      <td>1.515663</td>
-      <td>1.802882</td>
-      <td>2.144528</td>
-      <td>2.550916</td>
-      <td>3.034316</td>
-      <td>3.609319</td>
-      <td>4.293286</td>
-      <td>5.106864</td>
+      <td>0.1001</td>
+      <td>0.100259</td>
+      <td>0.100285</td>
+      <td>0.100314</td>
+      <td>0.100346</td>
+      <td>0.100381</td>
+      <td>0.10042</td>
+      <td>0.100463</td>
+      <td>0.10051</td>
+      <td>0.100562</td>
+      <td>...</td>
+      <td>0.11249</td>
+      <td>0.113761</td>
+      <td>0.115162</td>
+      <td>0.116706</td>
+      <td>0.118406</td>
+      <td>0.12028</td>
+      <td>0.122344</td>
+      <td>0.124619</td>
+      <td>0.127125</td>
+      <td>0.129886</td>
     </tr>
   </tbody>
 </table>
+<p>2 rows × 51 columns</p>
 </div>
 
 
 
-<p>Legend: Row: 0 <=> Tooth: 8 | Row: 1 <=> Tooth: 6)</p>
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_13.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_60_12.png)
 
 
 
@@ -3091,7 +2613,19 @@ model.summary()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -3112,41 +2646,41 @@ model.summary()
     <tr>
       <td>0</td>
       <td>0.579647</td>
-      <td>4.518059e+06</td>
-      <td>9</td>
-      <td>8.709422e+06</td>
+      <td>4.328162e+06</td>
+      <td>12</td>
+      <td>9.342841e+06</td>
       <td>4.0</td>
-      <td>0.0501</td>
-      <td>5.000000e-07</td>
-      <td>1.000000e-01</td>
+      <td>0.0301</td>
+      <td>5.150000e-07</td>
+      <td>0.30</td>
       <td>4.391948e+06</td>
-      <td>8.721440e+06</td>
+      <td>9.341308e+06</td>
     </tr>
     <tr>
       <td>1</td>
       <td>0.551336</td>
-      <td>6.623250e+06</td>
-      <td>18</td>
-      <td>1.058666e+07</td>
+      <td>5.419820e+06</td>
+      <td>5</td>
+      <td>1.073989e+07</td>
       <td>4.0</td>
-      <td>0.0201</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0401</td>
+      <td>4.250000e-07</td>
+      <td>0.15</td>
       <td>5.441903e+06</td>
       <td>1.073986e+07</td>
     </tr>
     <tr>
       <td>2</td>
       <td>0.146248</td>
-      <td>2.587852e+06</td>
-      <td>21</td>
-      <td>9.205347e+06</td>
+      <td>5.430618e+06</td>
+      <td>14</td>
+      <td>9.355148e+06</td>
       <td>4.0</td>
-      <td>0.0401</td>
-      <td>5.000000e-07</td>
-      <td>1.776357e-15</td>
+      <td>0.0001</td>
+      <td>1.130000e-06</td>
+      <td>0.10</td>
       <td>5.601978e+06</td>
-      <td>9.181707e+06</td>
+      <td>9.354910e+06</td>
     </tr>
   </tbody>
 </table>
@@ -3158,75 +2692,352 @@ model.summary()
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_18.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_60_17.png)
 
 
 
-<h3>Damage Accumulation (until load cycle 4714285)</h3>
+<h3>Damage Accumulation (until load cycle 3142857)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
       <th>0.000000e+00</th>
-      <th>6.100000e+06</th>
-      <th>6.422222e+06</th>
-      <th>6.744444e+06</th>
-      <th>7.066667e+06</th>
-      <th>7.388889e+06</th>
-      <th>7.711111e+06</th>
-      <th>8.033333e+06</th>
-      <th>8.355556e+06</th>
-      <th>8.677778e+06</th>
-      <th>9.000000e+06</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>5.081633e+06</th>
+      <th>5.183673e+06</th>
+      <th>5.285714e+06</th>
+      <th>5.387755e+06</th>
+      <th>5.489796e+06</th>
+      <th>5.591837e+06</th>
+      <th>5.693878e+06</th>
+      <th>5.795918e+06</th>
+      <th>5.897959e+06</th>
+      <th>6.000000e+06</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>0</td>
-      <td>-1.077945</td>
-      <td>-0.304016</td>
-      <td>-0.263134</td>
-      <td>-0.222253</td>
-      <td>-0.181371</td>
-      <td>-0.140489</td>
-      <td>-0.099608</td>
-      <td>-0.058726</td>
-      <td>-0.017845</td>
-      <td>0.023037</td>
-      <td>0.063918</td>
+      <td>-0.863098</td>
+      <td>-0.758643</td>
+      <td>-0.747985</td>
+      <td>-0.737326</td>
+      <td>-0.726668</td>
+      <td>-0.716009</td>
+      <td>-0.705351</td>
+      <td>-0.694692</td>
+      <td>-0.684034</td>
+      <td>-0.673375</td>
+      <td>...</td>
+      <td>-0.332303</td>
+      <td>-0.321644</td>
+      <td>-0.310986</td>
+      <td>-0.300327</td>
+      <td>-0.289669</td>
+      <td>-0.279010</td>
+      <td>-0.268352</td>
+      <td>-0.257693</td>
+      <td>-0.247035</td>
+      <td>-0.236376</td>
     </tr>
     <tr>
       <td>1</td>
-      <td>-1.671099</td>
-      <td>-0.852686</td>
-      <td>-0.809455</td>
-      <td>-0.766223</td>
-      <td>-0.722992</td>
-      <td>-0.679761</td>
-      <td>-0.636530</td>
-      <td>-0.593298</td>
-      <td>-0.550067</td>
-      <td>-0.506836</td>
-      <td>-0.463604</td>
+      <td>-1.018750</td>
+      <td>-0.920291</td>
+      <td>-0.910244</td>
+      <td>-0.900198</td>
+      <td>-0.890151</td>
+      <td>-0.880104</td>
+      <td>-0.870058</td>
+      <td>-0.860011</td>
+      <td>-0.849964</td>
+      <td>-0.839918</td>
+      <td>...</td>
+      <td>-0.518424</td>
+      <td>-0.508377</td>
+      <td>-0.498331</td>
+      <td>-0.488284</td>
+      <td>-0.478237</td>
+      <td>-0.468191</td>
+      <td>-0.458144</td>
+      <td>-0.448097</td>
+      <td>-0.438051</td>
+      <td>-0.428004</td>
     </tr>
     <tr>
       <td>2</td>
-      <td>-0.391062</td>
-      <td>0.099115</td>
-      <td>0.125008</td>
-      <td>0.150900</td>
-      <td>0.176793</td>
-      <td>0.202686</td>
-      <td>0.228579</td>
-      <td>0.254471</td>
-      <td>0.280364</td>
-      <td>0.306257</td>
-      <td>0.332150</td>
+      <td>-1.383763</td>
+      <td>-1.250292</td>
+      <td>-1.236673</td>
+      <td>-1.223054</td>
+      <td>-1.209435</td>
+      <td>-1.195815</td>
+      <td>-1.182196</td>
+      <td>-1.168577</td>
+      <td>-1.154958</td>
+      <td>-1.141339</td>
+      <td>...</td>
+      <td>-0.705524</td>
+      <td>-0.691905</td>
+      <td>-0.678285</td>
+      <td>-0.664666</td>
+      <td>-0.651047</td>
+      <td>-0.637428</td>
+      <td>-0.623809</td>
+      <td>-0.610189</td>
+      <td>-0.596570</td>
+      <td>-0.582951</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 51 columns</p>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_60_21.png)
+
+
+
+<h3>Pitting Growth (until load cycle 3142857)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>5.081633e+06</th>
+      <th>5.183673e+06</th>
+      <th>5.285714e+06</th>
+      <th>5.387755e+06</th>
+      <th>5.489796e+06</th>
+      <th>5.591837e+06</th>
+      <th>5.693878e+06</th>
+      <th>5.795918e+06</th>
+      <th>5.897959e+06</th>
+      <th>6.000000e+06</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 51 columns</p>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_60_25.png)
+
+
+
+```python
+loads = {'GearIn': {'%i' %(int(i)): [200] for i in range(1, GearIn['no_teeth']+1, 1)},
+         'GearOut': {'%i' %(int(i)): [200] for i in range(1, GearOut['no_teeth']+1, 1)}}
+
+for nolc in np.linspace(6.1e6, 10e6, 40):
+    statei = model.Degradation.run_degradation(nolc, loads)
+
+```
+
+
+```python
+pd.DataFrame(statei['GearIn'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1.0</th>
+      <th>2.0</th>
+      <th>3.0</th>
+      <th>4.0</th>
+      <th>5.0</th>
+      <th>6.0</th>
+      <th>7.0</th>
+      <th>8.0</th>
+      <th>9.0</th>
+      <th>10.0</th>
+      <th>11.0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$a_{10000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.435922</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>9.268011</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>$d_{10000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.912181</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.412562</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
   </tbody>
 </table>
@@ -3234,35 +3045,349 @@ model.summary()
 
 
 
-<p>Legend: Row: 0 <=> Tooth: 9 | Row: 1 <=> Tooth: 18 | Row: 2 <=> Tooth: 21)</p>
 
+```python
+pd.DataFrame(statei['GearOut'])
+```
 
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_22.png)
-
-
-
-<h3>Pitting Growth (until load cycle 4714285)</h3>
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>1.0</th>
+      <th>2.0</th>
+      <th>3.0</th>
+      <th>4.0</th>
+      <th>5.0</th>
+      <th>6.0</th>
+      <th>7.0</th>
+      <th>8.0</th>
+      <th>9.0</th>
+      <th>10.0</th>
+      <th>...</th>
+      <th>12.0</th>
+      <th>13.0</th>
+      <th>14.0</th>
+      <th>15.0</th>
+      <th>16.0</th>
+      <th>17.0</th>
+      <th>18.0</th>
+      <th>19.0</th>
+      <th>20.0</th>
+      <th>21.0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$a_{10000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>0.746795</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <td>$d_{10000000}$</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.034174</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>0.181437</td>
+      <td>NaN</td>
+      <td>-0.049078</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 21 columns</p>
+</div>
+
+
+
+
+```python
+model.Degradation.summary_degradation()
+
+```
+
+
+<h1>Degradation Gear In</h1>
+
+
+
+<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a0</th>
+      <th>n0</th>
+      <th>tooth</th>
+      <th>neol</th>
+      <th>aeol</th>
+      <th>theta1</th>
+      <th>theta2</th>
+      <th>theta3</th>
+      <th>n0_old</th>
+      <th>neol_old</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.661548</td>
+      <td>5.620661e+06</td>
+      <td>7</td>
+      <td>8.720913e+06</td>
+      <td>4.0</td>
+      <td>0.0101</td>
+      <td>6.800000e-07</td>
+      <td>0.2</td>
+      <td>5.656872e+06</td>
+      <td>8.721440e+06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.100020</td>
+      <td>-1.713965e+06</td>
+      <td>3</td>
+      <td>1.112770e+07</td>
+      <td>4.0</td>
+      <td>0.0001</td>
+      <td>9.500000e-07</td>
+      <td>0.1</td>
+      <td>5.839910e+06</td>
+      <td>1.112036e+07</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_4.png)
+
+
+
+<h3>Damage Accumulation (until load cycle 10000000)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
       <th>0.000000e+00</th>
-      <th>6.100000e+06</th>
-      <th>6.422222e+06</th>
-      <th>6.744444e+06</th>
-      <th>7.066667e+06</th>
-      <th>7.388889e+06</th>
-      <th>7.711111e+06</th>
-      <th>8.033333e+06</th>
-      <th>8.355556e+06</th>
-      <th>8.677778e+06</th>
-      <th>9.000000e+06</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>9.100000e+06</th>
+      <th>9.200000e+06</th>
+      <th>9.300000e+06</th>
+      <th>9.400000e+06</th>
+      <th>9.500000e+06</th>
+      <th>9.600000e+06</th>
+      <th>9.700000e+06</th>
+      <th>9.800000e+06</th>
+      <th>9.900000e+06</th>
+      <th>1.000000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>-1.812969</td>
+      <td>-1.490415</td>
+      <td>-1.457501</td>
+      <td>-1.424588</td>
+      <td>-1.391674</td>
+      <td>-1.358761</td>
+      <td>-1.325848</td>
+      <td>-1.292934</td>
+      <td>-1.260021</td>
+      <td>-1.227107</td>
+      <td>...</td>
+      <td>1.122263</td>
+      <td>1.154519</td>
+      <td>1.186774</td>
+      <td>1.219030</td>
+      <td>1.251285</td>
+      <td>1.283540</td>
+      <td>1.315796</td>
+      <td>1.348051</td>
+      <td>1.380307</td>
+      <td>1.412562</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.133469</td>
+      <td>0.211341</td>
+      <td>0.219287</td>
+      <td>0.227233</td>
+      <td>0.235179</td>
+      <td>0.243125</td>
+      <td>0.251071</td>
+      <td>0.259017</td>
+      <td>0.266963</td>
+      <td>0.274909</td>
+      <td>...</td>
+      <td>0.842097</td>
+      <td>0.849884</td>
+      <td>0.857671</td>
+      <td>0.865458</td>
+      <td>0.873245</td>
+      <td>0.881032</td>
+      <td>0.888820</td>
+      <td>0.896607</td>
+      <td>0.904394</td>
+      <td>0.912181</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 91 columns</p>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_8.png)
+
+
+
+<h3>Pitting Growth (until load cycle 10000000)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>9.100000e+06</th>
+      <th>9.200000e+06</th>
+      <th>9.300000e+06</th>
+      <th>9.400000e+06</th>
+      <th>9.500000e+06</th>
+      <th>9.600000e+06</th>
+      <th>9.700000e+06</th>
+      <th>9.800000e+06</th>
+      <th>9.900000e+06</th>
+      <th>1.000000e+07</th>
     </tr>
   </thead>
   <tbody>
@@ -3277,12 +3402,366 @@ model.summary()
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>0.603372</td>
-      <td>0.648399</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.117267</td>
+      <td>5.463272</td>
+      <td>5.833624</td>
+      <td>6.230036</td>
+      <td>6.654341</td>
+      <td>7.108503</td>
+      <td>7.594622</td>
+      <td>8.114947</td>
+      <td>8.671884</td>
+      <td>9.268011</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.1001</td>
+      <td>0.100259</td>
+      <td>0.100285</td>
+      <td>0.100314</td>
+      <td>0.100346</td>
+      <td>0.100381</td>
+      <td>0.10042</td>
+      <td>0.100463</td>
+      <td>0.10051</td>
+      <td>0.100562</td>
+      <td>...</td>
+      <td>0.668145</td>
+      <td>0.724766</td>
+      <td>0.787029</td>
+      <td>0.855498</td>
+      <td>0.930790</td>
+      <td>1.013585</td>
+      <td>1.104632</td>
+      <td>1.204753</td>
+      <td>1.314851</td>
+      <td>1.435922</td>
+    </tr>
+  </tbody>
+</table>
+<p>2 rows × 91 columns</p>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 7 | Row: 1 <=> Tooth: 3)</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_12.png)
+
+
+
+<h1>Degradation Gear Out</h1>
+
+
+
+<h3>State 0 Parameter (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a0</th>
+      <th>n0</th>
+      <th>tooth</th>
+      <th>neol</th>
+      <th>aeol</th>
+      <th>theta1</th>
+      <th>theta2</th>
+      <th>theta3</th>
+      <th>n0_old</th>
+      <th>neol_old</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>0.579647</td>
+      <td>4.328162e+06</td>
+      <td>12</td>
+      <td>9.342841e+06</td>
+      <td>4.0</td>
+      <td>0.0301</td>
+      <td>5.150000e-07</td>
+      <td>0.30</td>
+      <td>4.391948e+06</td>
+      <td>9.341308e+06</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0.551336</td>
+      <td>5.419820e+06</td>
+      <td>5</td>
+      <td>1.073989e+07</td>
+      <td>4.0</td>
+      <td>0.0401</td>
+      <td>4.250000e-07</td>
+      <td>0.15</td>
+      <td>5.441903e+06</td>
+      <td>1.073986e+07</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0.146248</td>
+      <td>5.430618e+06</td>
+      <td>14</td>
+      <td>9.355148e+06</td>
+      <td>4.0</td>
+      <td>0.0001</td>
+      <td>1.130000e-06</td>
+      <td>0.10</td>
+      <td>5.601978e+06</td>
+      <td>9.354910e+06</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+<h3>State 0 Degradation Model Plot (Ref. Torque: 200.000 Nm)</h3>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_17.png)
+
+
+
+<h3>Damage Accumulation (until load cycle 5238095)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>9.100000e+06</th>
+      <th>9.200000e+06</th>
+      <th>9.300000e+06</th>
+      <th>9.400000e+06</th>
+      <th>9.500000e+06</th>
+      <th>9.600000e+06</th>
+      <th>9.700000e+06</th>
+      <th>9.800000e+06</th>
+      <th>9.900000e+06</th>
+      <th>1.000000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>-0.863098</td>
+      <td>-0.758643</td>
+      <td>-0.747985</td>
+      <td>-0.737326</td>
+      <td>-0.726668</td>
+      <td>-0.716009</td>
+      <td>-0.705351</td>
+      <td>-0.694692</td>
+      <td>-0.684034</td>
+      <td>-0.673375</td>
+      <td>...</td>
+      <td>0.087429</td>
+      <td>0.097874</td>
+      <td>0.108320</td>
+      <td>0.118765</td>
+      <td>0.129210</td>
+      <td>0.139656</td>
+      <td>0.150101</td>
+      <td>0.160546</td>
+      <td>0.170992</td>
+      <td>0.181437</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>-1.018750</td>
+      <td>-0.920291</td>
+      <td>-0.910244</td>
+      <td>-0.900198</td>
+      <td>-0.890151</td>
+      <td>-0.880104</td>
+      <td>-0.870058</td>
+      <td>-0.860011</td>
+      <td>-0.849964</td>
+      <td>-0.839918</td>
+      <td>...</td>
+      <td>-0.122786</td>
+      <td>-0.112940</td>
+      <td>-0.103094</td>
+      <td>-0.093249</td>
+      <td>-0.083403</td>
+      <td>-0.073557</td>
+      <td>-0.063712</td>
+      <td>-0.053866</td>
+      <td>-0.044020</td>
+      <td>-0.034174</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>-1.383763</td>
+      <td>-1.250292</td>
+      <td>-1.236673</td>
+      <td>-1.223054</td>
+      <td>-1.209435</td>
+      <td>-1.195815</td>
+      <td>-1.182196</td>
+      <td>-1.168577</td>
+      <td>-1.154958</td>
+      <td>-1.141339</td>
+      <td>...</td>
+      <td>-0.169199</td>
+      <td>-0.155853</td>
+      <td>-0.142506</td>
+      <td>-0.129159</td>
+      <td>-0.115812</td>
+      <td>-0.102465</td>
+      <td>-0.089118</td>
+      <td>-0.075772</td>
+      <td>-0.062425</td>
+      <td>-0.049078</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 91 columns</p>
+</div>
+
+
+
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14</p>
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_21.png)
+
+
+
+<h3>Pitting Growth (until load cycle 5238095)</h3>
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0.000000e+00</th>
+      <th>1.000000e+06</th>
+      <th>1.102041e+06</th>
+      <th>1.204082e+06</th>
+      <th>1.306122e+06</th>
+      <th>1.408163e+06</th>
+      <th>1.510204e+06</th>
+      <th>1.612245e+06</th>
+      <th>1.714286e+06</th>
+      <th>1.816327e+06</th>
+      <th>...</th>
+      <th>9.100000e+06</th>
+      <th>9.200000e+06</th>
+      <th>9.300000e+06</th>
+      <th>9.400000e+06</th>
+      <th>9.500000e+06</th>
+      <th>9.600000e+06</th>
+      <th>9.700000e+06</th>
+      <th>9.800000e+06</th>
+      <th>9.900000e+06</th>
+      <th>1.000000e+07</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>0.650485</td>
+      <td>0.660069</td>
+      <td>0.669914</td>
+      <td>0.680028</td>
+      <td>0.69042</td>
+      <td>0.701095</td>
+      <td>0.712062</td>
+      <td>0.723329</td>
+      <td>0.734904</td>
+      <td>0.746795</td>
     </tr>
     <tr>
       <td>1</td>
       <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
       <td>NaN</td>
       <td>NaN</td>
       <td>NaN</td>
@@ -3297,115 +3776,45 @@ model.summary()
     <tr>
       <td>2</td>
       <td>NaN</td>
-      <td>0.203009</td>
-      <td>0.221168</td>
-      <td>0.240951</td>
-      <td>0.262504</td>
-      <td>0.285985</td>
-      <td>0.311566</td>
-      <td>0.339436</td>
-      <td>0.369798</td>
-      <td>0.402876</td>
-      <td>0.438913</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
   </tbody>
 </table>
+<p>3 rows × 91 columns</p>
 </div>
 
 
 
-<p>Legend: Row: 0 <=> Tooth: 9 | Row: 1 <=> Tooth: 18 | Row: 2 <=> Tooth: 21)</p>
+<p>Legend: Row: 0 <=> Tooth: 12 | Row: 1 <=> Tooth: 5 | Row: 2 <=> Tooth: 14)</p>
 
 
 
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_26.png)
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_64_25.png)
 
 
-
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center"><p><b>Summary Vibration</b></p></div>
-
-
-
-<h3>Controls</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_29.png)
-
-
-
-<h3>Accumulated Signal</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_31.png)
-
-
-
-<h3>Bearing 1 Signal</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_33.png)
-
-
-
-<h3>Bearing 2 Signal</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_35.png)
-
-
-
-<h3>Bearing 3 Signal</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_37.png)
-
-
-
-<h3>Bearing 4 Signal</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_39.png)
-
-
-
-<h3>Degradation Signal</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_41.png)
-
-
-
-<h3>Gear Signals</h3>
-
-
-
-![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_62_43.png)
-
-
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
+<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
 <p><b>Details and Theory</b></p>
 </div>
-
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Module Structure</b></p>
-</div>
-<br>
-<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Modules.png" width="80%">
-
-
-<li>GearBox Simulation Toolbox is structured in Modules</li>
-<li>Top Modules are accessing lower Modules</li>
-<li>Helper-Module is used by Modules on the same level</li>
-<li>Modules consisting of several Module Methods</li>
-
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Vibration Element Definition</b></p>
 </div>
 <br>
@@ -3518,21 +3927,23 @@ Bearing =   {'no_elements': 11,                                    # Number of R
 
 <li>The frequencies for the chosen Stationary Signal are estimated by VDI 3832 (Estimation without geometrical dimensions)</li>
 <li>Repeat Methods are not working</li>
-<li>As approximation factor 0.425 is chosen</li>
-<br>
-<div class="container">
-    <div class="col-lg-6 col-md-6  col-sm-2">
-      <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/VDI3832_Bearing_formula.png" width="75%">
-    </div>
-    <div class="col-lg-6 col-md-6  col-sm-2" >
-      <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/VDI3832_Bearing_symbols.png" width="75%">
-    </div>
-<div>
+<li>Formula:</li>
+<ul>
+    <li>f<sub>K</sub> &cong; (0.4....0.45) &sdot; f<sub>n</sub>  (As approximation factor 0.425 is chosen)</li>
+    <li>f<sub>I</sub> &cong; (f<sub>n</sub> &minus; f<sub>K</sub>) &sdot; Z</li>
+    <li>f<sub>A</sub> &cong; Z &sdot; f<sub>K</sub></li>
+</ul>
 
+<li>Legend:</li>
+<ul>
+    <li>f<sub>n</sub>: rotational frequency of the rotor</li>
+    <li>Z: number of rolling elements</li>
+    <li>f<sub>K</sub>: rotational frequency of the rolling element</li>
+    <li>f<sub>I</sub>: inner ring rollover frequency</li>
+    <li>f<sub>A</sub>: outer ring rollover frequency</li>
+</ul>
 
-
-
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Vibration Methods and Theory</b></p>
 </div>
 <br>
@@ -3757,7 +4168,7 @@ plt.show()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_98_0.png)
 
 
-<p>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain original signal and add torque on top</p>
+<p>4. s<sub>t</sub> = s<sub>t</sub> + 1, add one to retain origninal signal and add torque on top</p>
 
 
 ```python
@@ -3788,7 +4199,7 @@ plt.show()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_102_0.png)
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Degradation Element Definition</b></p>
 </div>
 <br>
@@ -3815,7 +4226,7 @@ Deg_Gear = {'Failing_Teeth': 2,                                      # Number of
                              'a': norm(loc=0.450, scale=0.305)},     # P(a_0)
             'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol)
                             'a': norm(loc=4.0, scale=0.)},           # P(a_eol)
-            'Woehler': {'k': 8.5,                                   # Woehler Exponent
+            'Woehler': {'k': 10.5,                                   # Woehler Exponent
                         'np': 10390000,                              # Woehler Reference n
                         'torqp': 200},                               # Woehler Reference sigma in Nm
             'GridSearch': {'slice_theta1': (0.0001, 0.0902, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
@@ -3833,7 +4244,7 @@ Deg_Gear = {'Failing_Teeth': 2,                                      # Number of
 </p>
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Degradation Methods</b></p>
 </div>
 <br>
@@ -3881,7 +4292,19 @@ deg_model.state0.head()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -4021,7 +4444,19 @@ deg_model.state0.head()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -4179,7 +4614,7 @@ Deg_Gear['GridSearch'] = {'slice_theta1': (0.0001, 0.0902, 0.01),
 
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Degradation Theory</b></p>
 </div>
 <br>
@@ -4201,7 +4636,7 @@ Deg_Gear = {'Failing_Teeth': 2,                                      # Number of
                              'a': norm(loc=0.450, scale=0.305)},     # P(a_0)
             'PDF_Deg_EOL': {'n': norm(loc=10390000, scale=1.053e6),  # P(n_eol)
                             'a': norm(loc=4.0, scale=0.)},           # P(a_eol)
-            'Woehler': {'k': 8.5,                                   # Woehler Exponent
+            'Woehler': {'k': 10.5,                                   # Woehler Exponent
                         'np': 10390000,                              # Woehler Reference n
                         'torqp': 200},                               # Woehler Reference sigma in Nm
             'GridSearch': {'slice_theta1': (0.00, 0.09, 0.01),   # Grid for function a = theta1 * exp(theta2 * n) + theta3 defined in slices
@@ -4226,7 +4661,19 @@ deg_model.state0.head()
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -4300,19 +4747,31 @@ deg_model.init_gear_degradation()
 <p>Running for tooth 6 failure</p>
 
 
-    [================================================================================] 27900/27900  
+
 
 
 <p>Running for tooth 1 failure</p>
 
 
-    [================================================================================] 27900/27900  
+
 
 
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -4373,7 +4832,19 @@ deg_model.state0
 
 
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -4638,7 +5109,7 @@ print('D(p) = D(p-1) + \u0394D = %.3e' % (curr_damage))
 </ul>
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
 <p><b>Degradation-Vibration Dependency Element Definition</b></p>
 </div>
 <br>
@@ -4666,7 +5137,7 @@ print('D(p) = D(p-1) + \u0394D = %.3e' % (curr_damage))
 
 ```python
 GearDegVibDict = {'signal': 'gausspulse',                                # Signal type for gear
-                   'fc_factor': 2*rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse definition)
+                   'fc_factor': 2*rotational_frequency_in,                                      # fc = frequency * fc_factor (see gauspulse defintion)
                    'bw_factor': 0.5,                                    # see gauspulse definition
                    'bwr_factor': -6,                                    # see gauspulse definition
                    'scale_method': 'linear',                            # Scale Method (See Torque Influence Method)
@@ -4680,4 +5151,101 @@ GearDegVibDict = {'signal': 'gausspulse',                                # Signa
                    'noise_attributes': {'mu': 0, 'sigma': 0.005},       # Attributes regarding Noise Method for
                    't2t_factor': 1
                    }
+```
+
+<br><br><div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
+<p><b>Vibration Signal Analyses</b></p>
+</div>
+<br><br><div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
+<p><b>TBD</b></p>
+</div>
+<br>
+
+
+```python
+from sklearn.metrics import mean_squared_error as mse
+
+
+nolcno = len(vibrations)
+vibrations = np.array(vibrations).reshape(nolcno, -1)
+zeros = np.zeros(vibrations.shape)
+y_mse =[]
+for vibration in vibrations:
+    y_mse.append(mse(vibration, np.zeros(vibration.shape)))
+```
+
+
+```python
+plt.plot(y_mse)
+```
+
+
+
+
+    [<matplotlib.lines.Line2D at 0x23c1da19208>]
+
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_177_1.png)
+
+
+
+```python
+#questions = input("Questions?")
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+#%% Parameter Pipeline
+alpha = 0.01 #tukey window parameter
+pp = 10 #pooling_parameter - window size
+yf, xf = gf.rfft_y(vibration, alpha, sample_rate, pp, scale=False)
+```
+
+
+```python
+plt.figure(figsize=[15,10])
+plt.plot(xf, yf)
+```
+
+
+
+
+    [<matplotlib.lines.Line2D at 0x23c1d553288>]
+
+
+
+
+![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_182_1.png)
+
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
 ```

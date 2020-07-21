@@ -20,7 +20,6 @@ def get_sample_time_torque(rotational_frequency_in, sample_rate, no_teeth_in, no
     toothmeshlcm = np.lcm(no_teeth_in,
                            no_teeth_out)
     min_time = time2tooth * toothmeshlcm
-    min_time
 
     sample_time = np.arange(0, min_time, 1/sample_rate)
     return(sample_time)
@@ -37,7 +36,7 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
         yt = scaler.fit_transform(yt.reshape(-1, 1))
     #rfft
     yf = np.abs(rfft(yt, n=sample_rate, axis=0))
-    xf = rfftfreq(sample_rate, d=1./sample_rate).reshape(-1, 1)
+    xf = rfftfreq(yt.size, d=1./sample_rate).reshape(-1, 1)
     #max pooling
     if yf.shape[0]%pp!=0:
         num_pad = (yf.shape[0]//pp) * pp + pp - yf.shape[0]
@@ -48,6 +47,23 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
     fac_xf = (np.max(xf, axis=0) - np.min(xf, axis=0))/xf.shape[0] # stepsize xf
     xf_mp = np.arange((pp//2) * fac_xf,(yf_mp.shape[0]*pp) * fac_xf + 1, pp * fac_xf)
     return(yf_mp, xf_mp)
+
+def repeat2no_values(vector, no_values):
+    """
+    Repeat the given vector as many times needed,
+    to create a repeat_vector of given number of
+    values (no_values)
+    """
+    # Calculate number of repetitions
+    no_values_vector = vector.shape[0]
+    repetitions = np.ceil((no_values / no_values_vector))
+    repetitions = int(repetitions) #dtype decl. not working
+    # Repeat Vetor
+    repeat_vector = np.tile(vector, repetitions)
+    # Trim to final length
+    repeat_vector = np.delete(repeat_vector,
+                              np.s_[no_values:], axis=0)
+    return(repeat_vector)
 
 def plot_gear_polar(df, kind='order', no_teeth=None, **kwargs):
     """
@@ -148,39 +164,3 @@ def plot_gear_polar(df, kind='order', no_teeth=None, **kwargs):
     ax.set_rlabel_position(+90)  # Move radial labels away from plotted line
 
     plt.show()
-
-def repeat2no_values(vector, no_values):
-    """
-    Repeat the given vector as many times needed,
-    to create a repeat_vector of given number of
-    values (no_values)
-    """
-    # Calculate number of repetitions
-    no_values_vector = vector.shape[0]
-    repetitions = np.ceil((no_values / no_values_vector))
-    repetitions = int(repetitions) #dtype decl. not working
-    # Repeat Vetor
-    repeat_vector = np.tile(vector, repetitions)
-    # Trim to final length
-    repeat_vector = np.delete(repeat_vector,
-                              np.s_[no_values:], axis=0)
-    return(repeat_vector)
-
-
-def get_cids(time, time_shift, time_start=0, id_start=0):
-    """
-    Shift a given signal by a given time shift.
-    """
-    # Shift signal for each gear
-    ti, tv = id_start, time_start
-    #shifted_signal = np.zeros((time.shape[0], 1))
-    cid_list = list()
-    while tv < (max(time)+time_shift):
-        # Add current center id to list
-        cid_list.append(ti)
-        # Get new shift arguments
-        tv += time_shift
-        ti = np.argmin(np.abs(time - tv))
-    # Remove first zero axis
-    #shifted_signal = np.delete(shifted_signal, 0, 1)
-    return(cid_list)

@@ -39,6 +39,7 @@ class Bearing_Degradation(Degradation_Helper,
     def __init__(self,
                  degdict,
                  seed, # arguments given by parent class
+                 verbose=0,
                  ):
         """
         Constructor method for Gear Degradation

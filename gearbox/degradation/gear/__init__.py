@@ -39,6 +39,7 @@ class Gear_Degradation(Degradation_Helper,
     def __init__(self, no_teeth,
                  degdict,
                  seed, # arguments given by parent class
+                 verbose=0,
                  ):
         """
         Constructor method for Gear Degradation
@@ -61,6 +62,7 @@ class Gear_Degradation(Degradation_Helper,
         self.oppo_chance = degdict['Chances']['opposite']
         self.keeporder_chance = degdict['Chances']['keeporder']
         self.seed = seed
+        self.verbose = verbose
         self.seed_counter = seed
         # States:
         self.state0 = None
@@ -104,7 +106,7 @@ class Gear_Degradation(Degradation_Helper,
         if ((self.no_failing is None) or (self.no_failing==0)):
             return(None)
         else:
-            assert ((self.nolc[-1] < nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be greater than the previous'
+            assert ((self.nolc[-1] <= nolc) or (np.isnan(self.nolc[-1])) or (self.nolc[-1])==0), 'Given nolc argument must be equal or greater than the previous'
             self.nolc.append(nolc)
             self.nolc_ref.append(nolc_ref)
             self.get_damage_growth(loads)

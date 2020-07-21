@@ -252,7 +252,7 @@ class SignalHelper():
             # Choose Method and transform
             if 'linear' in method:
                 array = array # linear scaling
-                scaler.fit(np.array([kwargs['value_min'], kwargs['value_max']]).reshape(-1, 1))
+                scaler.fit(np.array([kwargs['value_min'], kwargs['value_max']], dtype=np.float64).reshape(-1, 1))
                 array = scaler.transform(array)
                 scale_vector = scale_base_vector + array
             if 'polynomial' in method:
@@ -346,12 +346,15 @@ class NonstationarySignals():
             Class constructor for stationary raw signal methods
             """
 
-        def run(self, time, frq, bw=0.5, bwr=-6, ampl=1):
+        def run(self, time, frq, bw=0.5, bwr=-6, ampl=1, retquad=False):
             """
             Method to generate a sine signal for a given
             time array, a frequency and amplitude.
             """
-            signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=False, retenv=False)
+            if retquad is False:
+                signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=False, retenv=False)
+            elif retquad is True:
+                _, signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=True, retenv=False)                
             signal = signal * ampl
             signal_center = np.argmin(np.abs(time))
             signal = signal.reshape(-1, 1)
