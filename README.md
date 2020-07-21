@@ -1,4 +1,5 @@
-<br><br>#Gearbox Simulation Model
+<br><br>
+#Gearbox Simulation Model
 
 
 <p><b>Simulation of the vibration behaviour of a gearbox under degradation</b></p>
