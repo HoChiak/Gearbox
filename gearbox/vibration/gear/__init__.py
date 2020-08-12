@@ -181,15 +181,17 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         Method to initialize the raw signal simulated by the given gear.
         """
         signal = np.zeros((self.time.shape[0], 1))
-        for harmonic in self.harmonics:
+        for i, harmonic in enumerate(self.harmonics):
             # Get Gear relevant parameters
             time2tooth = (1 / self.rotational_frequency) / self.no_teeth
-            center_frequency = self.rotational_frequency * self.no_teeth * harmonic
+            center_frequency = self.rotational_frequency * self.no_teeth * abs(harmonic)
             # Mirror time to keep negative half of non stationary signal
             mirrored_time = self.mirror_at_0(self.time)
             # Get single tooth signal with amplitude=1
             tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
-                                                               center_frequency)
+                                                               center_frequency,
+                                                               bw=0.5*abs(harmonic))
+            tooth_signal = tooth_signal * harmonic / abs(harmonic)                   
             # Remove all values on the left where tooth_signal == 0 (save computational ressources)
             tooth_signal, tooth_center = self.remove_left_0s(tooth_signal, tooth_center)
             # Extend array to avoide "index out a range"
@@ -201,9 +203,10 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                                                              time=self.time, time_shift=time2tooth,
                                                              time_start=0, id_start=0)
             # Get teeth list
-            teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
-            teeth_no_list = self.repeat2no_values(teeth_numbering,
-                                                  no_values=teeth_signal.shape[1])
+            if i==0:
+                teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
+                teeth_no_list = self.repeat2no_values(teeth_numbering,
+                                                      no_values=teeth_signal.shape[1])
             signal = np.concatenate([signal, np.sum(teeth_signal, axis=1).reshape(-1, 1)], axis=1)
             # Get new shift arguments
         # Remove first zero axis

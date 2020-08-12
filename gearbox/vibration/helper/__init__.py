@@ -343,7 +343,7 @@ class NonstationarySignals():
 
         def __init__(self):
             """
-            Class constructor for stationary raw signal methods
+            Class constructor for non stationary raw signal methods
             """
 
         def run(self, time, frq, bw=0.5, bwr=-6, ampl=1, retquad=False):
@@ -354,7 +354,7 @@ class NonstationarySignals():
             if retquad is False:
                 signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=False, retenv=False)
             elif retquad is True:
-                _, signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=True, retenv=False)                
+                _, signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=True, retenv=False)
             signal = signal * ampl
             signal_center = np.argmin(np.abs(time))
             signal = signal.reshape(-1, 1)
