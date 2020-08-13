@@ -141,10 +141,7 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         """
         self.get_real_sample_time()
         self.get_torque_sample_time()
-        if self.fixed_start is True:
-            self.temp_sample_time = self.real_sample_time
-        else:
-            self.temp_sample_time = self.torque_sample_time
+        self.temp_sample_time = self.torque_sample_time
         self.check_declaration(self.GearPropIn, key='no_teeth', message='')
         self.check_declaration(self.GearPropOut, key='no_teeth', message='')
         self.gear_ratio =  self.GearPropOut['no_teeth']/self.GearPropIn['no_teeth']
