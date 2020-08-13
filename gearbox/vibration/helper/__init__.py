@@ -147,7 +147,7 @@ class SignalHelper():
                      time_start=0, id_start=0):
         """
         Shift a given signal by a given time shift.
-        Signal:  [|--]
+        Signal:  [--|--]
         Signal_center: 2 (Id of | in the given array)
         time: time array
         time shift: how many time units a signal is
@@ -182,6 +182,9 @@ class SignalHelper():
             ti = np.argmin(np.abs(time - tv))
         # Remove first zero axis
         shifted_signal = np.delete(shifted_signal, 0, 1)
+        # Remove doubled last values (bug)
+        del(cid_list[-1])
+        shifted_signal = np.delete(shifted_signal, -1, 1)
         return(shifted_signal, cid_list)
 
     def create_amplitude_vector(self, method='const', **kwargs):
