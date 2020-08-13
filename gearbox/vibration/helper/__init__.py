@@ -183,8 +183,9 @@ class SignalHelper():
         # Remove first zero axis
         shifted_signal = np.delete(shifted_signal, 0, 1)
         # Remove doubled last values (bug)
-        del(cid_list[-1])
-        shifted_signal = np.delete(shifted_signal, -1, 1)
+        if cid_list[-1]==cid_list[-2]:
+            del(cid_list[-1])
+            shifted_signal = np.delete(shifted_signal, -1, 1)
         return(shifted_signal, cid_list)
 
     def create_amplitude_vector(self, method='const', **kwargs):
