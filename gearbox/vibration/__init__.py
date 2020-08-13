@@ -224,12 +224,14 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
                            self.GearPropIn,
                            self.sample_rate, self.temp_sample_time,
                            self.torque_in,
-                           GearDegVibDict=self.GearDegVibDictIn)
+                           GearDegVibDict=self.GearDegVibDictIn,
+                           seed=self.seed)
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
                            self.sample_rate, self.temp_sample_time,
                            self.torque_in, #!!!!!!!!!!!!!!!!!!!!! (Code1234)
-                           GearDegVibDict=self.GearDegVibDictOut)
+                           GearDegVibDict=self.GearDegVibDictOut,
+                           seed=self.seed)
         # print('--- Execution Time "Gears Init": %.3f' % (time.time() - start))
         # start = time.time()
         self.Bearing1 = Bearing(self.rotational_frequency_in,
@@ -260,11 +262,14 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # self.init_torque_attributes(torque)
         # seed dependencie on number of load cycles
         if self.seed is not None:
-            np.random.seed(np.random.randint(1, high=2**16, size=1, dtype=np.int32)[0])
+            seed = np.random.randint(1, high=2**16, size=1, dtype=np.int32)[0]
+            np.random.seed(seed)
+        else:
+            seed = self.seed
         # Gear Signals
         # start = time.time()
-        self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
-        self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
+        self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal(seed)
+        self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal(seed)
         # print('--- Execution Time "Gears Vibration Signal": %.3f' % (time.time() - start))
         # start = time.time()
         # Bearing Signals
