@@ -29,7 +29,7 @@ from gearbox.vibration.helper import BasicHelper
 class Gear(BasicHelper, SignalHelper, NonstationarySignals):
 
     def __init__(self, rotational_frequency, geardict,
-                 sample_rate, time, torque_sample_time,
+                 sample_rate, sample_time, torque_sample_time,
                  torque, GearDegVibDict=None,
                  seed=None):
         """
@@ -41,7 +41,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.rotational_frequency = rotational_frequency
         self.geardict = geardict
         self.sample_rate = sample_rate
-        self.time = time
+        self.sample_time = sample_time
         self.torque_sample_time = torque_sample_time
         self.torque = torque
         self.GearDegVibDict = GearDegVibDict
@@ -71,6 +71,13 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             self.harmonics = np.abs(self.geardict['harmonics']).tolist()
         else:
             self.harmonics = [1]
+        # # Key 'harmonics_fac'
+        if 'harmonics_fac' in self.geardict:
+            assert isinstance(self.geardict['harmonics_fac'], (list, tuple)), 'harmonics_fac must be given as list'
+            assert len(self.geardict['harmonics_fac'])==len(self.harmonics), 'length of harmonics_fac must equal number of given harmonics'
+            self.harmonics_fac = self.geardict['harmonics_fac']
+        else:
+            self.harmonics_fac = np.ones(len(self.harmonics)).tolist()
         # Key 'signal'
         self.check_declaration(self.geardict, key='signal', message='')
         assert self.geardict['signal'] in self.signal_list, 'signal must be one of the following: %s' % (str(self.signal_list))
@@ -209,26 +216,27 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         time2tooth = (1 / self.rotational_frequency) / self.no_teeth
         center_frequency = self.rotational_frequency * self.no_teeth # TBD check this formula
         # Mirror time to keep negative half of non stationary signal
-        mirrored_time = self.mirror_at_0(self.time)
+        mirrored_time = self.mirror_at_0(self.sample_time)
         # Get single tooth signal with amplitude=1
         tooth_signal, tooth_center = self.signal_model.run(mirrored_time,
                                                            center_frequency)
         # Remove all values on the left where tooth_signal == 0 (save computational ressources)
         tooth_signal, tooth_center = self.remove_left_0s(tooth_signal, tooth_center)
         # Extend array to avoide "index out a range"
-        tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
-        tooth_center += self.time.shape[0]
+        tooth_signal = self.extend_array(tooth_signal, 0, self.sample_time.shape[0])
+        tooth_center += self.sample_time.shape[0]
         # save values to pase them to get_ids_bounds
         self.tooth_center = tooth_center
         self.time2tooth = time2tooth
         # Get ids bounds
-        self.ids_bounds = self.get_ids_bounds(self.time)
+        # self.ids_bounds = self.get_ids_bounds(self.sample_time)
         self.ids_bounds_torque = self.get_ids_bounds(self.torque_sample_time)
         # Shift signal for each tooth
         teeth_signal, teeth_cid_list = self.shift_signal(signal=tooth_signal,
                                                          signal_center=tooth_center,
-                                                         time=self.time, time_shift=time2tooth,
+                                                         time=self.sample_time, time_shift=time2tooth,
                                                          time_start=0, id_start=0)
+        self.ids_bounds = self.ids_bounds_torque[:teeth_signal.shape[1], :]
         # Get teeth list
         teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
         teeth_no_list = self.repeat2no_values(teeth_numbering,
@@ -242,6 +250,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             signal_harmonic_i = signal_harmonic_i[::harmonic, :]
             # Assign pos or neg sign to harmonic_i based on plus_minus_harmoncis
             signal_harmonic_i = signal_harmonic_i * self.plus_minus_harmonics[i]
+            signal_harmonic_i = signal_harmonic_i * self.harmonics_fac[i]
             signal += signal_harmonic_i
         # Norm by number of harmonics
         signal = signal / len(self.harmonics)
@@ -290,7 +299,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         noise_vector = self.create_amplitude_vector(method=self.noise_method,
                                                     mu=self.noise_mu,
                                                     sigma=self.noise_sigma,
-                                                    no_values=self.time.shape[0])
+                                                    no_values=self.sample_time.shape[0])
         base_signal = base_signal + noise_vector.reshape(-1, 1)
         return(base_signal, self.teeth_signal, self.teeth_no_list, self.teeth_cid_list)
 
@@ -325,6 +334,9 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             else:
                 if (id_low_up[0]-prev)!=0:
                     if abs(id_low_up[0]-prev)>1:
+                        print(idx)
+                        print(prev)
+                        print(id_low_up)
                         raise ValueError('Deviation in IDS bounds larger than one: contact hochiak')
                     else:
                         new_value = int(id_low_up[0]+prev)/2
@@ -393,7 +405,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         #teeth_signal = np.array(teeth_signal).reshape(-1, 1)
         # Crop if given id exceeds bounds
         lower_crop = np.abs(self.ids_bounds[0, 0])
-        upper_crop = min(self.time.shape[0] - np.abs(self.ids_bounds[-1, 1]), -1)
+        upper_crop = min(self.sample_time.shape[0] - np.abs(self.ids_bounds[-1, 1]), -1)
         for tooth_i in range(1, self.no_teeth+1, 1):
             del(teeth_signal['%i' % (tooth_i)][:lower_crop])
             del(teeth_signal['%i' % (tooth_i)][upper_crop:])
@@ -411,7 +423,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             # Iterate over pitting (ordered by tooth number)
             pittings = []
             labels = []
-            signal = np.zeros((self.time.shape[0], 1))
+            signal = np.zeros((self.sample_time.shape[0], 1))
             for tooth, pitting in enumerate(statei.loc['$a_{%i}$' % (nolc)]):
                 # if no pitting @ tooth
                 if np.isnan(pitting):
@@ -466,10 +478,10 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                 noise_vector = self.create_amplitude_vector(method=self.GearDegVibDict['noise_method'],
                                                             mu=self.GearDegVibDict['noise_attributes']['mu'],
                                                             sigma=self.GearDegVibDict['noise_attributes']['sigma'],
-                                                            no_values=self.time.shape[0])
+                                                            no_values=self.sample_time.shape[0])
                 degr_signal = degr_signal + noise_vector.reshape(-1, 1)
             return(degr_signal, labels)
         else:
-            degr_signal = np.zeros(self.time.shape)
+            degr_signal = np.zeros(self.sample_time.shape)
             labels = ['None']
             return(degr_signal, labels)
