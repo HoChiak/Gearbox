@@ -223,12 +223,14 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.GearIn = Gear(self.rotational_frequency_in,
                            self.GearPropIn,
                            self.sample_rate, self.temp_sample_time,
+                           self.torque_sample_time,
                            self.torque_in,
                            GearDegVibDict=self.GearDegVibDictIn,
                            seed=self.seed)
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
                            self.sample_rate, self.temp_sample_time,
+                           self.torque_sample_time,
                            self.torque_in, #!!!!!!!!!!!!!!!!!!!!! (Code1234)
                            GearDegVibDict=self.GearDegVibDictOut,
                            seed=self.seed)

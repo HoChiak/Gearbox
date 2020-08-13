@@ -29,7 +29,8 @@ from gearbox.vibration.helper import BasicHelper
 class Gear(BasicHelper, SignalHelper, NonstationarySignals):
 
     def __init__(self, rotational_frequency, geardict,
-                 sample_rate, time, torque, GearDegVibDict=None,
+                 sample_rate, time, torque_sample_time,
+                 torque, GearDegVibDict=None,
                  seed=None):
         """
         Class constructor.
@@ -41,6 +42,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.geardict = geardict
         self.sample_rate = sample_rate
         self.time = time
+        self.torque_sample_time = torque_sample_time
         self.torque = torque
         self.GearDegVibDict = GearDegVibDict
         self.teeth_no_list = None
@@ -49,10 +51,9 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.interpret_dict()
         self.interpret_deg_dict()
         self.get_plus_minus_harmonics()
-        self.get_base_signal()
+        self.init_gear()
 #         self.get_ids2tooth()
-        self.get_ids_bounds()
-        self.element_degr_signal()
+        self.init_degr_signal()
 
     def interpret_dict(self):
         """
@@ -200,7 +201,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.plus_minus_harmonics = plus_minus_harmonics
 
 
-    def get_base_signal(self):
+    def init_gear(self):
         """
         Method to initialize the raw signal simulated by the given gear.
         """
@@ -217,6 +218,12 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Extend array to avoide "index out a range"
         tooth_signal = self.extend_array(tooth_signal, 0, self.time.shape[0])
         tooth_center += self.time.shape[0]
+        # save values to pase them to get_ids_bounds
+        self.tooth_center = tooth_center
+        self.time2tooth = time2tooth
+        # Get ids bounds
+        self.ids_bounds = self.get_ids_bounds(self.time)
+        self.ids_bounds_torque = self.get_ids_bounds(self.torque_sample_time)
         # Shift signal for each tooth
         teeth_signal, teeth_cid_list = self.shift_signal(signal=tooth_signal,
                                                          signal_center=tooth_center,
@@ -226,6 +233,8 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         teeth_numbering = np.arange(1, self.no_teeth+0.1, 1, dtype=np.int32)
         teeth_no_list = self.repeat2no_values(teeth_numbering,
                                               no_values=teeth_signal.shape[1])
+        teeth_no_list_torque = self.repeat2no_values(teeth_numbering,
+                                                     no_values=np.shape(self.ids_bounds_torque)[0])
         signal = np.zeros(teeth_signal.shape)
         for i, harmonic in enumerate(self.harmonics):
             signal_harmonic_i = np.tile(teeth_signal, [harmonic, 1])
@@ -239,12 +248,13 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.base_signal = signal
         self.teeth_signal = teeth_signal
         self.teeth_no_list = teeth_no_list
+        self.teeth_no_list_torque = teeth_no_list_torque
         self.teeth_cid_list = teeth_cid_list
 
     # def get_ids2tooth(self):
     #     """
     #     Get smallest number of ids assigned to one tooth
-    #     Method get_base_signal() must have been run
+    #     Method init_gear() must have been run
     #     """
     #     # Get Tooth Center IDs
     #     ids_array = np.array(dc(self.teeth_cid_list))
@@ -284,18 +294,16 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         base_signal = base_signal + noise_vector.reshape(-1, 1)
         return(base_signal, self.teeth_signal, self.teeth_no_list, self.teeth_cid_list)
 
-    def get_ids_bounds(self):
+    def get_ids_bounds(self, time):
         """
         Method to get neccessary values for method load_per_tooth() at
         initialization
         """
-        # Cover initialization
-        if self.teeth_no_list is None:
-            self.get_base_signal()
-            # self.get_ids2tooth()
         # Get Tooth Center IDs
-        ids_array = np.array(dc(self.teeth_cid_list))
-        ids_array = ids_array.reshape(-1, 1)
+        cids = self.shift_cid(signal_center=self.tooth_center,
+                                   time=time, time_shift=self.time2tooth,
+                                   time_start=0, id_start=0)
+        ids_array = np.array(cids).reshape(-1, 1)
         # Get distance between 2 tooth in no ids
         dist_ids = np.abs(np.subtract(ids_array[1:-1], ids_array[0:-2])).reshape(-1)
         dist_ids = np.concatenate([[min(dist_ids)], dist_ids, [max(dist_ids)]]).reshape(-1, 1)
@@ -324,7 +332,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                         ids_bounds[idx-1, 1] = new_value
             prev = id_low_up[1]
         # Add arguments
-        self.ids_bounds = ids_bounds
+        return(ids_bounds)
 
     def load_per_tooth(self, torque):
         """
@@ -339,14 +347,14 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         # Dict tooth no
         load_dict = {str(idx+1): [] for idx in range(self.no_teeth)}
         # Iterate over torque and get mean value of load per tooth and load cycle
-        for idx, id_low_up in enumerate(self.ids_bounds):
+        for idx, id_low_up in enumerate(self.ids_bounds_torque):
             low_id = max([0, id_low_up[0]])
-            up_id = min([self.time.shape[0], id_low_up[1]])
-            load_dict[str(self.teeth_no_list[idx])].append(np.mean(torque[low_id:up_id]))
+            up_id = min([self.torque_sample_time.shape[0], id_low_up[1]])
+            load_dict[str(self.teeth_no_list_torque[idx])].append(np.mean(torque[low_id:up_id]))
         return(load_dict)
 
 
-    def element_degr_signal(self):
+    def init_degr_signal(self):
         """
         Method to initialize the degradation raw signal simulated
         by the given gear.
@@ -389,12 +397,6 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         for tooth_i in range(1, self.no_teeth+1, 1):
             del(teeth_signal['%i' % (tooth_i)][:lower_crop])
             del(teeth_signal['%i' % (tooth_i)][upper_crop:])
-        # Get teeth list (not starting at zero due to following enumerate)
-        teeth_numbering = np.arange(0, self.no_teeth, 1, dtype=np.int32)
-        teeth_no_list = self.repeat2no_values(teeth_numbering,
-                                              no_values=np.shape(self.ids_bounds)[0])
-
-        self.teeth_degr_no_list = teeth_no_list
         self.teeth_degr_signal = teeth_signal
 
 
