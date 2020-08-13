@@ -188,6 +188,41 @@ class SignalHelper():
             shifted_signal = np.delete(shifted_signal, -1, 1)
         return(shifted_signal, cid_list)
 
+    def shift_cid(self, signal_center, time, time_shift,
+                  time_start=0, id_start=0):
+        """
+        Shift a given signal by a given time shift.
+        Signal_center: 2 (Id of | in the given array)
+        time: time array
+        time shift: how many time units a signal is
+                    shifted each shift
+        time_start = corresponding to id_start
+        id_start = 2 (Places first center at id 2)
+        Example:
+        [[--|-------------------------------------]
+         [----|-----------------------------------]
+         [------|---------------------------------]
+         [--------|-------------------------------]
+         [----------|-----------------------------]
+         [------------|---------------------------]]
+        """
+        # Shift signal for each gear
+        ti, tv = id_start, time_start
+        cid_list = list()
+        while tv < (max(time)+time_shift):
+            # Add current center id to list
+            cid_list.append(ti)
+            # Get IDs for shift
+            min_id, max_id = signal_center-ti, -(ti+1)
+            # Get new shift arguments
+            tv += time_shift
+            ti = np.argmin(np.abs(time - tv))
+        # Remove first zero axis
+        # Remove doubled last values (bug)
+        if cid_list[-1]==cid_list[-2]:
+            del(cid_list[-1])
+        return(cid_list)
+
     def create_amplitude_vector(self, method='const', **kwargs):
         """
         """
