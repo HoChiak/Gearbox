@@ -50,7 +50,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
         self.seed = seed
         self.interpret_dict()
         self.interpret_deg_dict()
-        self.get_plus_minus_harmonics()
+        self.get_plus_minus_harmonics_oddeven()
         self.init_gear()
 #         self.get_ids2tooth()
         self.init_degr_signal()
@@ -189,7 +189,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             # Key 't2t_factor'
 #             self.check_declaration(self.GearDegVibDict, key='t2t_factor', message='')
 
-    def get_plus_minus_harmonics(self):
+    def get_plus_minus_harmonics_random(self):
         """
         Method to create a ones vector which assigns each
         harmonic a positive or negative sign. (Fixed over all iterations)
@@ -207,6 +207,18 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
             np.random.seed(self.seed)
         self.plus_minus_harmonics = plus_minus_harmonics
 
+    def get_plus_minus_harmonics_oddeven(self):
+        """
+        Method to create a ones vector which assigns each
+        harmonic a positive or negative sign. (Fixed over all iterations)
+        """
+        plus_minus_harmonics = []
+        for i, harmonic in enumerate(self.harmonics):
+            if (harmonic % 2) == 0:
+                plus_minus_harmonics.append(-1)
+            else:
+                plus_minus_harmonics.append(1)
+        self.plus_minus_harmonics = plus_minus_harmonics
 
     def init_gear(self):
         """
