@@ -443,7 +443,7 @@ class Gear(BasicHelper, SignalHelper, NonstationarySignals):
                 # else pitting @ tooth
                 else:
                     # Condition on tooth to filter for itself tooth mesh
-                    tooth_signal = self.teeth_degr_signal['%i' % (tooth)]
+                    tooth_signal = self.teeth_degr_signal['%i' % (tooth+1)]
                     # Formatting
                     tooth_signal = np.array(tooth_signal).reshape(-1,1)
                     pittings.append(pitting)
