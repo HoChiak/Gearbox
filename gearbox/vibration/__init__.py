@@ -87,7 +87,14 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         combination has been considered.
         """
         # Get meshing time between two tooth
-        full_sample_interval = self.get_minimum_sample_time()
+        full_sample_interval_min = self.get_minimum_sample_time()
+        # Double Minimum (safety margin)
+        # full_sample_interval = 2 * full_sample_interval
+        # Ensure that full sample interval is greater than the specified one
+        full_sample_interval = full_sample_interval_min
+        while full_sample_interval <= self.sample_interval:
+            full_sample_interval += full_sample_interval_min
+        # Get sample time
         # must start with zero!!!!
         sample_time = np.arange(0, full_sample_interval,
                                   1/self.sample_rate)
@@ -152,10 +159,10 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         and torque_out
         """
         # Sanity check
-        assert torque.size == self.torque_sample_time.size, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
+        #assert torque.size == self.get_minimum_sample_time(), 'Error: the given torque vector must have a size of %i values, see the instructions for further explanation' % (self.get_minimum_sample_time())
         # Extend torque array to same length as sample length
         torque = torque.reshape(-1)
-        self.torque_in = torque
+        self.torque_in = self.repeat2no_values(torque, self.torque_sample_time.size)
         self.torque_out = self.torque_in * self.gear_ratio
 
 
