@@ -145,14 +145,16 @@ class Gearbox(Vibration,
         if self.verbose == 1:
             display(HTML('<p>Done</p>'))
 
-    def reinitialize(self, torque):
+    def reinitialize(self, torque, seed=None):
         """
         Method to REinitialize the model, Vibration is kept as it and
         Degradation is reset. (Only Degradation changes over given nolc,
         Vibration only depends only on given GearIn etc. dicts. Only REinit
         Degradation saves a lot of time.)
         """
-        # Only adjust seed in Gearbox Vibration
+        if seed is not None:
+            self.ga_seed = seed
+        # Change only seed in vibrations
         self.Vibration.seed = self.ga_seed
         # Init Gearbox Degradation
         self.Degradation = Degradation(self.ga_GearIn['no_teeth'],
