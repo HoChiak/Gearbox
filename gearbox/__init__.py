@@ -86,7 +86,7 @@ class Gearbox(Vibration,
         # Shared Arguments
         self.ga_seed  = seed
         self.verbose = verbose
-        self.version = '0.6.0'
+        self.version = '0.6.1'
         # Degradation Vibration
         self.GearDegVibDictIn = GearDegVibDictIn
         self.GearDegVibDictOut = GearDegVibDictOut
