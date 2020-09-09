@@ -422,6 +422,11 @@ class State0_Helper():
         # Add neol to state0
         self.state0['neol'] = neol
         self.state0['aeol'] = self.init_aeols().reshape(-1)
+        # Sort values by 'neol' to sort them in number of fallen teeth
+        self.state0.sort_values(by=['neol'], axis=0,
+                                ascending=True, inplace=True,
+                                kind='mergesort')
+        self.state0.reset_index(drop=True, inplace=True)
 
     def match_a2function(self):
         """
