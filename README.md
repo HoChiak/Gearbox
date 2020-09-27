@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-<body>
-
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Gearbox Simulation Model</b></p>
-</div>
-
+# Gearbox Simulation Model
 
 <p><b>Simulation of the vibration behaviour of a gearbox under degradation</b></p>
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Gearbox.png" width="60%">
@@ -16,9 +9,8 @@
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/FTT_SimVsTestbench.png" width="60%">
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Version History</b></p>
-</div><br>
+### Version History
+
 <p><b>Version 0.6.1</b><u> (current)</u></p>
 <li>Optional key {'harmonics_fac': []} (list) added to element dictionary for explicit specifying the relativ amplitude of each harmonic frequencies</li>
 <li>Method for choosing 'number of fallen teeth' changed. Previous: Take the n first teeth where pitting occurs. Now: Take the n first teeth that reach the EOL criterion.</li>
@@ -38,9 +30,8 @@
 <li>Minor bug fixes</li>
 <br>
 <br>
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Brief Introduction</b></p>
-</div>
+# Brief Introduction
+
 <br>
 <li>Toolbox to simulate gearbox vibration</li>
 <li>Virtual copy of an existing testbench</li>
@@ -55,9 +46,7 @@
   </ul>
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Preliminary</b></p>
-</div>
+### Preliminary
 
 <p> Load Modules </p>
 
@@ -77,9 +66,8 @@ from scipy.stats import norm
 import gearbox_functions as gf
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Module Structure</b></p>
-</div>
+### Module Structure
+
 <br>
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/Modules.png" width="80%">
 
@@ -89,9 +77,8 @@ import gearbox_functions as gf
 <li>Helper-Module is used by Modules on the same level</li>
 <li>Modules consisting of several Module Methods</li>
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>State Model</b></p>
-</div>
+### State Model
+
 <br>
 
 <li>Acts as a state model:</li>
@@ -101,9 +88,8 @@ import gearbox_functions as gf
 
 <img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/State_Definition.png" width="80%">
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Inputs and main Methods&#40;&#41;</b></p>
-</div>
+### Inputs and main Methods
+
 <br>
 <p>General Input Arguments:</p>
 <li>f<sub>i</sub>: Rotational Frequency input shaft - in revolutions per second (float)</li>
@@ -120,9 +106,8 @@ import gearbox_functions as gf
 
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Torque Definition</b></p>
-</div>
+### Torque Definition
+
 <br>
 
 <p><b>Vibration/Degradation Output is calculated for previous given torque<sub>p-1</sub> argument.</b></p>
@@ -146,9 +131,8 @@ import gearbox_functions as gf
 
 <p><b>Gear Degradation strongly depends on the Gearbox Design &#8594; Both Input and Output Gear Degradation are defined for input torque!!!</b></p>
 
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Brief Running Example</b></p>
-</div>
+# Brief Running Example
+
 <p>Complete High Level Example. Details and Theory will follow.</p>
 <p>Detailed Element Dictionary Explanation will follow</p>
 <br>
@@ -177,9 +161,7 @@ seed = 8
 from GearboxParams import *
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Torque Definition (Workaround)</b></p>
-</div>
+### Torque Definition (Workaround)
 
 
 ```python
@@ -187,8 +169,7 @@ sample_time = gf.get_sample_time_torque(rotational_frequency_in, sample_rate, Ge
 initial_torque = np.ones(sample_time.shape) * 200 # Nm | array
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Instance Initialization</b></p>
+### Instance Initialization
 </div>
 <br>
 <p>Initialize a new Instance:</p>
@@ -213,9 +194,8 @@ model = Gearbox(rotational_frequency_in,
                   GearDegVibDictOut=GearDegVibDictOut)
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Initialize <u>All</u> Vibration and Degradation</b></p>
-</div>
+### Initialize <u>All</u> Vibration and Degradation
+
 <br>
 <p>Initialize Degradation Module: <b>initialize(torque)</b></p>
 <p>Input Arguments:</p>
@@ -255,9 +235,8 @@ model.initialize(initial_torque)
 <p>Done</p>
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run and Set <u>All</u> Vibration and Degradation</b></p>
-</div>
+### Run and Set <u>All</u> Vibration and Degradation
+
 <br>
 <p>Run Vibration and Degradation: <b>run(nolc, output=True)</b></p>
 <p>Input Arguments:</p>
@@ -284,9 +263,8 @@ for nolc in np.linspace(0, 12e6, 12):
 
     Load Cycle 12000000 done
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Summary <u>All</u> Vibration and Degradation</b></p>
-</div>
+### Summary <u>All</u> Vibration and Degradation
+
 <br>
 <p>Initialize Degradation Module: <b>initialize(torque)</b></p>
 <p>Input Arguments:</p>
@@ -781,12 +759,10 @@ model.summary()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_29_33.png)
 
 
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Running Example - Only Vibration or Only Degradation</b></p>
-</div>
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run <u>only</u> Vibration</b></p>
-</div>
+# Running Example - Only Vibration or Only Degradation
+
+### Run <u>only</u> Vibration
+
 <br>
 <p>Initialize Vibration Module: <b>init_vibration(torque)</b></p>
 <p>Input Arguments:</p>
@@ -1312,9 +1288,8 @@ model.Vibration.summary_vibration()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_39_15.png)
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Run <u>only</u> Degradation</b></p>
-</div>
+### Run <u>only</u> Degradation
+
 <br>
 <p>Initialize Degradation Module: <b>init_degradation()</b></p>
 <p>Input Arguments:</p>
@@ -2273,12 +2248,10 @@ model.Degradation.summary_degradation()
 <p>No teeth are failing</p>
 
 
-<div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
-<p><b>Details and Theory</b></p>
-</div>
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Vibration Element Definition</b></p>
-</div>
+# Details and Theory
+
+### Vibration Element Definition
+
 <br>
 <h3>Gear Element</h3>
 <p>Keyword Attributes: <br>
@@ -2405,9 +2378,8 @@ Bearing =   {'no_elements': 11,                                    # Number of R
     <li>f<sub>A</sub>: outer ring rollover frequency</li>
 </ul>
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Vibration Methods and Theory</b></p>
-</div>
+### Vibration Methods and Theory
+
 <br>
 
 <p>Module Methods Structure:</p>
@@ -2661,9 +2633,8 @@ plt.show()
 ![png](https://github.com/HoChiak/Gearbox/blob/master/__pictures/output_92_0.png)
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation Element Definition</b></p>
-</div>
+### Degradation Element Definition
+
 <br>
 <h3>Gear Element</h3>
 <p>Keyword Attributes: <br>
@@ -2706,9 +2677,8 @@ Deg_Gear = {'Failing_Teeth': 2,                                      # Number of
 </p>
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation Methods</b></p>
-</div>
+### Degradation Methods
+
 <br>
 
 
@@ -3049,8 +3019,7 @@ Deg_Gear['GridSearch'] = {'slice_theta1': (0.0001, 0.0902, 0.01),
 
 ```
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation Theory</b></p>
+### Degradation Theory
 </div>
 <br>
 
@@ -3496,8 +3465,7 @@ print('D(p) = D(p-1) + \u0394D = %.3e' % (curr_damage))
 </ul>
 
 
-<div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
-<p><b>Degradation-Vibration Dependency Element Definition</b></p>
+### Degradation-Vibration Dependency Element Definition
 </div>
 <br>
 <p>Module Methods Connection Vibration and Degradtion:</p>
@@ -3579,5 +3547,3 @@ print('Given Probabiliy assign value to one:\t %s' % (str(tooth_signal_i)))
     Create Zero Vector: 	 	 	 [0. 0. 0. 0. 0. 0.]
     Given Probabiliy assign value to one:	 [0. 0. 0. 0. 0. 1.]
     
-</body>
-</html>
