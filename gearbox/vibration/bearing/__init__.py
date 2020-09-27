@@ -58,6 +58,7 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
         self.rotational_frequency['oring'] = self.bearingdict['no_elements'] * self.approx_factor * self.fn
         # Key 'signal_%s'
         self.harmonics = {}
+        self.harmonics_fac = {}
         self.signal_model = {}
         self.ampl_method = {}
         self.mu = {}
@@ -74,13 +75,21 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
         self.norm_divisor = {}
         self.exponent = {}
         for part in ['iring', 'relement', 'oring']:
-            # # Key 'harmonics'
+            # Key 'harmonics'
             if 'harmonics_%s' % (part) in self.bearingdict:
                 assert isinstance(self.bearingdict['harmonics_%s' % (part)], (list, tuple)), 'harmonics must be given as list'
                 assert all([isinstance(harmonic, (int)) for harmonic in self.bearingdict['harmonics_%s' % (part)]]), 'every given harmonic in list must be type integer'
                 self.harmonics['%s' % (part)] = self.bearingdict['harmonics_%s' % (part)]
             else:
                 self.harmonics['%s' % (part)] = [1]
+            # Key 'harmonics_fac'
+            if 'harmonics_fac_%s' % (part) in self.bearingdict:
+                assert isinstance(self.bearingdict['harmonics_fac_%s' % (part)], (list, tuple)), 'harmonics_fac must be given as list'
+                assert len(self.bearingdict['harmonics_fac_%s' % (part)])==len(self.harmonics['%s' % (part)]), 'length of harmonics_fac for given part must equal number of given harmonics'
+                self.harmonics_fac['%s' % (part)] = self.bearingdict['harmonics_fac_%s' % (part)]
+            else:
+                self.harmonics_fac['%s' % (part)] = np.ones(len(self.harmonics['%s' % (part)])).tolist()
+            # Key 'signal'
             self.check_declaration(self.bearingdict, key='signal_%s' % (part), message='')
             assert self.bearingdict['signal_%s' % (part)] in self.signal_list, 'signal_%s must be one of the following: %s' % (part, str(self.signal_list))
             self.signal_model['%s' % (part)] = self.choose_signal_model(self.bearingdict['signal_%s' % (part)])
@@ -169,6 +178,8 @@ class Bearing(BasicHelper, SignalHelper, StationarySignals):
                 signal_i = self.signal_model['%s' % (part)].run(self.time,
                                                                 self.rotational_frequency['%s' % (part)] * harmonic,
                                                                 ampl=1)
+                # Scale by given harmonic factor
+                signal_i = signal_i * self.harmonics_fac['%s' % (part)][idh]
                 # Add Amplitude
                 amplitude_vector = self.create_amplitude_vector(method=self.ampl_method['%s' % (part)],
                                                                 mu=self.mu['%s' % (part)],

@@ -147,7 +147,7 @@ class SignalHelper():
                      time_start=0, id_start=0):
         """
         Shift a given signal by a given time shift.
-        Signal:  [|--]
+        Signal:  [--|--]
         Signal_center: 2 (Id of | in the given array)
         time: time array
         time shift: how many time units a signal is
@@ -182,7 +182,46 @@ class SignalHelper():
             ti = np.argmin(np.abs(time - tv))
         # Remove first zero axis
         shifted_signal = np.delete(shifted_signal, 0, 1)
+        # Remove doubled last values (bug)
+        if cid_list[-1]==cid_list[-2]:
+            del(cid_list[-1])
+            shifted_signal = np.delete(shifted_signal, -1, 1)
         return(shifted_signal, cid_list)
+
+    def shift_cid(self, signal_center, time, time_shift,
+                  time_start=0, id_start=0):
+        """
+        Shift a given signal by a given time shift.
+        Signal_center: 2 (Id of | in the given array)
+        time: time array
+        time shift: how many time units a signal is
+                    shifted each shift
+        time_start = corresponding to id_start
+        id_start = 2 (Places first center at id 2)
+        Example:
+        [[--|-------------------------------------]
+         [----|-----------------------------------]
+         [------|---------------------------------]
+         [--------|-------------------------------]
+         [----------|-----------------------------]
+         [------------|---------------------------]]
+        """
+        # Shift signal for each gear
+        ti, tv = id_start, time_start
+        cid_list = list()
+        while tv < (max(time)+time_shift):
+            # Add current center id to list
+            cid_list.append(ti)
+            # Get IDs for shift
+            min_id, max_id = signal_center-ti, -(ti+1)
+            # Get new shift arguments
+            tv += time_shift
+            ti = np.argmin(np.abs(time - tv))
+        # Remove first zero axis
+        # Remove doubled last values (bug)
+        if cid_list[-1]==cid_list[-2]:
+            del(cid_list[-1])
+        return(cid_list)
 
     def create_amplitude_vector(self, method='const', **kwargs):
         """
@@ -343,7 +382,7 @@ class NonstationarySignals():
 
         def __init__(self):
             """
-            Class constructor for stationary raw signal methods
+            Class constructor for non stationary raw signal methods
             """
 
         def run(self, time, frq, bw=0.5, bwr=-6, ampl=1, retquad=False):
@@ -354,7 +393,7 @@ class NonstationarySignals():
             if retquad is False:
                 signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=False, retenv=False)
             elif retquad is True:
-                _, signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=True, retenv=False)                
+                _, signal = gausspulse(time, fc=frq, bw=bw, bwr=bwr, retquad=True, retenv=False)
             signal = signal * ampl
             signal_center = np.argmin(np.abs(time))
             signal = signal.reshape(-1, 1)

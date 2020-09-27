@@ -87,12 +87,13 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         combination has been considered.
         """
         # Get meshing time between two tooth
-        full_sample_interval = self.get_minimum_sample_time()
+        full_sample_interval_min = self.get_minimum_sample_time()
         # Double Minimum (safety margin)
         # full_sample_interval = 2 * full_sample_interval
         # Ensure that full sample interval is greater than the specified one
+        full_sample_interval = full_sample_interval_min
         while full_sample_interval <= self.sample_interval:
-            full_sample_interval = full_sample_interval * 2
+            full_sample_interval += full_sample_interval_min
         # Get sample time
         # must start with zero!!!!
         sample_time = np.arange(0, full_sample_interval,
@@ -157,11 +158,8 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         Method to check and init torque_in
         and torque_out
         """
-        min_sample_interval = self.get_minimum_sample_time()
-        # Get number of samples in min sample interval
-        no_samples = np.arange(0, min_sample_interval, 1/self.sample_rate).size
         # Sanity check
-        assert torque.size >= no_samples, 'Error: the given torque vector must have a size of %i values describing a time intervall of length %f [sec], see the instructions for further explanation' % (no_samples, min_sample_interval)
+        #assert torque.size == self.get_minimum_sample_time(), 'Error: the given torque vector must have a size of %i values, see the instructions for further explanation' % (self.get_minimum_sample_time())
         # Extend torque array to same length as sample length
         torque = torque.reshape(-1)
         self.torque_in = self.repeat2no_values(torque, self.torque_sample_time.size)
@@ -223,13 +221,17 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         self.GearIn = Gear(self.rotational_frequency_in,
                            self.GearPropIn,
                            self.sample_rate, self.temp_sample_time,
+                           self.torque_sample_time,
                            self.torque_in,
-                           GearDegVibDict=self.GearDegVibDictIn)
+                           GearDegVibDict=self.GearDegVibDictIn,
+                           seed=self.seed)
         self.GearOut = Gear(self.rotational_frequency_out,
                            self.GearPropOut,
                            self.sample_rate, self.temp_sample_time,
+                           self.torque_sample_time,
                            self.torque_in, #!!!!!!!!!!!!!!!!!!!!! (Code1234)
-                           GearDegVibDict=self.GearDegVibDictOut)
+                           GearDegVibDict=self.GearDegVibDictOut,
+                           seed=self.seed)
         # print('--- Execution Time "Gears Init": %.3f' % (time.time() - start))
         # start = time.time()
         self.Bearing1 = Bearing(self.rotational_frequency_in,
@@ -260,11 +262,14 @@ class Gearbox_Vibration(Gear, Bearing, BasicHelper):
         # self.init_torque_attributes(torque)
         # seed dependencie on number of load cycles
         if self.seed is not None:
-            np.random.seed(np.random.randint(1, high=2**16, size=1, dtype=np.int32)[0])
+            seed = np.random.randint(1, high=2**16, size=1, dtype=np.int32)[0]
+            np.random.seed(seed)
+        else:
+            seed = self.seed
         # Gear Signals
         # start = time.time()
-        self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal()
-        self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal()
+        self.signal_gin, self.teeth_signal_gin, self.teeth_no_gin, self.teeth_cid_gin = self.GearIn.raw_signal(seed)
+        self.signal_gout, self.teeth_signal_gout, self.teeth_no_gout, self.teeth_cid_gout = self.GearOut.raw_signal(seed)
         # print('--- Execution Time "Gears Vibration Signal": %.3f' % (time.time() - start))
         # start = time.time()
         # Bearing Signals

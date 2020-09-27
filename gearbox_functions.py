@@ -36,7 +36,7 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
         yt = scaler.fit_transform(yt.reshape(-1, 1))
     #rfft
     yf = np.abs(rfft(yt, n=sample_rate, axis=0))
-    xf = rfftfreq(yt.size, d=1./sample_rate).reshape(-1, 1)
+    xf = rfftfreq(yf.size, d=1./sample_rate).reshape(-1, 1)
     #max pooling
     if yf.shape[0]%pp!=0:
         num_pad = (yf.shape[0]//pp) * pp + pp - yf.shape[0]
@@ -47,6 +47,15 @@ def rfft_y(array, alpha, sample_rate, pp, scale=False):
     fac_xf = (np.max(xf, axis=0) - np.min(xf, axis=0))/xf.shape[0] # stepsize xf
     xf_mp = np.arange((pp//2) * fac_xf,(yf_mp.shape[0]*pp) * fac_xf + 1, pp * fac_xf)
     return(yf_mp, xf_mp)
+
+def rfft_y_base(array, sample_rate):
+    #change file format
+    array = np.array(array)
+    yt = np.ravel(array)
+    #rfft
+    yf = np.abs(rfft(yt, n=sample_rate, axis=0))
+    xf = rfftfreq(yf.size, d=1./sample_rate).reshape(-1, 1)
+    return(yf, xf)
 
 def repeat2no_values(vector, no_values):
     """
