@@ -23,7 +23,8 @@
 <li>Realistic Gearbox Parameters are provided by external file (GearboxPArams.py)</li>
 <li>Minor performance increase</li>
 <li>Minor bug fixes</li>
-
+<br>
+<br>
 <p><b>Version 0.6.0</b></p>
 <li>Optional key {'harmonics': []} (list) added to element dictionary for explicit modelling of the harmonic frequencies</li>
 <li>Massive performance increase</li>
