@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+<html>
+<body>
+
 <div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
 <p><b>Gearbox Simulation Model</b></p>
 </div>
@@ -3575,3 +3579,5 @@ print('Given Probabiliy assign value to one:\t %s' % (str(tooth_signal_i)))
     Create Zero Vector: 	 	 	 [0. 0. 0. 0. 0. 0.]
     Given Probabiliy assign value to one:	 [0. 0. 0. 0. 0. 1.]
     
+</body>
+</html>
