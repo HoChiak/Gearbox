@@ -9,7 +9,7 @@
 
 
 <p><b>Comparison of the vibration signals between simulation and test bench based on the frequency spectrum: </b></p>
-<img src="https://github.com/HoChiak/Gearbox/blob/master/__picturesFTT_SimVsTestbench.png" width="60%">
+<img src="https://github.com/HoChiak/Gearbox/blob/master/__pictures/FTT_SimVsTestbench.png" width="60%">
 
 
 <div style="background-color:rgb(0, 190, 255);color:black;padding:0.5em;letter-spacing:0.1em;font-size:1.5em;align=center">
@@ -32,7 +32,8 @@
 <li>model.reinitialize() method added (can be used if Element Dictionarys stay the same, performance increase)</li>
 <li>"verbose" argument added (verbose=1: outputs information)</li>
 <li>Minor bug fixes</li>
-
+<br>
+<br>
 <div style="background-color:rgb(0, 81, 158);color:white;padding:1em;letter-spacing:0.1em;font-size:2em;align=center">
 <p><b>Brief Introduction</b></p>
 </div>
