@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/238858131.svg)](https://zenodo.org/badge/latestdoi/238858131)
+
+
 # Gearbox Simulation Model
 
 <p><b>Simulation of the vibration behaviour of a gearbox under degradation</b></p>
@@ -10,8 +13,11 @@
 
 
 ### Version History
+<p><b>Version 0.6.2</b><u> (current)</u></p>
+<li>DOI added </li>
 
-<p><b>Version 0.6.1</b><u> (current)</u></p>
+
+<p><b>Version 0.6.1</b></p>
 <li>Optional key {'harmonics_fac': []} (list) added to element dictionary for explicit specifying the relativ amplitude of each harmonic frequencies</li>
 <li>Method for choosing 'number of fallen teeth' changed. Previous: Take the n first teeth where pitting occurs. Now: Take the n first teeth that reach the EOL criterion.</li>
 <li>Degradation-Vibration modeling changed. Previous: Pitting is modeld by Gaus-Pulse. Now: Pitting is modeled by one peak [0, 0, ..., 1, ..., 0, 0] </li>
